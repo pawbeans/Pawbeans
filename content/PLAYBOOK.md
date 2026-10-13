@@ -84,8 +84,8 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
 ## 6. Delivery (what the owner gets)
 
 - **21:46 SGT, pitch:** a ranked list of 3–5 ideas for the night's series (`routines/pitch.md`). The owner replies
-  with a number before **midnight**; no reply means the top pick.
-- **On the pick, or at 00:00:** the script with sources and whole-film key-frame boards (`routines/build.md`), sent
+  with a number before **22:30**; no reply means the top pick.
+- **On the pick, or at the 22:30 cut-off:** the script with sources and whole-film key-frame boards (`routines/build.md`), sent
   in that session. The owner may reply with notes or "skip" until **05:30**.
 - **08:28 SGT, render:** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
   and what changed in the one revision, plus a suggested post caption with 3–5 hashtags.

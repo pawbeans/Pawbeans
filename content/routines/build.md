@@ -1,10 +1,10 @@
-# Build run: script and whole-film key frames (after the owner's pick, or at the 00:00 SGT cut-off)
+# Build run: script and whole-film key frames (after the owner's pick, or at the 22:30 SGT cut-off)
 
 Two ways in:
-- **The pitch session**, after the owner replied with a pick before midnight (`pitch.md` §4). Skip §1's "pick" step:
+- **The pitch session**, after the owner replied with a pick before 22:30 (`pitch.md` §4). Skip §1's "pick" step:
   the idea is the one they chose (or their own idea).
-- **The 00:00 run**, a fresh cloud session. Read `content/pitches/<pitch date>.md`, where the pitch date is
-  **yesterday** in Singapore (`TZ=Asia/Singapore date -d yesterday +%F`). Status `pitched` (no reply): set
+- **The 22:30 cut-off run**, a fresh cloud session. Read `content/pitches/<pitch date>.md`, where the pitch date is
+  **today** in Singapore (`TZ=Asia/Singapore date +%F`). Status `pitched` (no reply): set
   `Status: auto-picked 1 at cut-off`, commit and push at once, then build idea ★1. Any other status (the owner
   chose and that session is building, or it's done), or no pitch file: stop without messaging anyone.
 

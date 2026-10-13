@@ -3,10 +3,10 @@
 You are a fresh cloud session. The owner reads your list on their phone and may reply in this session.
 
 Timeline (Singapore time):
-- **21:46** this run sends a ranked list of ideas. **Midnight is the cut-off** for the owner's pick.
-- Owner replies with a pick before midnight → you (this session) build the film and its key frames right away
+- **21:46** this run sends a ranked list of ideas. **22:30 is the cut-off** for the owner's pick.
+- Owner replies with a pick before 22:30 → you (this session) build the film and its key frames right away
   (`content/routines/build.md`). Owner can then reply with notes on the boards until **05:30**.
-- No reply by midnight → the 00:00 run builds the top-ranked option (`build.md`).
+- No reply by 22:30 → the 22:30 cut-off run builds the top-ranked option (`build.md`).
 - **08:28** the morning run renders whatever has key frames (`morning.md`).
 
 ## 0. Repo and setup
@@ -46,13 +46,13 @@ Timeline (Singapore time):
 
 ## 3. Send
 Send the owner one message: the series, then the numbered list in the detailed format above (mark your
-recommendation ★), and: "Reply with a number (or your own idea) before midnight.
-No reply by 12:00 am and I'll go with ★1. After you see the key frames you can send notes until 5:30 am; the film
+recommendation ★), and: "Reply with a number (or your own idea) before 10:30 pm.
+No reply by 10:30 pm and I'll go with ★1. After you see the key frames you can send notes until 5:30 am; the film
 renders at 8:28 am."
 
 ## 4. When the owner replies
-- First `git pull` and read the pitch file's status. If it is no longer `pitched` (the midnight run already took
-  over), tell the owner the cut-off has passed and that the 00:00 session is building ★1; they can reply in that
+- First `git pull` and read the pitch file's status. If it is no longer `pitched` (the 22:30 cut-off run already took
+  over), tell the owner the cut-off has passed and that the 22:30 cut-off session is building ★1; they can reply in that
   session with notes until 05:30. Stop.
 - Otherwise set `Status: chosen <n> by owner (<time>)`, commit and push immediately (this claims the film), then
   follow `content/routines/build.md` from step 0 to the end for that idea. You are now the build session: owner notes
