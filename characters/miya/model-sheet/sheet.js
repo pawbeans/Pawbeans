@@ -58,7 +58,7 @@ export function render(t) {
   c.save();
   c.fillStyle = PAL.ink; c.textAlign = 'left';
   c.font = '600 78px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText('Miya', 96, 128);
-  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v3, for approval', 100, 176);
+  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v3 · approved', 100, 176);
   c.restore();
   label(c, 'GOLDENDOODLE · CEL / LINE BOIL · NEVER REDRAW: IMPORT characters/miya', 2304, 128, { align: 'right', font: '600 18px "Inter"', color: PAL.navy });
   G.inkStroke(c, [[96, 206], [2304, 206]], { seed: 11 + v, w: 3, t0: 30, t1: 30, min: 0.4, amp: 1.2, heavy: 0 });

@@ -124,10 +124,10 @@ Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
 Reference photos live in `references/miya/` (only the white / cream dog is Miya; ignore the black-and-white dog in
 shared photos).
 
-- **Status: model sheet v3 drawn (owner notes on v1 and v2 applied), awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
+- **Status: APPROVED by the owner (model sheet v3, 2026-10-13).** Module: `characters/miya/miya.js`; sheet:
   `characters/miya/model-sheet/` (render: `scripts/cel-render.sh characters/miya/model-sheet --stills 0`). Built in code
   from the five photos in `references/miya/`; no human illustrator for now. Colours: `MIYA` in `cel/palette.js`, sampled
-  from the photos. Until approved, do not use her in a film.
+  from the photos.
 - Use:
   ```js
   import { drawMiya, pose } from '/beans/characters/miya/miya.js';
