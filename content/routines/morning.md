@@ -1,4 +1,4 @@
-# Morning run: render, review, revise once, deliver (05:48 SGT)
+# Morning run: render, review, revise once, deliver (08:28 SGT)
 
 You are a fresh cloud session. Last night's run left a film with whole-film key frames on the branch, under the
 owner's standing approval (bible §14). Work end to end without asking questions.

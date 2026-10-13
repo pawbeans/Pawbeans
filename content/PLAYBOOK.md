@@ -84,7 +84,7 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
   with a number before **midnight**; no reply means the top pick.
 - **On the pick, or at 00:00:** the script with sources and whole-film key-frame boards (`routines/build.md`), sent
   in that session. The owner may reply with notes or "skip" until **05:30**.
-- **05:48 SGT, render:** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
+- **08:28 SGT, render:** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
   and what changed in the one revision, plus a suggested post caption with 3–5 hashtags.
 
 ## 7. Measuring and learning

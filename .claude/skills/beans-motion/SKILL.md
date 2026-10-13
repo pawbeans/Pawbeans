@@ -362,7 +362,7 @@ What the first full film taught us. The reviewer caught most of these on v1; bui
 
 Every day a new film is made automatically. **21:46 SGT** a ranked list of ideas goes to the owner; they pick by
 **midnight** (no reply: the top pick is built at 00:00); script and whole-film key frames follow; the owner can send
-notes or "skip" until **05:30**; **05:48** render, review, one revision and delivery. Two alternating series:
+notes or "skip" until **05:30**; **08:28** render, review, one revision and delivery. Two alternating series:
 - **Dog Decoded** (viral, educational, no BEANS mention at all): dog behaviour and dog science that hooks anyone with
   a dog. Series tag "DOG DECODED". No logo, no product, no beans.sg; ends on a question card. Miya is the star.
 - **Inside Your Dog** (BEANS, educational): the body, food, allergies and wellbeing, pointing subtly to novel

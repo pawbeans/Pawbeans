@@ -58,7 +58,7 @@ without asking questions; where a decision is the owner's, make the safe choice 
 - Send the boards (and any new-pose sheet) to the owner as files, then a short summary:
   series · title · the hook line · the beats in one line each · why it should travel · sources · flags
   (new pose, unverified sources, anything unusual; say if it was auto-picked at the cut-off) · "Reply here with
-  notes or 'skip' before 5:30 am. Otherwise it renders at 5:48 am."
+  notes or 'skip' before 5:30 am. Otherwise it renders at 8:28 am."
 
 ## 6. If the owner replies (until 05:30 SGT)
 - Notes: apply them, re-render the affected stills and boards, send them again, record the notes in `PRODUCTION.md`,

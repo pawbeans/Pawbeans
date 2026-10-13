@@ -7,7 +7,7 @@ Timeline (Singapore time):
 - Owner replies with a pick before midnight → you (this session) build the film and its key frames right away
   (`content/routines/build.md`). Owner can then reply with notes on the boards until **05:30**.
 - No reply by midnight → the 00:00 run builds the top-ranked option (`build.md`).
-- **05:48** the morning run renders whatever has key frames (`morning.md`).
+- **08:28** the morning run renders whatever has key frames (`morning.md`).
 
 ## 0. Repo and setup
 1. Work only on branch `claude/beans-motion-setup-9gt91i`:
@@ -39,7 +39,7 @@ Timeline (Singapore time):
 Send the owner one message: the series, then the numbered list (title, hook line, one line on the idea, why it
 should travel, length; mark your recommendation ★), and: "Reply with a number (or your own idea) before midnight.
 No reply by 12:00 am and I'll go with ★1. After you see the key frames you can send notes until 5:30 am; the film
-renders at 5:48 am."
+renders at 8:28 am."
 
 ## 4. When the owner replies
 - First `git pull` and read the pitch file's status. If it is no longer `pitched` (the midnight run already took
