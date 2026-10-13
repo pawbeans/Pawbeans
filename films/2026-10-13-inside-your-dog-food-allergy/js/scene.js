@@ -13,7 +13,7 @@ export const W = 1080, H = 1920, FPS = 24, DUR = 58;
 let ctx, DPR = 1, LOGO;
 
 // ------------------------------------------------------------------ exposure sheet: on 2s, fast action on 1s, holds on 3s
-const SCHED = [[0, 58, 1], [58, 77, 2], [77, 96, 1], [96, 706, 2], [706, 768, 1], [768, 1320, 2], [1320, 1392, 3]];
+const SCHED = [[0, 58, 1], [58, 77, 2], [77, 96, 1], [96, 706, 2], [706, 768, 1], [768, 1094, 2], [1094, 1152, 1], [1152, 1236, 2], [1236, 1260, 1], [1260, 1320, 2], [1320, 1392, 3]];
 function drawing(f) {
   let id = 0;
   for (const [a, b, s] of SCHED) {
@@ -44,13 +44,13 @@ const CAPS = [
   [13.8, 16.4, 'It tags that protein as an **invader...**'],
   [16.4, 19.0, '...and builds **antibodies** against it.'],
   [19.3, 22.2, 'Those antibodies load onto **mast cells** in the skin and gut.'],
-  [22.2, 26.0, 'Nothing happens yet. Your dog **seems fine.**'],
+  [22.2, 24.2, 'Nothing happens yet. Your dog **seems fine.**'],
   [26.2, 28.2, 'Next meal. **Same protein.**'],
   [28.2, 30.8, 'It **locks** onto the antibodies...'],
   [30.8, 35.0, '...and the mast cells **burst,** releasing **histamine** and **itch signals.**'],
   [35.2, 37.4, 'In the skin, those signals fire up the **nerves.**'],
-  [37.4, 39.6, 'The message races to the **brain...**'],
-  [39.6, 43.0, '...and the brain says one thing: **scratch.**'],
+  [37.4, 38.8, 'The message races to the **brain...**'],
+  [38.8, 43.0, '...and the brain says one thing: **scratch.**'],
   [43.2, 45.6, 'In the gut, the same reaction causes **inflammation.**'],
   [45.6, 48.0, 'Food rushes through. Hello, **bad poops.**'],
   [48.2, 50.6, 'The body only reacts to proteins it has **met before.**'],
@@ -72,10 +72,11 @@ function overlays(c, t, v) {
   }
   for (const [txt, a, b] of TITLES) {
     if (t < a || t >= b) continue;
+    if (txt.startsWith('5') && t >= 38.75 && t < 40.2) continue; // SCRATCH! owns the top of frame
     const u = E.out3(clamp((t - a) / 0.35)), out = clamp((b - t) / 0.25);
     CA.pill(c, txt, 540, 279 + 14 * (1 - u) + 20, { size: 38, fill: PAL.orange, color: PAL.hi, alpha: u * out, seed: 21 }, v);
   }
-  for (const [a, b, words] of CAPS) CA.caption(c, words, 500, 1410, t, a, b, v);
+  CAPS.forEach(([a, b, words], i) => CA.caption(c, words, 500, 1440, t, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b }));
 }
 
 // ------------------------------------------------------------------ shot 1 · hook (0–4), cream paper
@@ -119,12 +120,14 @@ function shotHook(c, t, f, D) {
   if (t >= 2.5 && t < 3.25) {
     const k = E.io2(inv(2.5, 3.25, t)), p0 = { x: 1180, y: 380 };
     const x = lerp(p0.x, m.x, k), y = lerp(p0.y, m.y, k) - Math.sin(Math.PI * k) * 260;
-    CA.proteinGem(c, x, y, lerp(70, 34, k), t * 3, 60, v);
+    if (t >= 3.1) smearGem(c, x, y, lerp(70, 34, k), Math.atan2(m.y - y, m.x - x), 2.4, 60, v);
+    else CA.proteinGem(c, x, y, lerp(70, 34, k), t * 3, 60, v);
   }
   // a deep-navy circle grows from the mouth to fill the frame (3.45–4.0)
   if (t >= 3.45) {
     const r = lerp(0, 1500, E.in2(inv(3.45, 4.0, t)));
-    const ring = circlePts(W / 2, H / 2, r, 120);
+    const mo = locate(P, o, (R) => R.face.mouthO);
+    const ring = circlePts(mo.x, mo.y, r * 1.6, 120);
     fillShape(c, ring, PAL.navyDeep, { seed: 250 + f, amp: 2 });
     inkLoop(c, ring, { seed: 251 + f, w: 8, amp: 2 });
   }
@@ -198,9 +201,21 @@ function drawGutWorld(c, t, f, D, camY, skipIntact = false) {
     }
   });
   c.restore();
-  label(c, 'INTACT PROTEIN', 540, WALL_BASE + 210 - camY, t, 9.5, 10.7, v, { size: 34 });
+  label(c, 'INTACT PROTEIN', 540, WALL_BASE + 150 - camY, t, 9.5, 10.7, v, { size: 34 });
 }
-function shotGut(c, t, f, D) { drawGutWorld(c, t, f, D, gutCam(t)); }
+function shotGut(c, t, f, D) {
+  drawGutWorld(c, t, f, D, gutCam(t));
+  if (t < 4.5) { // iris open from the navy wipe
+    const r = lerp(0, 1250, E.out2(inv(4.0, 4.5, t))), ring = circlePts(W / 2, H * 0.42, r, 120);
+    c.save(); c.beginPath(); c.rect(0, 0, W, H); polyPath(c, ring, true); c.fillStyle = PAL.navyDeep; c.fill('evenodd'); c.restore();
+    if (r > 4) inkLoop(c, ring, { seed: 252 + f, w: 8, amp: 2 });
+  }
+}
+// one-frame smear: the gem stretched along its motion
+function smearGem(c, x, y, r, dir, len, seed, v) {
+  c.save(); c.translate(x, y); c.rotate(dir); c.scale(len, 0.62); c.rotate(-dir);
+  CA.proteinGem(c, 0, 0, r, dir, seed, v, { glow: 0 }); c.restore();
+}
 
 function protein3(i, t) { const p = intactPos(i, Math.min(t, 10.4)); return { x: p.x, y: p.y - gutCam(Math.min(t, 11.75)) + Math.sin(t * 2.2 + i) * 10 }; }
 function shotMistake(c, t, f, D) {
@@ -299,7 +314,8 @@ function shotTrap(c, t, f, D) {
     const p = protein5(k, t);
     if ((k === 0 && t >= burst) || (k === 1 && t >= 31.4) || (k === 2 && t >= 31.8)) {
       const u = (t - (k === 0 ? burst : k === 1 ? 31.4 : 31.8)) / 0.6; if (u > 1) return;
-      CA.proteinGem(c, p.x + 300 * u, p.y - 900 * u, p.r, t * 6, 760 + k, v); return; // shoots up and away
+      if (u < 0.09) smearGem(c, p.x + 300 * u, p.y - 900 * u, p.r, Math.atan2(-900, 300), 3.0, 760 + k, v);
+      else CA.proteinGem(c, p.x + 300 * u, p.y - 900 * u, p.r, t * 6, 760 + k, v); return; // shoots up and away
     }
     if (t < p.lockT && t < PROT5[k].t0 + 1.35) for (let g = 1; g <= 2; g++) { // ghost trails while flying in
       const q = protein5(k, t - g * 0.08); c.save(); c.globalAlpha = 0.25 / g; CA.proteinGem(c, q.x, q.y, p.r, 0, 750 + k, v, { glow: 0 }); c.restore();
@@ -336,18 +352,18 @@ function shotTrap(c, t, f, D) {
     c.save(); c.globalAlpha = Math.sin(Math.PI * u); c.font = `italic 600 ${44 + k * 10}px "Fraunces"`; c.fillStyle = PAL.hi;
     c.fillText('z', 760 + 40 * u + k * 6, 640 - 160 * u - k * 30); c.restore();
   }
-  if (t >= 23.1 && t < 25.8) { // callout card
-    const u = E.out3(clamp((t - 23.1) / 0.4)), a = clamp((25.8 - t) / 0.25);
+  if (t >= 24.2 && t < 26.0) { // callout card (after the caption, never with it)
+    const u = E.out3(clamp((t - 24.2) / 0.3)), a = clamp((26.0 - t) / 0.2);
     c.save(); c.globalAlpha = a; c.translate(0, 60 * (1 - u));
-    const P = G.resample(CA.roundRect(330, 1100, 680, 120, 24), 6, true);
+    const P = G.resample(CA.roundRect(160, 1100, 680, 120, 24), 6, true);
     fillShape(c, P.map(([x, y]) => [x + 6, y + 8]), 'rgba(27,47,82,0.35)', { seed: 900 + v, amp: 1.2 });
     fillShape(c, P, PAL.hi, { seed: 901 + v, amp: 1.4 }); inkLoop(c, P, { seed: 902 + v, w: 3.5, amp: 1.4 });
     c.font = '600 34px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'left';
-    c.fillText('This is why allergies seem', 362, 1150); c.fillText('to come out of nowhere.', 362, 1196);
+    c.fillText('This is why allergies seem', 192, 1150); c.fillText('to come out of nowhere.', 192, 1196);
     c.restore();
   }
   label(c, 'HISTAMINE', 250, 420, t, 32.3, 35.0, v, { size: 36, dot: COL.histamine });
-  label(c, 'IL-31 · THE ITCH SIGNAL', 690, 1230, t, 32.9, 35.0, v, { size: 32, dot: COL.itch });
+  label(c, 'IL-31 · THE ITCH SIGNAL', 690, 1190, t, 32.9, 35.0, v, { size: 32, dot: COL.itch });
   // impact frames on the burst: two frames, then a cream flash fading over 0.2 s
   const fb = Math.round(burst * FPS);
   if (f === fb) FX.impactFrame(c, W, H, HERO.x, HERO.y, PAL.hi, PAL.orange, 950, { core: COL.itch, R: 760 });
@@ -357,7 +373,7 @@ function shotTrap(c, t, f, D) {
 // push transition 19.0–19.9: the mistake slides up, the trap rises from below
 function shotPush(c, t, f, D) {
   const u = E.io2(inv(19.0, 19.9, t));
-  c.save(); c.translate(0, -H * u); shotMistake(c, 18.99, f, D); c.restore();
+  c.save(); c.translate(0, -H * u); shotMistake(c, t, f, D); c.restore();
   c.save(); c.translate(0, H * (1 - u)); shotTrap(c, t, f, D); c.restore();
 }
 
@@ -391,9 +407,9 @@ function shotNerve(c, t, f, D) {
   const lit = t >= 38.6 ? E.out2(clamp((t - 38.6) / 0.3)) : 0;
   CA.brain(c, BRAIN.x, BRAIN.y, 1.0, tq, 1070, v, { face: t >= 38.6 ? 'shocked' : t >= 37.2 ? 'open' : 'asleep', pop: 1 + hit, lit });
   label(c, 'IL-31', 230, 960, t, 35.3, 37.0, v, { size: 34, dot: COL.itch });
-  label(c, 'SKIN', 840, 1230, t, 35.5, 39.6, v, { size: 34 });
-  label(c, 'NERVE', 360, 1020, t, 36.2, 39.6, v, { size: 34, dot: COL.bcell });
-  if (t >= 38.8) label(c, 'SCRATCH!', 540, 425, t, 38.8, 39.6, v, { size: 92, fill: PAL.orange, color: PAL.hi, edge: PAL.navy, rot: -0.052, seed: 77 });
+  label(c, 'SKIN', 840, 1195, t, 35.5, 40.2, v, { size: 34 });
+  label(c, 'NERVE', 360, 1020, t, 36.2, 40.2, v, { size: 34, dot: COL.bcell });
+  if (t >= 38.8) label(c, 'SCRATCH!', 540, 425, t, 38.8, 40.2, v, { size: 92, fill: PAL.orange, color: PAL.hi, edge: PAL.navy, rot: -0.052, seed: 77 });
 }
 const DOG6 = { x: 500, y: 1170, s: 2.2, view: 15 };
 function shotScratchDog(c, t, f, D) {
@@ -405,12 +421,12 @@ function shotScratchDog(c, t, f, D) {
   const pj = (fn) => locate(P, DOG6, fn);
   const ear = pj((R) => R.ears[0].bot), paws = pj((R) => R.legs.find((l) => l.key === 'FN').pts[3]), belly = pj((R) => R.torso[2].b);
   const ring = (p, t0) => { if (t < t0) return; const pr = 0.85 + 0.15 * Math.sin((t - t0) * 8); inkLoop(c, circlePts(p.x, p.y, 54 * pr, 30), { seed: 1110 + Math.round(p.x) + v, w: 5, amp: 1, color: PAL.orange }); };
-  ring(ear, 40.1); ring(paws, 40.7); ring(belly, 41.3);
+  ring(ear, 40.6); ring(paws, 41.0); ring(belly, 41.4);
   const lead = (p, x, y, t0) => { if (t >= t0) inkStroke(c, [[x, y], [p.x, p.y]], { seed: 1120 + x + v, w: 4, t0: 6, t1: 6, min: 0.4, amp: 1, heavy: 0, color: PAL.orange }); };
-  lead(ear, 210, 640, 40.1); lead(paws, 820, 1060, 40.7); lead(belly, 820, 900, 41.3);
-  label(c, 'EARS', 190, 640, t, 40.1, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
-  label(c, 'PAWS', 830, 1060, t, 40.7, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
-  label(c, 'BELLY', 830, 900, t, 41.3, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  lead(ear, 210, 640, 40.6); lead(paws, 820, 1060, 41.0); lead(belly, 820, 900, 41.4);
+  label(c, 'EARS', 190, 640, t, 40.6, 42.9, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  label(c, 'PAWS', 830, 1060, t, 41.0, 42.9, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  label(c, 'BELLY', 830, 900, t, 41.4, 42.9, v, { size: 38, fill: PAL.orange, color: PAL.hi });
 }
 
 // ------------------------------------------------------------------ shot 7 · the gut, again (43–48)
@@ -434,13 +450,13 @@ function shotGutAgain(c, t, f, D) {
   inkStroke(c, TUBE.map(([x, y]) => [x - 8, y - 22]), { seed: 1203 + v, w: 14, t0: 30, t1: 30, min: 0.3, amp: 1.2, heavy: 0, color: infl > 0.5 ? '#FFD2BC' : COL.villus, dense: true });
   // food pellets drifting along it, rushing from 45.6
   const Ls = G.arclen(TUBE), tot = Ls[Ls.length - 1];
-  const prog = (tq - 43) * 60 + Math.max(0, tq - 45.6) ** 2 * 900;
+  const rr = Math.max(0, tq - 45.6), prog = (tq - 43) * 60 + (rr < 0.5 ? 900 * rr * rr : 225 + 900 * (rr - 0.5)); // ramps to 900 px/s, then holds
   for (let k = 0; k < 9; k++) {
     const s = ((k / 9) * tot + prog) % tot, pts = G.prefix(TUBE, s / tot), q = pts[pts.length - 1], q0 = pts[Math.max(0, pts.length - 4)];
     if (t > 45.6) inkStroke(c, [[q[0] - (q[0] - q0[0]) * 6, q[1] - (q[1] - q0[1]) * 6], q], { seed: 1210 + k + f, w: 10, t0: 30, t1: 4, min: 0.1, amp: 0.8, heavy: 0, color: COL.crumbShade });
     CA.celMass(c, circlePts(q[0], q[1], 24, 16), COL.crumb, COL.crumbShade, 1220 + k, v, { w: 3, sh: 5 });
   }
-  label(c, 'INFLAMED', 250, 470, t, 44.3, 48.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  label(c, 'INFLAMED', 250, 470, t, 44.3, 47.9, v, { size: 38, fill: PAL.orange, color: PAL.hi });
   if (t >= 46.5) { const pop = E.outBack(clamp((t - 46.5) / 0.35), 2.2), j = 1 + 0.04 * Math.sin(tq * 14); c.save(); c.translate(830, 1215); c.scale(pop * j, pop / j); CA.poop(c, 0, 0, 0.85, tq, 1240, v); c.restore(); }
 }
 
@@ -452,32 +468,36 @@ function shotFix(c, t, f, D) {
   if (t >= 51.7) CA.glow(c, HERO.x, HERO.y, 330 * E.out2(clamp((t - 51.7) / 0.8)), COL.neverMet, 1310, v, 0.1);
   drawMastWithAntibodies(c, HERO, 99, tq, v, 1320, 10, { dockT0: 0, dockStep: 0, face: t >= 52.0 ? 'happy' : 'asleep', sway: true });
   const dock = { x: HERO.x, y: HERO.y - HERO.r - 80 };
-  if (t >= 48.5 && t < 50.5) { c.save(); c.globalAlpha = Math.floor((t - 48.5) * 4) % 2 ? 0.35 : 0.75; CA.proteinGem(c, dock.x, dock.y, 48, 0.3, 1330, v); c.restore(); }
+  if (t >= 48.5 && t < 50.5) { c.save(); c.globalAlpha = 0.55 + 0.2 * Math.sin((t - 48.5) * 5); CA.proteinGem(c, dock.x, dock.y, 48, 0.3, 1330, v); c.restore(); }
   label(c, 'MET BEFORE = REACTS', 540, 400, t, 48.5, 50.6, v, { size: 36, fill: PAL.orange, color: PAL.hi });
   let nm = null;
   if (t >= 50.6) {
-    if (t < 51.7) { const u = E.io2(inv(50.6, 51.7, t)); nm = { x: lerp(1180, dock.x, u), y: lerp(160, dock.y, u) }; }
-    else { const u = E.out3(clamp((t - 51.7) / 1.0)); nm = { x: lerp(dock.x, 800, u), y: lerp(dock.y, 440, u) - Math.sin(Math.PI * u) * 60 + Math.sin(t * 2) * 8 * u }; }
-    CA.neverMet(c, nm.x, nm.y, 44, 1340, v);
-    if (t >= 51.7 && t < 52.5) { const u = (t - 51.7) / 0.8; c.save(); c.globalAlpha = 1 - u; inkLoop(c, circlePts(dock.x, dock.y + 30, 40 + 220 * u, 50), { seed: 1350 + f, w: 6, amp: 1, color: PAL.hi }); c.restore(); }
+    const contact = { x: dock.x, y: dock.y + 34 };
+    if (t < 51.75) { const u = E.in2(inv(50.6, 51.75, t)); nm = { x: lerp(1180, contact.x, u), y: lerp(160, contact.y, u) }; }
+    else { const u = E.out3(clamp((t - 51.75) / 1.0)); nm = { x: lerp(contact.x, 800, u), y: lerp(contact.y, 470, u) - Math.sin(Math.PI * u) * 60 + Math.sin(t * 2) * 8 * u }; }
+    const fc = Math.round(51.75 * FPS);
+    if (f === fc) { c.save(); c.translate(nm.x, nm.y + 10); c.scale(1.3, 0.68); CA.neverMet(c, 0, 0, 44, 1340, v); c.restore(); } // squash on contact
+    else if (f === fc + 1) { c.save(); c.translate(nm.x, nm.y); c.rotate(-0.55); c.scale(1.9, 0.7); c.rotate(0.55); CA.neverMet(c, 0, 0, 44, 1340, v, { glow: 0 }); c.restore(); } // smear on the rebound
+    else CA.neverMet(c, nm.x, nm.y, 44, 1340, v);
+    if (t >= 51.75 && t < 52.55) { const u = (t - 51.75) / 0.8; c.save(); c.globalAlpha = 1 - u; inkLoop(c, circlePts(dock.x, dock.y + 30, 40 + 220 * u, 50), { seed: 1350 + f, w: 6, amp: 1, color: PAL.hi }); c.restore(); }
   }
-  if (nm && t >= 51.0) label(c, 'NEVER MET', nm.x, nm.y - 90, t, 51.0, 55.0, v, { size: 34, fill: COL.neverMet, color: PAL.navy });
+  if (nm && t >= 52.1) label(c, 'NEVER MET', nm.x, nm.y + 90, t, 52.1, 55.0, v, { size: 34, fill: COL.neverMet, color: PAL.navy });
   [['KANGAROO', 53.1, ACCENTS.kangaroo.c], ['VENISON', 53.35, ACCENTS.venison.c], ['RABBIT', 53.6, ACCENTS.rabbit.c]].forEach(([txt, t0, col], i) =>
-    label(c, txt, 250 + i * 290, 1200, t, t0, 55.0, v, { size: 36, fill: col, color: PAL.hi, seed: 1360 + i }));
+    label(c, txt, 250 + i * 290, 1200, t, t0, 55.0, v, { size: 36, fill: col, color: txt === 'RABBIT' ? PAL.navy : PAL.hi, seed: 1360 + i }));
 }
 
 // ------------------------------------------------------------------ end card (55–58)
 function shotEnd(c, t, f, D) {
   const v = bv(D);
   drawPaper(c, W, H);
-  CA.glow(c, 540, 820, 420, PAL.orange, 1400, v, 0.045);
+  CA.glow(c, 500, 820, 420, PAL.orange, 1400, v, 0.045);
   const rise = (t0) => ({ a: E.out2(clamp((t - t0) / 0.4)), dy: 40 * (1 - E.out3(clamp((t - t0) / 0.4))) });
   let r = rise(55.2);
   if (r.a > 0) { c.save(); c.globalAlpha = r.a; c.translate(0, r.dy);
     drawMiya(c, pose('wag', { face: { eyes: 'happy', mouth: 'tongue', brow: 0.6 }, tail: { a0: 92 + (f % 2 ? 22 : -22), curl: -32 } }), { x: 520, y: 830, s: 1.75, view: 25, v, seed: 5200, accent: COL.guard });
     c.restore(); }
   r = rise(55.42); // the wordmark: the supplied file, placed clean and still
-  if (r.a > 0) { const lw = 760, lh = lw * LOGO.height / LOGO.width; c.save(); c.globalAlpha = r.a; c.drawImage(LOGO, 500 - lw / 2, 1000 - lh / 2 + r.dy, lw, lh); c.restore(); }
+  if (r.a > 0) { c.save(); c.globalAlpha = r.a; drawLogo(c, r.dy); c.restore(); }
   r = rise(55.64);
   if (r.a > 0) { c.save(); c.globalAlpha = r.a; c.font = '600 43px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'center'; c.fillText('Single-ingredient novel protein treats', 500, 1150 + r.dy); c.restore(); }
   r = rise(56.0);
@@ -487,14 +507,14 @@ function shotEnd(c, t, f, D) {
 }
 
 // ------------------------------------------------------------------ frame
-const XF = [[35.0, 0.45, shotTrap, shotNerve], [39.6, 0.3, shotNerve, shotScratchDog], [43.0, 0.4, shotScratchDog, shotGutAgain], [48.0, 0.4, shotGutAgain, shotFix], [55.0, 0.45, shotFix, shotEnd]];
+const XF = [[35.0, 0.45, shotTrap, shotNerve], [40.2, 0.3, shotNerve, shotScratchDog], [43.0, 0.4, shotScratchDog, shotGutAgain], [48.0, 0.4, shotGutAgain, shotFix], [55.0, 0.45, shotFix, shotEnd]];
 function shotAt(t) {
   if (t < 4.0) return shotHook;
   if (t < 11.0) return shotGut;
   if (t < 19.0) return shotMistake;
   if (t < 19.9) return shotPush;
   if (t < 35.0) return shotTrap;
-  if (t < 39.6) return shotNerve;
+  if (t < 40.2) return shotNerve;
   if (t < 43.0) return shotScratchDog;
   if (t < 48.0) return shotGutAgain;
   if (t < 55.0) return shotFix;
@@ -510,12 +530,18 @@ export function render(t) {
   const xf = XF.find(([at, d]) => t1 >= at && t1 < at + d);
   if (xf) { // crossfade: draw the outgoing shot, then the incoming one over it at rising opacity via an offscreen layer
     const [at, d, A, B] = xf;
-    A(c, Math.min(t1, at - 1 / FPS), f, D);
+    A(c, t1, f, D);
     if (!LAYER.c) { const cv = document.createElement('canvas'); cv.width = W * DPR; cv.height = H * DPR; LAYER.c = cv.getContext('2d'); }
     const L = LAYER.c; L.setTransform(1, 0, 0, 1, 0, 0); L.clearRect(0, 0, W * DPR, H * DPR); L.setTransform(DPR, 0, 0, DPR, 0, 0);
     B(L, t1, f, D);
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = E.io2((t1 - at) / d); c.drawImage(L.canvas, 0, 0); c.restore();
   } else shotAt(t1)(c, t1, f, D);
-  overlays(c, t1, bv(D));
+  const fb = Math.round(31.0 * FPS);
+  if (f !== fb && f !== fb + 1) overlays(c, t1, bv(D));
   drawTooth(c, W, H, bv(D), DPR, 0.13);
+  if (t1 >= 55.9) drawLogo(c, 0); // a still, clean logo: the grain must not crawl over it
+}
+function drawLogo(c, dy) {
+  const lw = 760, lh = lw * LOGO.height / LOGO.width;
+  c.drawImage(LOGO, 500 - lw / 2, 1000 - lh / 2 + dy, lw, lh);
 }

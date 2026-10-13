@@ -53,9 +53,10 @@ CH = [
     (22.2, 26.0, 'G2', ['D3', 'B3', 'D4'], 0.6),
     (26.0, 28.2, 'B1', ['F#3', 'B3', 'D4'], 0.8),     # 4 the reaction: minor, pulse
     (28.2, 30.85, 'F#2', ['C#3', 'F#3', 'A#3'], 0.9),
+    (32.4, 35.0, 'B1', ['F#3', 'B3', 'D4'], 0.6),     # after the burst: the guitar creeps back in
     (35.0, 37.4, 'E2', ['B2', 'E3', 'G3'], 0.8),      # 5 the itch
-    (37.4, 39.6, 'F#2', ['C#3', 'F#3', 'A#3'], 1),
-    (39.6, 43.0, 'G2', ['D3', 'B3', 'D4'], 0.8),
+    (37.4, 40.2, 'F#2', ['C#3', 'F#3', 'A#3'], 1),
+    (40.2, 43.0, 'G2', ['D3', 'B3', 'D4'], 0.8),
     (43.0, 45.6, 'E2', ['B2', 'E3', 'G3'], 0.7),      # 6 the gut, again
     (45.6, 48.0, 'A2', ['E3', 'A3', 'C#4'], 0.7),
     (48.0, 50.6, 'G2', ['D3', 'B3', 'D4'], 0.9),      # 7 the fix: home to D
@@ -114,13 +115,13 @@ S(sfx.paper('crumple', 0.7), at=6.7, gain=-9)
 S(sfx.squelch(0.6, seed=2), at=8.5, gain=-8, pan=-0.2)
 S(sfx.squelch(0.6, seed=3), at=8.65, gain=-9, pan=0.25)
 for k in range(3):
-    S(sfx.blip('A5', 'sine', 0.09, glide=0), at=9.4 + k * 0.55, gain=-12)
+    S(HARP.play('D6', 0.8, 0.35, release=0.4).loud(-18), at=9.4 + k * 0.55, gain=-12)
 S(sfx.whoosh(1.0, 'soft', direction=0), at=11.1, gain=-7)
 # 2 the mistake
 S(sfx.swish(0.35), at=11.9, gain=-9)
 S(sfx.impact('soft', size=0.6), at=13.8, gain=-3)
 S(sfx.pop('soft', 1.1), at=14.3, gain=-7)
-S(sfx.pop('bubble', 0.9), at=15.6, gain=-7)
+S(sfx.pop('soft', 0.9), at=15.6, gain=-8)
 for k in range(17):
     S(sfx.click('soft'), at=16.4 + k * 0.17, gain=-15, pan=-0.3)
 # 3 the trap is set: antibodies dock, the cell sleeps
@@ -131,7 +132,7 @@ S(sfx.pop('soft', 1.0), at=20.4, gain=-10)
 S(sfx.whoosh(0.8, 'soft'), at=26.6, gain=-9)
 S(sfx.click('wood'), at=29.4, gain=-4)
 S(sfx.riser(1.6, 'noise', intensity=0.6), at=31.0, gain=-9)
-S(sfx.impact('cinematic', size=0.8), at=31.0, gain=1)
+S(sfx.impact('cinematic', size=0.8), at=31.0, gain=4)
 S(sfx.paper('flip', 0.6), at=31.1, gain=-8)
 S(sfx.sparkle(3.2, 14, key='D', lo=78, hi=96), at=31.3, gain=-11)
 S(sfx.pop('soft', 1.0), at=32.3, gain=-11)
@@ -140,11 +141,11 @@ m.mute(30.85, 0.15)
 # 5 the itch: the nerve fires, the message races up, SCRATCH!, back to Miya
 S(sfx.whoosh(0.5, 'swish'), at=36.6, gain=-10)
 S(sfx.whoosh(1.1, 'air', direction=1), at=38.6, gain=-6)
-S(sfx.impact('soft', size=0.7), at=38.8, gain=-2)
+S(sfx.impact('soft', size=0.7), at=38.8, gain=-7)
 for k in range(14):
-    S(sfx.paper('rustle', 0.12, seed=40 + k), at=39.8 + k * 0.22, gain=-11, pan=-0.1)
-for tt in (40.1, 40.7, 41.3):
-    S(sfx.pop('soft', 1.05), at=tt, gain=-11)
+    S(sfx.paper('rustle', 0.12, seed=40 + k), at=40.35 + k * 0.2, gain=-11, pan=-0.1)
+for tt in (40.6, 41.0, 41.4):
+    S(sfx.pop('soft', 1.05), at=tt, gain=-15)
 # 6 the gut, again: inflamed, food rushes through, the poop
 S(sfx.whoosh(0.7, 'soft'), at=43.1, gain=-9)
 S(sfx.bubbles(4.0, 8.0), at=44.0, gain=-14)
@@ -154,15 +155,17 @@ S(sfx.pop('soft', 0.8), at=46.75, gain=-12)
 S(sfx.pop('soft', 1.0), at=48.5, gain=-10)
 S(sfx.whoosh(0.6, 'soft'), at=51.2, gain=-10)
 S(sfx.click('wood'), at=51.75, gain=-5)
+S(sfx.impact('soft', size=0.3), at=51.75, gain=-10)
 for tt in (53.1, 53.35, 53.6):
     S(sfx.pop('soft', 1.1), at=tt, gain=-10)
-S(sfx.chime(('D6', 'F#6', 'A6'), step=0.12, kind='celesta'), at=53.0, gain=-12)
+for j, x in enumerate(['D5', 'G5', 'B5']):   # a soft harp lift, not a celesta (too close to xylophone)
+    S(HARP.play(x, 1.2, 0.4, release=0.6).loud(-18), at=53.0 + 0.12 * j, gain=-13)
 # end card
 S(sfx.paper('slide', 0.5), at=55.2, gain=-12)
 
 if __name__ == '__main__':
     os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
-    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), tp=-1.6,  # AAC adds ~0.5 dB of true peak
+    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), tp=-2.0,  # AAC adds ~0.5 dB of true peak; check the muxed mp4
                    spectrogram=os.path.join(HERE, 'out', 'audio-spectrogram.png'))
     print({k: v for k, v in res.items() if k != 'path'})
     m.report()

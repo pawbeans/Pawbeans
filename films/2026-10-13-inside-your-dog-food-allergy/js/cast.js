@@ -5,7 +5,7 @@ import { PAL, ACCENTS, MIYA } from '../../../cel/palette.js';
 import { field, primBounds, contours } from '../../../cel/shape.js';
 import * as FX from '../../../cel/fx.js';
 
-const { hs, lerp, clamp, spline, xf, circlePts, fillShape, inkLoop, inkStroke, polyPath, E } = G;
+const { hs, lerp, clamp, spline, xf, circlePts, fillShape, inkLoop, inkStroke, polyPath, E, K } = G;
 
 // cast colours: all from the approved BEANS palette
 export const COL = {
@@ -260,8 +260,11 @@ export function pill(c, text, x, y, o, v) {
   c.fillText(text, dot * 0.5, size * 0.04);
   c.restore();
 }
-// caption card: card-cream, hand-cut boiling edge; words build in one by one, highlight words in orange
-export function caption(c, words, x, y, t, tIn, tOut, v) {
+// caption card: card-cream, hand-cut boiling edge, anchored by its BOTTOM edge (yb) so two-line cards stay inside the
+// safe zone. The card pops in opaque (scale, no grey half-alpha slab); only the words build in, one by one, highlight
+// words in orange. o.cont: the previous caption ends where this one starts, so the card is already up (no re-pop);
+// o.hold: the next caption starts where this one ends, so the card doesn't pop out.
+export function caption(c, words, x, yb, t, tIn, tOut, v, o = {}) {
   if (t < tIn || t >= tOut) return;
   const size = 50, lh = 70, maxW = 860;
   c.save(); c.font = `600 ${size}px "Inter"`;
@@ -275,8 +278,11 @@ export function caption(c, words, x, y, t, tIn, tOut, v) {
   }
   c.restore();
   const boxW = Math.min(940, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
-  const fade = Math.min(1, (t - tIn) / 0.16) * Math.min(1, (tOut - t) / 0.1), rise = 26 * (1 - E.out3(Math.min(1, (t - tIn) / 0.16)));
-  c.save(); c.globalAlpha = fade; c.translate(0, rise);
+  const y = yb - boxH / 2;
+  const sIn = o.cont ? 1 : K(t, [[tIn, 0.82], [tIn + 0.1, 1.04, 'out3'], [tIn + 0.18, 1]]);
+  const outU = o.hold ? 0 : clamp((t - (tOut - 0.12)) / 0.12);
+  const sc = sIn * (1 - 0.12 * outU), fade = 1 - outU;
+  c.save(); c.globalAlpha = fade; c.translate(x, y); c.scale(sc, sc); c.translate(-x, -y);
   const P = G.resample(roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 28), 6, true);
   fillShape(c, P.map(([a, b]) => [a + 6, b + 8]), 'rgba(27,47,82,0.3)', { seed: 300 + v, amp: 1.2 });
   fillShape(c, P, PAL.hi, { seed: 301 + v, amp: 1.4 });
@@ -289,7 +295,7 @@ export function caption(c, words, x, y, t, tIn, tOut, v) {
     for (const wd of L) {
       const tw = tIn + 0.05 + k * 0.07, u = clamp((t - tw) / 0.14);
       if (u > 0) {
-        c.save(); c.globalAlpha = fade * u; c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`; c.fillStyle = wd.b ? PAL.orange : PAL.navy; c.textBaseline = 'alphabetic';
+        c.save(); c.globalAlpha = fade * u; c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`; c.fillStyle = wd.b ? PAL.orangeShade : PAL.navy; c.textBaseline = 'alphabetic';
         c.fillText(wd.w, wx, wy + 10 * (1 - E.out3(u))); c.restore();
       }
       wx += wd.width + sp; k++;
