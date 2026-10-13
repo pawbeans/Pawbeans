@@ -260,11 +260,10 @@ export function pill(c, text, x, y, o, v) {
   c.fillText(text, dot * 0.5, size * 0.04);
   c.restore();
 }
-// caption card: card-cream, hand-cut boiling edge, anchored by its BOTTOM edge (yb) so two-line cards stay inside the
-// safe zone. The card pops in opaque (scale, no grey half-alpha slab); only the words build in, one by one, highlight
+// caption card: card-cream, hand-cut boiling edge, CENTRED on y (owner: three-quarter height). The card pops in opaque (scale, no grey half-alpha slab); only the words build in, one by one, highlight
 // words in orange. o.cont: the previous caption ends where this one starts, so the card is already up (no re-pop);
 // o.hold: the next caption starts where this one ends, so the card doesn't pop out.
-export function caption(c, words, x, yb, t, tIn, tOut, v, o = {}) {
+export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
   if (t < tIn || t >= tOut) return;
   const size = 50, lh = 70, maxW = 860;
   c.save(); c.font = `600 ${size}px "Inter"`;
@@ -278,7 +277,6 @@ export function caption(c, words, x, yb, t, tIn, tOut, v, o = {}) {
   }
   c.restore();
   const boxW = Math.min(940, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
-  const y = yb - boxH / 2;
   const sIn = o.cont ? 1 : K(t, [[tIn, 0.82], [tIn + 0.1, 1.04, 'out3'], [tIn + 0.18, 1]]);
   const outU = o.hold ? 0 : clamp((t - (tOut - 0.12)) / 0.12);
   const sc = sIn * (1 - 0.12 * outU), fade = 1 - outU;

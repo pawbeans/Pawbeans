@@ -205,6 +205,10 @@ little vibraphone or harp at most (`pluck.guitar`, `pluck.harp`, `samples.inst('
 `recipes.ambient(flavor='piano')`, thinned out. Soft foley (paper, pen, paws on the floor, fur rustle, a breath)
 synced to the cue sheet. **No zany cartoon SFX: no xylophone, no slide whistle, no boing, no cork pops, no squeaks.**
 Master −14 LUFS integrated, true peak ≤ −1 dBTP.
+**Owner feedback (2026-10-13, Inside Your Dog):** the owner hated the generated piano/guitar score ("doesn't suit
+the video at all") and adds music themselves. Default from now on: **deliver sound effects only** (no music bed),
+mastered at −16 LUFS with true peak ≤ −2 dBTP so their music fits on top, plus the SFX-only WAV as a stem. Only
+compose music when the owner asks for it. The foley approach (soft, synced, acoustic) was liked: keep it.
 
 ## 6. Logo
 
@@ -239,7 +243,8 @@ Files in `assets/brand/logo/` (owner-supplied 2026-10-13; this is the full set t
 - **Captions always on** for any voiceover or spoken idea: Inter on a card-cream caption card (hand-cut, boiling
   edge), max 2 lines, inside the safe zones.
 - **Safe zones (1080×1920):** keep all text and key action inside x 60–940, y 220–1480 (platform UI covers the top
-  220 px, the bottom 440 px and the right-hand buttons). Captions sit in y 1220–1440. Below y 1480 and right of
+  220 px, the bottom 440 px and the right-hand buttons). Caption cards are centred at y 1440 (three-quarter height, owner 2026-10-13: higher cards covered the
+  animation); a two-line card reaches about y 1533, accepted by the owner. Below y 1480 and right of
   x 940: paper, texture and background drawing only.
 
 ## 9. Rules (from the repo prompt, with BEANS overrides)
@@ -306,5 +311,5 @@ Sources (also in CREDITS.md): …
 - [ ] Every on-screen fact sourced in `CREDITS.md`; no invented health claims
 - [ ] Captions on and inside the safe zones
 - [ ] Logo: the supplied file, placed clean, end card only, never boiled or restyled
-- [ ] Acoustic music + soft foley; no xylophone or cartoon SFX
+- [ ] Soft foley synced to picture (SFX only unless the owner asks for music); no xylophone or cartoon SFX
 - [ ] `CREDITS.md` complete; deterministic page (no `Math.random`, no clocks)

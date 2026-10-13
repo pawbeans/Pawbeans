@@ -53,9 +53,9 @@ const CAPS = [
   [38.8, 43.0, '...and the brain says one thing: **scratch.**'],
   [43.2, 45.6, 'In the gut, the same reaction causes **inflammation.**'],
   [45.6, 48.0, 'Food rushes through. Hello, **bad poops.**'],
-  [48.2, 50.6, 'The body only reacts to proteins it has **met before.**'],
-  [50.6, 53.0, 'So vets use a protein your dog has **never eaten.**'],
-  [53.0, 55.0, '**No antibodies. No reaction.**'],
+  [48.0, 50.9, 'The body only reacts to proteins it has **met before.**'],
+  [50.9, 53.6, 'So vets use a protein your dog has **never eaten.**'],
+  [53.6, 55.0, '**No antibodies. No reaction.**'],
 ].map(([a, b, s]) => [a, b, md(s)]);
 const TITLES = [['1 · THE GUT', 4.0, 11.0], ['2 · THE MISTAKE', 11.0, 19.0], ['3 · THE TRAP IS SET', 19.0, 26.0], ['4 · THE REACTION', 26.0, 35.0],
   ['5 · THE ITCH', 35.0, 43.0], ['6 · THE GUT, AGAIN', 43.0, 48.0], ['7 · THE FIX', 48.0, 55.0]];
@@ -65,6 +65,7 @@ function label(c, txt, x, y, t, t0, t1, v, o = {}) {
   const fade = t1 ? clamp((t1 - t) / 0.2) : 1;
   CA.pill(c, txt, x, y, { ...o, scale: popK(t, t0), alpha: fade, seed: o.seed ?? (txt.length * 7) }, v);
 }
+const CAP_Y = 1440; // caption cards centred at three-quarter height (owner, 2026-10-13)
 function overlays(c, t, v) {
   if (t >= 0.2 && t < 55) { // series tag
     const a = clamp((t - 0.2) / 0.4) * clamp((55 - t) / 0.4);
@@ -76,7 +77,7 @@ function overlays(c, t, v) {
     const u = E.out3(clamp((t - a) / 0.35)), out = clamp((b - t) / 0.25);
     CA.pill(c, txt, 540, 279 + 14 * (1 - u) + 20, { size: 38, fill: PAL.orange, color: PAL.hi, alpha: u * out, seed: 21 }, v);
   }
-  CAPS.forEach(([a, b, words], i) => CA.caption(c, words, 500, 1440, t, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b }));
+  CAPS.forEach(([a, b, words], i) => CA.caption(c, words, 500, CAP_Y, t, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b }));
 }
 
 // ------------------------------------------------------------------ shot 1 · hook (0–4), cream paper

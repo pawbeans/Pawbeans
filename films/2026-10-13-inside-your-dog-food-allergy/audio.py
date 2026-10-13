@@ -1,4 +1,4 @@
-"""Inside Your Dog: Food Allergy, soundtrack (58 s).
+"""Inside Your Dog: Food Allergy, soundtrack (58 s). Shipped as SOUND EFFECTS ONLY (owner adds their own music).
 
 House sound: acoustic and premium. A fingerpicked nylon guitar carries the film, with a warm pad underneath and
 a few piano notes. Foley stays soft (paper, fur, soft pops, gentle squelch). No zany cartoon SFX, no xylophone.
@@ -99,6 +99,13 @@ for j, x in enumerate(['D5', 'E5', 'G5', 'B5', 'D6']):
     end.add(HARP.play(x, 2.6, 0.45, release=0.6), at=55.05 + 0.09 * j)
 end.add(piano('A5', dur=2.4, vel=0.4, release=1.2), at=55.6)
 
+# Owner (2026-10-13): no music on this film, they add their own. The score stays here for reference; set
+# BEANS_MUSIC=1 to hear it. Without it the export is the sound effects only, mastered with headroom for their music.
+MUSIC = os.environ.get('BEANS_MUSIC') == '1'
+if not MUSIC:
+    for tr in (gtr, pad, pno, end):
+        tr.mute = True
+
 # ---------------------------------------------------------------- sound design (soft foley)
 SFX_LIFT = 5.0   # foley sat ~8 LU under the music; lift it so it reads on phone speakers
 S = lambda snd, at, gain=0.0, **kw: m.sfx(snd, at, gain=gain + SFX_LIFT, **kw)
@@ -165,7 +172,7 @@ S(sfx.paper('slide', 0.5), at=55.2, gain=-12)
 
 if __name__ == '__main__':
     os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
-    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), tp=-2.0,  # AAC adds ~0.5 dB of true peak; check the muxed mp4
+    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), lufs=-14.0 if MUSIC else -16.0, tp=-2.0,  # AAC adds ~0.5 dB TP; check the mp4
                    spectrogram=os.path.join(HERE, 'out', 'audio-spectrogram.png'))
     print({k: v for k, v in res.items() if k != 'path'})
     m.report()
