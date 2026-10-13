@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hyperframes/shader-transitions@0.8.151/dist/index.global.js"></script>
+    <script src="assets/motion/beans-motion.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0f1b33; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
+      .scene { position: absolute; inset: 0; overflow: hidden; background-color: #0f1b33; }
+      #s2 { opacity: 0; }
+      .plane { position: absolute; inset: 0; }
+      .bg-glow { background: radial-gradient(110% 70% at 50% 30%, #23365e 0%, #0f1b33 65%); }
+      .orb { position: absolute; border-radius: 50%; }
+      #s1-far { width: 800px; height: 800px; left: -200px; top: 260px; background: radial-gradient(circle at 35% 35%, rgba(197,139,90,0.5) 0%, rgba(197,139,90,0) 70%); }
+      #s1-subject { width: 440px; height: 440px; left: 520px; top: 1000px; background: radial-gradient(circle at 30% 30%, #f3d7b6 0%, #c58b5a 42%, #6e3f22 80%); box-shadow: 0 60px 120px rgba(0,0,0,0.55); }
+      .bm-headline { position: absolute; left: 60px; right: 140px; top: 420px; }
+      .bm-line { display: block; overflow: hidden; padding-bottom: 10px; }
+      .bm-word { display: inline-block; color: #f6efe6; font-size: 132px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+      .bm-accent { display: block; width: 220px; height: 10px; margin-top: 24px; background-color: #e2b07f; }
+      .bm-stat { position: absolute; left: 60px; top: 520px; color: #f6efe6; font-size: 220px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+      .bm-unit { display: inline-block; color: #e2b07f; }
+      #s2-label { position: absolute; left: 60px; top: 800px; color: #f6efe6; font-size: 52px; opacity: 0.85; }
+      #dog { position: absolute; left: 300px; top: 1000px; width: 480px; height: 420px; }
+      #caption { position: absolute; left: 90px; right: 230px; top: 1250px; text-align: center; background-color: rgba(15,27,51,0.72); border-radius: 20px; padding: 18px 28px; color: #ffffff; font-size: 52px; font-weight: 700; line-height: 1.25; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="5" data-width="1080" data-height="1920">
+      <div id="s1" class="scene">
+        <div id="s1-bg" class="plane bg-glow"></div>
+        <div id="s1-far" class="orb" data-layout-allow-overflow></div>
+        <div id="s1-subject" class="orb"></div>
+        <div id="s1-head" class="bm-headline clip" data-start="0" data-duration="2.8" data-track-index="1">
+          <span class="bm-line"><span class="bm-word">Primitives</span></span>
+          <span class="bm-line"><span class="bm-word">check.</span></span>
+          <span class="bm-accent"></span>
+        </div>
+      </div>
+      <div id="s2" class="scene">
+        <div id="s2-bg" class="plane bg-glow"></div>
+        <div id="s2-stat" class="bm-stat clip" data-start="2.5" data-duration="2.5" data-track-index="1"><span class="bm-num">0</span><span class="bm-unit">%</span></div>
+        <div id="s2-label" class="clip" data-start="2.5" data-duration="2.5" data-track-index="2">placeholder stat</div>
+        <svg id="dog" class="clip" data-start="2.5" data-duration="2.5" data-track-index="3" viewBox="0 0 480 420">
+          <defs>
+            <radialGradient id="fur" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#f3d7b6" /><stop offset="0.5" stop-color="#c58b5a" /><stop offset="1" stop-color="#6e3f22" /></radialGradient>
+          </defs>
+          <g id="dog-tail"><path d="M380 250 q70 -60 60 -140" stroke="#8a5634" stroke-width="26" fill="none" stroke-linecap="round" /></g>
+          <g id="dog-body"><ellipse cx="260" cy="290" rx="150" ry="100" fill="url(#fur)" /></g>
+          <g id="dog-head">
+            <circle cx="150" cy="180" r="95" fill="url(#fur)" />
+            <g id="dog-eyes"><circle cx="120" cy="170" r="11" fill="#0f1b33" /><circle cx="180" cy="170" r="11" fill="#0f1b33" /></g>
+          </g>
+        </svg>
+      </div>
+      <div id="caption" class="clip" data-start="0.3" data-duration="4.5" data-track-index="4">Captions sit in the safe band.</div>
+    </div>
+    <script>
+      const tl = HyperShader.init({
+        bgColor: "#0f1b33",
+        scenes: ["s1", "s2"],
+        transitions: [BEANS.wipe(2.5)],
+      });
+      BEANS.pushIn(tl, "#s1-bg", { punch: true, at: 0 });
+      BEANS.parallax(tl, [{ el: "#s1-far", depth: 0.2 }, { el: "#s1-subject", depth: 1.0 }], { at: 0, duration: 3 });
+      BEANS.headline(tl, "#s1-head", { at: 0.15, accent: true });
+      BEANS.headlineOut(tl, "#s1-head", { at: 2.2 });
+      BEANS.pushIn(tl, "#s2-bg", { at: 2.5, duration: 2.5 });
+      BEANS.counter(tl, "#s2-stat", { at: 2.8, to: 87 });
+      BEANS.idle(tl, { body: "#dog-body", head: "#dog-head", tail: "#dog-tail", eyes: "#dog-eyes" }, { at: 2.5, duration: 2.5 });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

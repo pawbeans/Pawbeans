@@ -1,0 +1,8 @@
+# Third-party pipeline, rebuilt by scripts/setup-motion-stack.sh
+OpenMontage/
+.env
+node_modules/
+# HyperFrames working files
+videos/*/snapshots/
+videos/*/.thumbnails/
+videos/*/.hyperframes/

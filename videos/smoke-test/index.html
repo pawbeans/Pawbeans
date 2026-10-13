@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0f1b33; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; font-family: ui-sans-serif, system-ui, sans-serif; }
+      .layer { position: absolute; inset: 0; }
+      #bg { background: radial-gradient(120% 80% at 50% 30%, #23365e 0%, #0f1b33 60%, #08101f 100%); }
+      .orb { position: absolute; border-radius: 50%; }
+      #orb-far { width: 900px; height: 900px; left: -260px; top: 180px; background: radial-gradient(circle at 35% 35%, #c58b5a 0%, #8a5634 45%, rgba(138,86,52,0) 70%); opacity: 0.35; filter: blur(30px); }
+      #orb-mid { width: 520px; height: 520px; right: -120px; top: 980px; background: radial-gradient(circle at 30% 30%, #f3d7b6 0%, #c58b5a 40%, #6e3f22 75%); box-shadow: 0 60px 120px rgba(0,0,0,0.55), inset -40px -50px 90px rgba(0,0,0,0.45); }
+      #orb-near { width: 220px; height: 220px; left: 640px; top: 1560px; background: radial-gradient(circle at 30% 30%, #fff1e0 0%, #e2b07f 45%, #8a5634 85%); box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset -20px -25px 40px rgba(0,0,0,0.4); filter: blur(2px); }
+      #headline-wrap { position: absolute; left: 90px; right: 90px; top: 560px; display: flex; flex-direction: column; gap: 24px; }
+      .line { display: block; overflow: hidden; }
+      .word { display: block; color: #f6efe6; font-size: 132px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; padding-bottom: 8px; }
+      #kicker { color: #e2b07f; font-size: 40px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+      #counter-wrap { position: absolute; left: 90px; top: 1000px; color: #f6efe6; }
+      #counter { font-size: 220px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+      #counter-label { font-size: 40px; opacity: 0.75; }
+      #grain { opacity: 0.08; background-image: repeating-radial-gradient(circle at 17% 23%, #fff 0 1px, transparent 1px 3px); mix-blend-mode: overlay; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="3" data-width="1080" data-height="1920">
+      <div id="scene" class="clip layer" data-start="0" data-duration="3" data-track-index="0">
+        <div id="bg" class="layer"></div>
+        <div id="orb-far" class="orb" data-layout-allow-overflow></div>
+        <div id="orb-mid" class="orb" data-layout-allow-overflow></div>
+        <div id="headline-wrap">
+          <div id="kicker">HyperFrames test</div>
+          <span class="line" data-layout-allow-overflow><span class="word" id="w1">Real food.</span></span>
+          <span class="line" data-layout-allow-overflow><span class="word" id="w2">Real depth.</span></span>
+        </div>
+        <div id="counter-wrap">
+          <div id="counter">0%</div>
+          <div id="counter-label">render pipeline check</div>
+        </div>
+        <div id="orb-near" class="orb" data-layout-allow-overflow></div>
+        <div id="grain" class="layer"></div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      // camera push-in on the whole stage
+      tl.fromTo("#bg", { scale: 1.0 }, { scale: 1.12, duration: 3, ease: "none" }, 0);
+      // multi-layer parallax: far drifts least, near drifts most
+      tl.fromTo("#orb-far", { y: 0 }, { y: -60, duration: 3, ease: "sine.inOut" }, 0);
+      tl.fromTo("#orb-mid", { y: 80 }, { y: -120, duration: 3, ease: "sine.inOut" }, 0);
+      tl.fromTo("#orb-near", { y: 120, scale: 0.9 }, { y: -80, scale: 1.05, duration: 3, ease: "sine.inOut" }, 0);
+      // kinetic headline reveal
+      tl.fromTo("#kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.1);
+      tl.fromTo("#w1", { yPercent: 110 }, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 0.2);
+      tl.fromTo("#w2", { yPercent: 110 }, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 0.35);
+      // data counter
+      const c = { v: 0 };
+      tl.fromTo("#counter-wrap", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.9);
+      tl.to(c, { v: 100, duration: 1.4, ease: "power2.out", onUpdate: () => { document.getElementById("counter").textContent = Math.round(c.v) + "%"; } }, 1.0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
