@@ -153,6 +153,44 @@ length · for Inside Your Dog: product tie-in + accent.
 - Hook: "Put your hand on the road for 7 seconds." If it's too hot for your hand, it's too hot for paws → walk early
   or late. Sources: AVMA / vet guidance (*verify* the 7-second rule's origin). Proudly Singapore. 20 s.
 
+**D28 · Your dog's greeting ranks how much they missed you** · 20–25 s
+- Hook: "Rate your dog's welcome home." Levels 1 → 5 at the door: one lazy tail thump from the sofa → comes to the door
+  and sniffs your shoes (reading where you've been) → whole-body wiggle → brings you a "gift" (toy, sock) → zoomies round
+  the room, then flops belly-up. Ending: "What level is yours?" Miya: wag, ★ wiggle, ★ run, ★ belly-up.
+
+**D29 · What your dog does after you leave the house** · 25–30 s
+- Hook: "What your dog does when you're gone." Clock timeline, Miya alone in the flat: 0 min staring at the door → 10 min
+  sigh, lies down by it → 1 hr sleeps on your spot (it smells of you) → 3 hrs checks your shoes and laundry → 5 hrs your
+  scent is fading, one way they sense how long you've been gone → key in the door: instant zoomies. Ending: "Now you know
+  why the welcome is so big." Miya: sit, lie, ★ sniff, ★ run.
+
+**D30 · 5 ways your dog says "I love you"** · 25–30 s
+- Hook: "Your dog says I love you. Here's how." Countdown: leaning their weight on you → following you to the bathroom →
+  bringing you their favourite toy → sleeping with their back to you → the puppy-eyes eyebrow raise, saved for last
+  ("they evolved eyebrows for you"). Ending: "How many does yours do?" Miya: ★ lean, ★ brow raise.
+
+**D31 · Rate your dog's begging technique** · 20–25 s
+- Hook: "Every dog has a begging technique. Which is yours?" Miya demonstrates, with dry captions: The Stare (unblinking)
+  → The Paw (tap on the knee) → The Chin Rest (head on your lap) → The Sigh (dramatic) → The Drool Puddle. Ending:
+  "Comment your dog's move." Miya: sit, pawRaise, ★ chin rest.
+
+**D32 · Your dog might have your personality** · 25 s
+- Hook: "Your dog might be more like you than you think." Calm owners tend to have calmer dogs; dogs pick up your stress
+  and energy. Split screen: a stressed human paces and Miya paces; the human relaxes and Miya flops. Ending: "Calm owner,
+  calm dog. What's yours like?" Pop-psych framing.
+
+**D33 · Your dog's day vs your day** · 20–25 s
+- Hook: "Your 9 to 5 vs your dog's 9 to 5." Split screen with clocks: emails, meetings, traffic vs nap, sunbeam, nap,
+  guarding the door from a leaf, nap (adult dogs sleep around 12–14 hours a day). Ending: "Who has it better?" Loopable.
+
+**D34 · Your dog has a favourite person. Here's how they pick** · 25 s
+- Hook: "Your dog has a favourite person. Is it you?" Who plays most → calm, predictable energy → who was there in their
+  first months → food matters less than you'd think. Ending: "Tag the favourite."
+
+**D35 · What your dog's sleeping position says about them** (sequel to D1) · 25 s
+- Hook: "Your dog's sleeping position says a lot." Side sleeper (relaxed, secure) → donut curl (cosy, a little guarded) →
+  superman flat (ready to spring into play) → belly up (total trust, and cooling off). Ending: "Which one is yours?"
+
 ## Inside Your Dog (BEANS: educational, subtle)
 
 **B1 · Inside Your Dog: Food Allergy** (made 2026-10-13, approved)

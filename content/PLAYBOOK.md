@@ -54,7 +54,10 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
 
 ## 4. Facts, claims and tone
 
-- Every fact or number on screen needs a reputable source (peer-reviewed paper, a vet school, AKC, RSPCA, ASPCA,
+- **Dog Decoded: light sourcing (owner, 2026-10-13).** Popular dog-behaviour lore is fine when framed as "can mean" /
+  "often"; no deep verification needed. Still no health or medical claims, and anything about food safety or
+  toxicity must be right (check it).
+- **Inside Your Dog:** every fact or number on screen needs a reputable source (peer-reviewed paper, a vet school, AKC, RSPCA, ASPCA,
   WSAVA, BSAVA, Merck Veterinary Manual) listed in the film's `CREDITS.md` and in `PRODUCTION.md`. Find and read it
   before writing the line (web search). If a claim can't be sourced, cut it or pick another idea.
 - "What it means" topics (sleeping spots, leaning, tail wags) are interpretations: write them as "can mean",

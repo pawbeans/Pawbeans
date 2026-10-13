@@ -204,6 +204,8 @@ cel style. No prices, discount codes or "shop now" lines; the logo appears on th
 
 **Owner exceptions on sourcing:** the pilot's line "It's not the dog. It's the protein." is the brand's own message
 and needs no source (owner, 2026-10-13). Every other fact or number still needs one.
+Dog Decoded (§14) uses light sourcing: popular dog-behaviour lore framed as "can mean" needs no citation (owner,
+2026-10-13); health, medical and food-safety lines still need to be right.
 
 **Sound: sound effects only, by default (owner, 2026-10-13).** The owner adds their own music in the edit. Deliver
 the film with soft, synced foley and no music bed, mastered at **−16 LUFS, true peak ≤ −2 dBTP** (measured on the

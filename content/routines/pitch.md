@@ -25,19 +25,28 @@ Timeline (Singapore time):
 - From the unmade ideas of that series in `IDEAS.md`, plus at most one new idea of your own if it is stronger (add it
   to `IDEAS.md`). Rank them by hook strength, how well they suit Miya and the cel style, sourcing confidence, and
   what has worked in `LOG.md`.
-- Quick-check the key fact of each with a web search so you don't recommend something that can't be sourced.
+- Inside Your Dog: quick-check the key fact of each with a web search. Dog Decoded: no checking needed at pitch time.
 - Write `content/pitches/<pitch date>.md`:
   ```
   # Pitch <pitch date> · <series>
   Status: pitched            (pitched → chosen <n> by owner | auto-picked 1 at cut-off → building → key frames sent)
-  1. <title> · hook: "<first line>" · <one-line idea> · why it travels · <length> · new pose? · sources
+  1. <title> · <length>
+     Hook: "<first line>"  ·  Format: <countdown / levels / timeline / split screen / myth vs truth>
+     What it covers: each beat in one line (what Miya does + what the caption says), in order, best saved for last
+     Ending: <question card / loop>  ·  Why it travels: <one line>  ·  New poses: <…>
   2. ...
   ```
+- **Give real detail** (owner, 2026-10-13): not a full script, but enough that the owner can see the whole video in
+  their head: every beat, the ending and the comment bait. One-liners were not enough.
+- **Dog Decoded: light sourcing.** No deep verification at pitch time; well-known dog-behaviour lore framed as "can
+  mean" is fine. Inside Your Dog keeps proper sources.
+- Favour the "says something about you and your dog" vein (sleeping spots, greetings, love signs, begging, a day in
+  their life): relatable, comment-bait endings. The owner found science-trivia pitches less appealing.
 - Commit and push it (rebase on conflict, own commits only; attribution lines as configured).
 
 ## 3. Send
-Send the owner one message: the series, then the numbered list (title, hook line, one line on the idea, why it
-should travel, length; mark your recommendation ★), and: "Reply with a number (or your own idea) before midnight.
+Send the owner one message: the series, then the numbered list in the detailed format above (mark your
+recommendation ★), and: "Reply with a number (or your own idea) before midnight.
 No reply by 12:00 am and I'll go with ★1. After you see the key frames you can send notes until 5:30 am; the film
 renders at 8:28 am."
 
