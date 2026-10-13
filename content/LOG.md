@@ -1,7 +1,7 @@
 # Film log
 
-Newest first. The night routine reads the top row to decide the next series (the other one), and appends a row when
-it starts a film; the morning routine fills in the result. The owner can add performance numbers after posting.
+Newest first. The pitch run reads the top row to decide the next series (the other one); the build run adds a row when
+it starts a film; the morning run fills in the result. Next up (2026-10-13 night): **Dog Decoded**. The owner can add performance numbers after posting.
 
 | Date | Series | Idea | Film folder | Status | Hook formula | Length | Views | Avg watch % | Shares | Saves | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|

@@ -1,8 +1,15 @@
-# Night run: concept, script and whole-film key frames (about 21:45 SGT)
+# Build run: script and whole-film key frames (after the owner's pick, or at the 00:00 SGT cut-off)
 
-You are a fresh cloud session. Nobody is watching live; the owner reads your result on their phone tonight and may
-reply in this session. Work end to end without asking questions; where a decision is the owner's, make the safe
-choice and flag it in your summary.
+Two ways in:
+- **The pitch session**, after the owner replied with a pick before midnight (`pitch.md` §4). Skip §1's "pick" step:
+  the idea is the one they chose (or their own idea).
+- **The 00:00 run**, a fresh cloud session. Read `content/pitches/<pitch date>.md`, where the pitch date is
+  **yesterday** in Singapore (`TZ=Asia/Singapore date -d yesterday +%F`). Status `pitched` (no reply): set
+  `Status: auto-picked 1 at cut-off`, commit and push at once, then build idea ★1. Any other status (the owner
+  chose and that session is building, or it's done), or no pitch file: stop without messaging anyone.
+
+Nobody is watching live; the owner reads your result on their phone and may reply in this session. Work end to end
+without asking questions; where a decision is the owner's, make the safe choice and flag it in your summary.
 
 ## 0. Repo and setup
 1. Work only on branch `claude/beans-motion-setup-9gt91i`:
@@ -12,13 +19,11 @@ choice and flag it in your summary.
    Then study the reference film `films/2026-10-13-inside-your-dog-food-allergy/` (`PRODUCTION.md`, `js/scene.js`,
    `js/cast.js`, `audio.py`, `boards.json`): reuse its structure and helpers.
 
-## 1. Pick the film
-- Today's date in Singapore: `TZ=Asia/Singapore date +%F`. If `films/<today>-*` already exists with key frames sent,
-  this is a re-run: just re-send the summary and boards, then stop.
-- Series: a seasonal pin for today (or within the next 2 days, if not yet made) wins; otherwise the series that is
-  **not** in the top row of `LOG.md`.
-- Idea: the highest unmade idea of that series in `IDEAS.md`. You may invent a stronger one (add it to `IDEAS.md`);
-  prefer ideas whose hook and visuals suit Miya and the cel style, and lean towards what worked in `LOG.md` numbers.
+## 1. The film
+- Name it by the **pitch date**: `films/<pitch date>-<slug>/`. If it already exists with key frames sent, this is a
+  re-run: re-send the summary and boards, then stop.
+- Series and idea: from the pitch file (the owner's pick, or ★1 at the cut-off). Set the pitch file's status to
+  `building`, and to `key frames sent` at the end.
 
 ## 2. Research and script
 - Find and read a reputable source for every fact (web search; papers, vet schools, AKC, RSPCA, ASPCA, WSAVA, Merck).
@@ -52,11 +57,12 @@ choice and flag it in your summary.
   local commits only). End commit messages with the attribution lines your session is configured with.
 - Send the boards (and any new-pose sheet) to the owner as files, then a short summary:
   series · title · the hook line · the beats in one line each · why it should travel · sources · flags
-  (new pose, unverified sources, anything unusual) · "Reply here with notes or 'skip' before 05:30 SGT. Otherwise
-  the morning run renders it."
+  (new pose, unverified sources, anything unusual; say if it was auto-picked at the cut-off) · "Reply here with
+  notes or 'skip' before 5:30 am. Otherwise it renders at 5:48 am."
 
-## 6. If the owner replies tonight
+## 6. If the owner replies (until 05:30 SGT)
 - Notes: apply them, re-render the affected stills and boards, send them again, record the notes in `PRODUCTION.md`,
-  commit and push before 05:30 SGT.
+  commit and push before 05:30 SGT. After 05:30, tell them the render has started and their notes go into the next
+  version if they reply to the morning session.
 - "skip": set the film's status to `skipped` in `PRODUCTION.md` and `LOG.md`, push, confirm in one line.
 - Never render the video from this session; the morning run does it.

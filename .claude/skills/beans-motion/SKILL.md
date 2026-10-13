@@ -360,8 +360,9 @@ What the first full film taught us. The reviewer caught most of these on v1; bui
 
 ## 14. Daily series (routine)
 
-Every day a new film is made automatically: concept, script and whole-film key frames at night; render, review,
-one revision and delivery in the morning. Two alternating series:
+Every day a new film is made automatically. **21:46 SGT** a ranked list of ideas goes to the owner; they pick by
+**midnight** (no reply: the top pick is built at 00:00); script and whole-film key frames follow; the owner can send
+notes or "skip" until **05:30**; **05:48** render, review, one revision and delivery. Two alternating series:
 - **Dog Decoded** (viral, educational, no BEANS mention at all): dog behaviour and dog science that hooks anyone with
   a dog. Series tag "DOG DECODED". No logo, no product, no beans.sg; ends on a question card. Miya is the star.
 - **Inside Your Dog** (BEANS, educational): the body, food, allergies and wellbeing, pointing subtly to novel
@@ -372,6 +373,6 @@ The playbook (formats, hooks, retention rules, sourcing, the idea bank, the log 
 lives in `content/`: start at `content/PLAYBOOK.md`.
 
 **Standing approval (owner, 2026-10-13):** routine films may be rendered in the morning without a separate "render"
-from the owner. The night run sends the concept and key-frame boards; the owner can reply in that session overnight
-with notes (applied before the morning run) or "skip" (no render). Everything else in this bible still applies,
+from the owner. The owner picks the idea (or lets the top pick stand at midnight) and sees the key-frame boards;
+they can reply in that session until 05:30 with notes (applied before the render) or "skip" (no render). Everything else in this bible still applies,
 including the review loop and the copy rules.

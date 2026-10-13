@@ -1,4 +1,4 @@
-# Morning run: render, review, revise once, deliver (about 05:50 SGT)
+# Morning run: render, review, revise once, deliver (05:48 SGT)
 
 You are a fresh cloud session. Last night's run left a film with whole-film key frames on the branch, under the
 owner's standing approval (bible §14). Work end to end without asking questions.
@@ -9,7 +9,9 @@ owner's standing approval (bible §14). Work end to end without asking questions
 3. Read `.claude/skills/beans-motion/SKILL.md` and `content/PLAYBOOK.md` in full.
 
 ## 1. Find the film
-- The top row of `content/LOG.md` dated today or yesterday (Singapore time) with status `key frames sent`.
+- The pitch date is yesterday in Singapore (`TZ=Asia/Singapore date -d yesterday +%F`). Read
+  `content/pitches/<pitch date>.md` and the matching top row of `content/LOG.md`: the film to render has status
+  `key frames sent`. The owner's note cut-off was 05:30.
 - Status `skipped`, or none found: tell the owner in one line (nothing rendered, why), and stop.
 - Read its `PRODUCTION.md`, including any owner notes applied overnight. Render exactly that version.
 

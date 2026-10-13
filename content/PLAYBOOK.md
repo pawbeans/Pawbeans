@@ -1,6 +1,6 @@
 # BEANS daily films: playbook
 
-One new vertical film every day, made by two routines (`content/routines/`). This file says **what** to make and
+One new vertical film every day, made by three routines (`content/routines/`). This file says **what** to make and
 **how to make it hook**. The motion bible (`.claude/skills/beans-motion/SKILL.md`) says how it must look and sound;
 when they disagree, the bible wins on craft and brand, this file wins on content strategy.
 
@@ -80,10 +80,11 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
 
 ## 6. Delivery (what the owner gets)
 
-- **Night (about 21:45 SGT):** the concept (title, hook, beats, why it should travel), the script with sources, and
-  whole-film key-frame boards, sent as files in the night session with a push notification. The owner may reply in
-  that session before about 05:30 with notes or "skip".
-- **Morning (about 05:50 SGT):** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
+- **21:46 SGT, pitch:** a ranked list of 3–5 ideas for the night's series (`routines/pitch.md`). The owner replies
+  with a number before **midnight**; no reply means the top pick.
+- **On the pick, or at 00:00:** the script with sources and whole-film key-frame boards (`routines/build.md`), sent
+  in that session. The owner may reply with notes or "skip" until **05:30**.
+- **05:48 SGT, render:** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
   and what changed in the one revision, plus a suggested post caption with 3–5 hashtags.
 
 ## 7. Measuring and learning
