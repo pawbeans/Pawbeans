@@ -124,7 +124,7 @@ Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
 Reference photos live in `references/miya/` (only the white / cream dog is Miya; ignore the black-and-white dog in
 shared photos).
 
-- **Status: model sheet v1 drawn, awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
+- **Status: model sheet v2 drawn (owner notes on v1 applied), awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
   `characters/miya/model-sheet/` (render: `scripts/cel-render.sh characters/miya/model-sheet --stills 0`). Built in code
   from the five photos in `references/miya/`; no human illustrator for now. Colours: `MIYA` in `cel/palette.js`, sampled
   from the photos. Until approved, do not use her in a film.
@@ -141,7 +141,10 @@ shared photos).
   round "pom" paws), a round domed head with a fluffy top knot, long floppy ears that hang and blend into the
   cheeks, a short rounded muzzle with a beard, a black nose, dark round eyes half-hidden under fringe, a full curly
   tail, cream body with faint apricot warmth on the ears, around the eyes and on the muzzle, and a pink tongue when
-  happy. Curls are suggested with boiling scallop strokes and a few C-curl ticks, never drawn hair by hair.
+  happy. Curls are suggested only by the scalloped, boiling outline: **no C-curl marks inside the fur** (owner note).
+- Owner notes on v1 (applied in v2): smaller forehead, rounder face (not a tall oval), ears end at chin level, no curl
+  marks, no leg tops showing inside the body (legs tuck under the body; a leg in front, like the scratching hind leg,
+  has its top end left un-inked).
 - Once approved: **every BEANS video that shows a dog imports this module. Never redraw Miya from scratch, never
   trace, never substitute another dog.** A new pose is added to the module and the model sheet, shown to the owner,
   then used.

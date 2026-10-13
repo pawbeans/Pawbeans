@@ -58,14 +58,14 @@ export function render(t) {
   c.save();
   c.fillStyle = PAL.ink; c.textAlign = 'left';
   c.font = '600 78px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText('Miya', 96, 128);
-  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v1, for approval', 100, 176);
+  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v2, for approval', 100, 176);
   c.restore();
   label(c, 'GOLDENDOODLE · CEL / LINE BOIL · NEVER REDRAW: IMPORT characters/miya', 2304, 128, { align: 'right', font: '600 18px "Inter"', color: PAL.navy });
   G.inkStroke(c, [[96, 206], [2304, 206]], { seed: 11 + v, w: 3, t0: 30, t1: 30, min: 0.4, amp: 1.2, heavy: 0 });
 
   // ---- turnaround: construction lines across the row
   const gy = 630;
-  const heights = [[0, 'ground'], [196, 'withers'], [282, 'top knot'], [232, 'eye line']];
+  const heights = [[0, 'ground'], [196, 'withers'], [266, 'top knot'], [228, 'eye line']];
   heights.forEach(([hgt, name], k) => {
     const y = gy - hgt * S1;
     pencilLine(c, 110, y, 1640, y, 30 + k + v * 5, 2);
@@ -99,7 +99,7 @@ export function render(t) {
     label(c, name, px + 66, y + 30, { align: 'left', font: '500 21px "Inter"', track: '0.02em' });
   });
   label(c, 'RULES', px, 760, { align: 'left', font: '700 20px "Inter"', color: PAL.navy });
-  const rules = ['Miya in every video.', 'Import miya.js, never redraw.', 'Curly edge: one bump per curl.', 'Apricot ears and eye patches.', 'Eyes under the fringe.', 'Happy = tongue out.', 'Lines boil: 4 drawings on 2s.', 'Light top left; cel shadow', 'lower right.'];
+  const rules = ['Miya in every video.', 'Import miya.js, never redraw.', 'Curly edge, no curl marks.', 'Apricot ears and eye patches.', 'Eyes under the fringe.', 'Happy = tongue out.', 'Lines boil: 4 drawings on 2s.', 'Light top left; cel shadow', 'lower right.'];
   rules.forEach((r, k) => label(c, r, px, 800 + k * 36, { align: 'left', font: '400 22px "Inter"', track: '0.01em' }));
   pencilNote(c, 'coat colours sampled', px + 150, 1190, { font: '500 28px "Caveat"' });
   pencilNote(c, 'from photos of Miya', px + 150, 1224, { font: '500 28px "Caveat"' });

@@ -48,16 +48,18 @@ const TORSO = [
 const SHOULDER = v3(110, -6), NECK_BASE = v3(126, 36), TAIL_ROOT = v3(-36, 28);
 // Head space: pivot at the top of the neck, x along the muzzle.
 const HEAD = [
-  { t: 'circle', c: v3(0, 16), r: 42 },                                   // big domed skull
-  { t: 'circle', c: v3(-4, 44), r: 26, k: 18 },                           // top knot
-  { t: 'circle', c: v3(20, 24), r: 30, k: 14 },                           // forehead
-  { t: 'circle', c: v3(16, -4), r: 36, k: 12 },                           // fluffy cheeks
-  { t: 'cone', a: v3(34, 0), b: v3(54, -6), r1: 27, r2: 23, k: 12 },      // short blunt muzzle
-  { t: 'circle', c: v3(44, -22), r: 21, k: 10 },                          // beard
+  { t: 'circle', c: v3(2, 10), r: 38 },                                   // round skull
+  { t: 'circle', c: v3(-2, 32), r: 21, k: 16 },                           // small top knot
+  { t: 'circle', c: v3(20, 16), r: 23, k: 14 },                           // forehead (kept low)
+  { t: 'circle', c: v3(16, -6), r: 33, k: 12 },                           // cheeks
+  { t: 'circle', c: v3(14, -4, 18), r: 27, k: 14 },                       // cheek width (makes the face round from the front)
+  { t: 'circle', c: v3(14, -4, -18), r: 27, k: 14 },
+  { t: 'cone', a: v3(34, -2), b: v3(52, -8), r1: 26, r2: 22, k: 12 },     // short blunt muzzle
+  { t: 'circle', c: v3(42, -22), r: 20, k: 10 },                          // beard
 ];
-const EYE = v3(40, 16, 20), NOSE = v3(70, -1, 0);
-// long, wide pendant ears hanging from the sides of the skull, framing the face below the chin
-const EAR = { top: v3(-10, 30, 34), bot: v3(-6, -42, 40), r1: 16, r2: 24 };
+const EYE = v3(40, 12, 20), NOSE = v3(68, -3, 0);
+// pendant ears hanging from the sides of the skull, ending at chin level
+const EAR = { top: v3(-10, 26, 34), bot: v3(-6, -16, 40), r1: 15, r2: 22 };
 // leg radii at the joints [attach, mid, low] + pom paw radius
 const FRONT_R = [22, 17, 15.5, 19], HIND_R = [34, 20, 16, 19];
 const LEG_Z = { F: 30, H: 28 };
@@ -78,7 +80,7 @@ export const POSES = {
     hip: [-44, 44], pitch: 45, neck: { a: 84, len: 52 }, head: { pitch: -2, yaw: 0, roll: 0 },
     legs: { FN: [[44, 72], [48, 30], [56, 18]], FF: [[36, 72], [38, 30], [46, 18]],
       HN: [[6, 40], [-42, 20], [-6, 18]], HF: [[-2, 40], [-50, 20], [-16, 18]] },
-    tail: { a0: 188, curl: 18 }, ears: { swing: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: 0 },
+    tail: { a0: 188, curl: 18 }, ears: { swing: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: 0 }, over: ['FN'],
   },
   lie: {
     hip: [-56, 40], pitch: 6, neck: { a: 72, len: 50 }, head: { pitch: -4, yaw: 0, roll: 0 },
@@ -90,12 +92,12 @@ export const POSES = {
 POSES.pawRaise = {
   ...POSES.sit, head: { pitch: 8, yaw: 16, roll: -8 },
   legs: { ...POSES.sit.legs, FN: [[64, 96], [90, 110], [100, 96]] },
-  face: { eyes: 'open', mouth: 'smile', brow: 0.5 },
+  face: { eyes: 'open', mouth: 'smile', brow: 0.5 }, over: ['FN'],
 };
 POSES.scratch = { // the hook pose: near hind leg up at the neck, head tipped into the scratch, eyes squeezed
   ...POSES.sit, pitch: 40, neck: { a: 100, len: 46 }, head: { pitch: -12, yaw: 8, roll: 16 },
   legs: { ...POSES.sit.legs, HN: [[14, 82], [-12, 124], [8, 166]] },
-  tail: { a0: 196, curl: 14 }, ears: { swing: 14 }, face: { eyes: 'squint', mouth: 'closed', brow: -0.5 }, scratch: true,
+  tail: { a0: 196, curl: 14 }, ears: { swing: 14 }, face: { eyes: 'squint', mouth: 'closed', brow: -0.5 }, scratch: true, over: ['HN'],
 };
 POSES.wag = {
   ...POSES.stand, head: { pitch: 4, yaw: 14, roll: 0 }, tail: { a0: 92, curl: -32 }, ears: { swing: 6 },
@@ -159,7 +161,7 @@ function rig(P) {
     mouth: [1, -1].map((sd) => [H(v3(66, -15, 0)), H(v3(60, -20, 7 * sd)), H(v3(50, -20, 14 * sd)), H(v3(44, -14, 18 * sd))]),
     mouthN: [1, -1].map((sd) => sub3(H(v3(50, -20, 30 * sd)), H(v3(50, -20, 0)))),
     tongue: [H(v3(62, -20)), H(v3(60, -42)), H(v3(51, -44)), H(v3(52, -22))],
-    fringe: [-1, -0.5, 0, 0.5, 1].map((k) => H(v3(40 - 8 * Math.abs(k), 31 - 2 * Math.abs(k), 26 * k))),
+    fringe: [-1, -0.5, 0, 0.5, 1].map((k) => H(v3(40 - 8 * Math.abs(k), 26 - 2 * Math.abs(k), 26 * k))),
     headC: H(v3(10, 10)),
     collar: [lerp3(neckBase, pivot, 0.42), neckBase, pivot],
   };
@@ -226,12 +228,20 @@ function paintMass(c, loop, o) {
   c.save();
   c.beginPath(); polyPath(c, L); c.clip();
   const sh = 10 * S;
-  c.beginPath(); c.rect(-1e4, -1e4, 2e4, 2e4); polyPath(c, L.map(([x, y]) => [x + light[0] * sh, y + light[1] * sh]));
-  c.fillStyle = shade; c.fill('evenodd');
+  if (!o.noShade) {
+    c.beginPath(); c.rect(-1e4, -1e4, 2e4, 2e4); polyPath(c, L.map(([x, y]) => [x + light[0] * sh, y + light[1] * sh]));
+    c.fillStyle = shade; c.fill('evenodd');
+  }
   for (const mk of marks) mk(c);
   c.restore();
-  if (nCurls) curls(c, L, S, seed + 50, nCurls, curlCol || shadeOf(shade));
-  inkLoop(c, L, { seed: seed + 3, w: w * S, amp: 1.4 * S, splits: 2, heavy: 0.45, t0: 8, t1: 16 });
+  if (o.skipInkNear) { // ink only the runs of the outline away from the hidden end (open, tapered strokes)
+    const q = o.skipInkNear, keep = L.map(([x, y]) => Math.hypot(x - q.x, y - q.y) > q.r);
+    let start = keep.findIndex((k) => !k); if (start < 0) start = 0;
+    let run = [];
+    const flush = (k) => { if (run.length > 6) inkStroke(c, run, { seed: seed + 3 + k, w: w * S, amp: 1.4 * S, t0: 10 * S, t1: 10 * S, heavy: 0.45, dense: true }); run = []; };
+    for (let i = 0; i <= L.length; i++) { const j = (start + i) % L.length; if (keep[j]) run.push(L[j]); else flush(i); }
+    flush(L.length + 1);
+  } else inkLoop(c, L, { seed: seed + 3, w: w * S, amp: 1.4 * S, splits: 2, heavy: 0.45, t0: 8, t1: 16 });
   return L;
 }
 function shadeOf(hex, k = 0.86) {
@@ -261,10 +271,15 @@ export function drawMiya(c, P, o = {}) {
     for (let i = 0; i < 3; i++) prims.push({ t: 'cone', a: pts[i], b: pts[i + 1], r1: L.R[i] * S, r2: L.R[Math.min(i + 1, 2)] * S, k: 8 * S });
     const paw = pts[3], fwd = Pj(add(L.pts[3], v3(8, 0, 0)));
     prims.push({ t: 'circle', x: lerp(paw.x, fwd.x, 0.5), y: paw.y, r: L.R[3] * S, k: 8 * S });
-    items.push({ depth: (pts[0].d + pts[2].d) / 2, draw: () => {
+    const over = (P.over || []).includes(L.key);
+    // legs come out from under the fluffy body: drawn before the torso (by depth, far side first), so their tops
+    // are hidden by it. A leg listed in pose.over (e.g. the scratching hind leg) is drawn in front, with its top
+    // end left un-inked so no bubble shows inside the body.
+    items.push({ depth: over ? 1e6 : -1e6 + (pts[0].d + pts[2].d) / 2, draw: () => {
       const far = !L.near;
       paintMass(c, outlineOf(prims, cell), { seed: sd + 100 + (L.front ? 0 : 10) + (far ? 20 : 0), S, w: W * (far ? 0.9 : 1),
-        fill: far ? MIYA.coatShade : MIYA.coat, shade: far ? MIYA.coatDeep : MIYA.coatShade, nCurls: far ? 1 : 3, per: 13, amp: 3.2 });
+        fill: far ? MIYA.coatShade : MIYA.coat, shade: far ? MIYA.coatDeep : MIYA.coatShade, per: 13, amp: 3.2,
+        skipInkNear: over ? { x: pts[0].x, y: pts[0].y, r: L.R[0] * S * 1.6 } : null, noShade: over });
       if (!far) for (const k of [-0.35, 0.35]) { // toe splits on the pom
         const tx = lerp(paw.x, fwd.x, 0.5) + k * L.R[3] * S * 0.9 + 6 * S, ty = paw.y + L.R[3] * S * 0.95;
         inkStroke(c, [[tx, ty - 8 * S], [tx + 1 * S, ty]], { seed: sd + 140 + k * 10, w: 2.4 * S, t0: 3 * S, t1: 3 * S, amp: 0.6 * S, heavy: 0 });
@@ -308,7 +323,7 @@ export function drawMiya(c, P, o = {}) {
   {
     const prims = R.head.map((q) => prim2(q, Pj, S));
     items.push({ depth: headC.d, draw: () => {
-      const mz = R.head[4], bd = R.head[5];
+      const mz = R.head[6], bd = R.head[7];
       paintMass(c, outlineOf(prims, cell), { seed: sd + 400, S, w: W, nCurls: 3,
         marks: [(cc) => { // lighter beard + muzzle
           const a = Pj(mz.a), b = Pj(mz.b), bb = Pj(bd.c);
