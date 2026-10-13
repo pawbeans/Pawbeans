@@ -1,5 +1,8 @@
-/* BEANS cel fonts. PLACEHOLDERS (OFL) until the owner sends the brand fonts: then swap the files and keep the family names. */
-@font-face { font-family: 'BEANS Display'; src: url('/beans/assets/brand/fonts/placeholder/InstrumentSerif-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
-@font-face { font-family: 'BEANS Display'; src: url('/beans/assets/brand/fonts/placeholder/InstrumentSerif-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: block; }
-@font-face { font-family: 'BEANS Text'; src: url('/beans/assets/brand/fonts/placeholder/DMSans-VF.ttf') format('truetype'); font-weight: 100 1000; font-style: normal; font-display: block; }
-@font-face { font-family: 'BEANS Pencil'; src: url('/beans/assets/brand/fonts/placeholder/Caveat-VF.ttf') format('truetype'); font-weight: 400 700; font-style: normal; font-display: block; }
+/* BEANS cel fonts: the current beans.sg type (owner, 2026-10-13). All OFL, files in assets/brand/fonts/. */
+@font-face { font-family: 'Fraunces'; src: url('/beans/assets/brand/fonts/fraunces/Fraunces-VF.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: block; }
+@font-face { font-family: 'Fraunces'; src: url('/beans/assets/brand/fonts/fraunces/Fraunces-Italic-VF.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: block; }
+@font-face { font-family: 'Oswald'; src: url('/beans/assets/brand/fonts/oswald/Oswald-VF.ttf') format('truetype'); font-weight: 200 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('/beans/assets/brand/fonts/inter/Inter-VF.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('/beans/assets/brand/fonts/inter/Inter-Italic-VF.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: block; }
+/* handwritten callouts (like the beans.sg hero notes) and model-sheet notes */
+@font-face { font-family: 'Caveat'; src: url('/beans/assets/brand/fonts/caveat/Caveat-VF.ttf') format('truetype'); font-weight: 400 700; font-style: normal; font-display: block; }

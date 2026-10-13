@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>BEANS palette: swatches</title>
+<link rel="stylesheet" href="/beans/cel/fonts.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #f4e9d0; overflow: hidden; }
+  canvas { display: block; width: 1920px; height: 1200px; }
+</style>
+<script type="importmap">{"imports":{"simplex-noise":"/node_modules/simplex-noise/dist/esm/simplex-noise.js"}}</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+  import { init, render, W, H } from './swatches.js';
+  window.DEMO = { width: W, height: H, fps: 24, duration: 2 };
+  (async () => {
+    await document.fonts.load('500 64px "Fraunces"');
+    await document.fonts.load('italic 500 64px "Fraunces"');
+    await document.fonts.load('500 24px "Inter"'); await document.fonts.load('600 24px "Oswald"');
+    await document.fonts.load('600 34px "Caveat"');
+    await document.fonts.ready;
+    await init(document.getElementById('c'), window.devicePixelRatio || 1);
+    window.renderAt = async (t) => { render(t); };
+    render(0);
+    window.__ready = true;
+  })().catch((e) => { console.error('init failed', e && e.stack || e); });
+</script>
+</body>
+</html>

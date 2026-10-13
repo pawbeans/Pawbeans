@@ -3,41 +3,40 @@
 # HyperFrames reads this file (frontmatter = normative). Each video project
 # copies it to its own root as `frame.md`.
 #
-# ⚠ Every hex marked PLACEHOLDER is a stand-in so drafts can render.
-#   Owner must supply real values. Do not ship a final render while any
-#   PLACEHOLDER remains in a token the video uses.
+# FALLBACK ONLY (HyperFrames). Brand truth: cel/palette.js and .claude/skills/beans-motion/SKILL.md.
 name: BEANS
 canvas: { width: 1080, height: 1920, fps: 30 }
 
 colors:
   # Constant across every video
-  navy:        "#0F1B33"   # PLACEHOLDER: brand navy (backgrounds, type on light)
-  navy-deep:   "#08101F"   # PLACEHOLDER: vignette / deepest shadow
-  navy-lift:   "#23365E"   # PLACEHOLDER: lit side of navy grounds
-  cream:       "#F6EFE6"   # PLACEHOLDER: primary type on navy
+  navy:        "#264170"   # BEANS navy
+  navy-deep:   "#1B2F52"   # deep navy
+  navy-lift:   "#5C7094"   # DERIVED light navy
+  cream:       "#FFF7EA"   # cream
   white:       "#FFFFFF"   # captions only
 
   # Treats: earthy, one per protein (accent + shadow tone each)
   protein:
-    kangaroo:  { accent: "#A4553A", shadow: "#5E2A1C" }   # PLACEHOLDER
-    venison:   { accent: "#7A4B35", shadow: "#3F2418" }   # PLACEHOLDER
-    rabbit:    { accent: "#B89A78", shadow: "#6B5640" }   # PLACEHOLDER
-    ostrich:   { accent: "#C27A4E", shadow: "#6E3F22" }   # PLACEHOLDER
-    turkey:    { accent: "#C9A066", shadow: "#7A5A2E" }   # PLACEHOLDER
-    horse:     { accent: "#8C6A4F", shadow: "#4A3626" }   # PLACEHOLDER
+    kangaroo:  { accent: "#B24E2B", shadow: "#853A20" }   # shadow DERIVED
+    venison:   { accent: "#6B2A2A", shadow: "#502020" }   # shadow DERIVED
+    rabbit:    { accent: "#9BA88D", shadow: "#747E6A" }   # shadow DERIVED
+    ostrich:   { accent: "#8B8A54", shadow: "#68683F" }   # shadow DERIVED
+    turkey:    { accent: "#C2603E", shadow: "#92482F" }   # shadow DERIVED
+    horse:     { accent: "#1F3D2E", shadow: "#172E22" }   # shadow DERIVED
 
   # Supplements: functional pastels, one per formula
   supplement:
-    hip-joint:            { accent: "#9CC5E8", shadow: "#4F7FA8" }   # PLACEHOLDER
-    skin-coat:            { accent: "#F2C6B4", shadow: "#B07A66" }   # PLACEHOLDER
-    allergy-itch:         { accent: "#B9E2C8", shadow: "#5E9C78" }   # PLACEHOLDER
-    digestive-probiotics: { accent: "#F4E3A1", shadow: "#B39A4A" }   # PLACEHOLDER
-    calming:              { accent: "#CDBDEB", shadow: "#7A68A8" }   # PLACEHOLDER
-    multivitamin:         { accent: "#F7C59F", shadow: "#B5784A" }   # PLACEHOLDER
+    hip-joint:            { accent: "#FDDBB4", shadow: "#BEA487" }   # shadow DERIVED
+    skin-coat:            { accent: "#F8C3D3", shadow: "#BA929E" }   # shadow DERIVED
+    allergy-itch:         { accent: "#BED3F0", shadow: "#8E9EB4" }   # shadow DERIVED
+    digestive-probiotics: { accent: "#BFD8AE", shadow: "#8FA282" }   # shadow DERIVED
+    calming:              { accent: "#D4BAE9", shadow: "#9F8BAF" }   # shadow DERIVED
+    multivitamin:         { accent: "#FAE588", shadow: "#BBAC66" }   # shadow DERIVED
 
 typography:
-  display: { family: "BEANS Display", file: "fonts/PLACEHOLDER-display.woff2", weight: 800 }  # PLACEHOLDER: owner to supply
-  text:    { family: "BEANS Text",    file: "fonts/PLACEHOLDER-text.woff2",    weight: 500 }  # PLACEHOLDER: owner to supply
+  display: { family: "Fraunces", file: "fonts/fraunces/Fraunces-VF.ttf", weight: 600 }
+  text:    { family: "Inter",    file: "fonts/inter/Inter-VF.ttf",    weight: 500 }
+  label:   { family: "Oswald",   file: "fonts/oswald/Oswald-VF.ttf",  weight: 600 }
   scale:   # px on the 1080-wide canvas; line-height; tracking
     stat:     { size: 220, lh: 1.0,  track: "-0.04em", font: display }
     display:  { size: 132, lh: 1.05, track: "-0.03em", font: display }

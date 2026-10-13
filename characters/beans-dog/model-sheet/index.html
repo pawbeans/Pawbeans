@@ -16,10 +16,10 @@
   import { init, render, W, H } from './sheet.js';
   window.DEMO = { width: W, height: H, fps: 24, duration: 2 };
   (async () => {
-    await document.fonts.load('400 64px "BEANS Display"');
-    await document.fonts.load('italic 400 64px "BEANS Display"');
-    await document.fonts.load('500 24px "BEANS Text"');
-    await document.fonts.load('600 34px "BEANS Pencil"');
+    await document.fonts.load('400 64px "Fraunces"');
+    await document.fonts.load('italic 400 64px "Fraunces"');
+    await document.fonts.load('500 24px "Inter"');
+    await document.fonts.load('600 34px "Caveat"');
     await document.fonts.ready;
     await init(document.getElementById('c'), window.devicePixelRatio || 1);
     window.renderAt = async (t) => { render(t); };

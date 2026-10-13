@@ -1,5 +1,8 @@
 # The BEANS dog
 
+> **Superseded design.** The dog is being redesigned as **Miya** (cream / apricot Goldendoodle, the real BEANS dog)
+> from the owner's photos in `references/miya/`. The Singapore Special below is v1 and must not be used in films.
+
 The one recurring BEANS character. Every BEANS video imports `dog.js`; nobody redraws the dog. Rules and usage live in
 `.claude/skills/beans-motion/SKILL.md` §3.
 
