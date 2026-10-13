@@ -16,7 +16,7 @@ Every BEANS film keeps its own `CREDITS.md`; start from this list and add anythi
 | Caveat (handwritten callouts, stand-in) | callouts, model-sheet notes | Google Fonts, `assets/brand/fonts/caveat/OFL.txt` | OFL 1.1 |
 | BEANS name, logo (`assets/brand/logo/`), brand colours | end card, palette | BEANS (beans.sg), owner-supplied | BEANS trademark, used by BEANS |
 | Miya reference photos (`references/miya/`) | character design reference only, never shown | owner-supplied | BEANS, private |
-| BEANS dog character, Miya (`characters/beans-dog/`) | every film | made for BEANS in this repo | BEANS |
+| BEANS dog character, Miya (`characters/miya/`) | every film | made for BEANS in this repo from the owner's photos | BEANS |
 
 ## On-screen facts
 

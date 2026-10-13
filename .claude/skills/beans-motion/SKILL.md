@@ -20,7 +20,7 @@ clinical. When this file and a generic skill disagree, this file wins.
 | Soundtrack | `mg-styles-15/lib/audio` (mgaudio) via each film's `audio.py` | Python venv: `mg-styles-15/.venv` (Python 3.12). |
 | Cel engine | `cel/engine.js` (brush, boil, fills, hatch), `cel/shape.js` (smooth-union silhouettes), `cel/paper.js`, `cel/palette.js`, `cel/fonts.css` | Shared by every film. Change these, not per-film copies. Paper plates: `cel/tools/gen_paper.py` (brand cream). |
 | Brand files | `assets/brand/logo/`, `assets/brand/fonts/` | Logo files are placed, never redrawn (§6). |
-| Character | `characters/beans-dog/` (Miya) + `references/miya/` (photos) | The one BEANS dog (§3). |
+| Character | `characters/miya/` (Miya) + `references/miya/` (photos) | The one BEANS dog (§3). |
 | Films | `films/<yyyy-mm-dd>-<slug>/` | `index.html`, `js/scene.js`, `cues.json`, `audio.py`, `CREDITS.md`, `PRODUCTION.md`, `out/`. |
 | Swatch sheet | `cel/swatches/` | Re-render after any palette change: `scripts/cel-render.sh cel/swatches --stills 0`. |
 | Fallback engines | HyperFrames (`/hyperframes`, `videos/`), Remotion (`/remotion-*`) | Only if the cel route cannot do something, and only after telling the owner why. The cel harness and HyperFrames stay primary. Remotion licence: BEANS (Paw Beans, 2 people) is a for-profit company with ≤3 employees, so Remotion's free licence covers commercial use; re-check if the team grows past 3. |
@@ -107,8 +107,8 @@ Digestive Probiotics sage `#BFD8AE` (`#8FA282`) · Skin & Coat blossom `#F8C3D3`
 Multivitamins sunny `#FAE588` (`#BBAC66`) · Allergy & Itch sky `#BED3F0` (`#8E9EB4`) ·
 Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
 
-- **Derived shadows** = the accent with brightness (HSV value) × 0.75, same hue and saturation. They are **on hold
-  until the owner approves the swatch sheet**; until then films must not use them. (HSL lightness × 0.75 was tried
+- **Derived shadows** = the accent with brightness (HSV value) × 0.75, same hue and saturation. **Approved by the
+  owner on the swatch sheet (2026-10-13).** (HSL lightness × 0.75 was tried
   first and rejected: it turned the pastels garish, e.g. Skin & Coat → `#EC608A`.)
 - One product accent per video: the protein for a treats topic, the pastel for a supplement topic. A topic with no
   product uses navy + cream + orange only; ask the owner if unclear.
@@ -124,10 +124,19 @@ Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
 Reference photos live in `references/miya/` (only the white / cream dog is Miya; ignore the black-and-white dog in
 shared photos).
 
-- **Status: redesign pending.** The v1 model sheet (a short-coated Singapore Special) is superseded. Build the master
-  Miya in code in `characters/beans-dog/` (rename the module to `miya` when she is drawn) **only once the owner has
-  dropped the full photo set into `references/miya/` and says go.** No human illustrator for now; the owner decides
-  after seeing the model sheet.
+- **Status: model sheet v1 drawn, awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
+  `characters/miya/model-sheet/` (render: `scripts/cel-render.sh characters/miya/model-sheet --stills 0`). Built in code
+  from the five photos in `references/miya/`; no human illustrator for now. Colours: `MIYA` in `cel/palette.js`, sampled
+  from the photos. Until approved, do not use her in a film.
+- Use:
+  ```js
+  import { drawMiya, pose } from '/beans/characters/miya/miya.js';
+  // x, y = ground point under her; s = scale; view = yaw in degrees (0 side, 45 three-quarter, 90 front);
+  // elev = camera looking down (deg); mirror = face left; v = boil variant of this drawing; accent = video accent (tag)
+  drawMiya(ctx, pose('scratch'), { x: 540, y: 1460, s: 2.2, view: 15, v: bv(D), accent });
+  ```
+  Poses: `stand`, `sit`, `lie`, `pawRaise`, `scratch`, `wag`, `spin`. Faces: `eyes` open / happy / squint / closed;
+  `mouth` closed / smile / tongue; `brow` −1..1. Ears swing with `ears.swing`.
 - What to capture from the photos: a big, soft, rounded curly silhouette (no tapered limbs: plush, columnar legs with
   round "pom" paws), a round domed head with a fluffy top knot, long floppy ears that hang and blend into the
   cheeks, a short rounded muzzle with a beard, a black nose, dark round eyes half-hidden under fringe, a full curly
@@ -279,8 +288,7 @@ Sources (also in CREDITS.md): …
 - [ ] Every signature feature in §1 is visible: boil on everything, on-2s/1s/3s exposure sheet, ≥1 smear frame,
       hand-drawn cel FX, paper multiply 10–15 %
 - [ ] The dog is the approved Miya module, unchanged in design
-- [ ] Palette = ink + navy + cream + one accent (+ sparing orange); derived shadows only once approved; no
-      Crocodile colour
+- [ ] Palette = ink + navy + cream + one accent (+ sparing orange); no Crocodile colour
 - [ ] Copy: British spelling, short sentences, no em dashes, no "pet parents" / "pawrents" / "cheap", proofread
 - [ ] Every on-screen fact sourced in `CREDITS.md`; no invented health claims
 - [ ] Captions on and inside the safe zones

@@ -3,7 +3,7 @@
 //   - light navy = navy #264170 tinted 25 % toward white
 //   - every *Shade = its colour with brightness (HSV value) × 0.75, same hue and saturation.
 //     (HSL lightness × 0.75 was tried first and rejected: it turns the pastels garish, e.g. Skin & Coat → #EC608A.)
-// DERIVED shadows are on hold until the owner approves the swatch sheet (cel/swatches/).
+// DERIVED values approved by the owner on the swatch sheet (cel/swatches/), 2026-10-13.
 // Rule (.claude/skills/beans-motion/SKILL.md): ink + BEANS navy + cream paper + ONE warm accent per video.
 
 export const PAL = {
@@ -38,13 +38,17 @@ export const ACCENTS = {
   'hip-joint': { c: '#FDDBB4', shade: '#BEA487', name: 'peach' },               // shade DERIVED
 };
 
-// The dog's own colours, fixed in every video. PENDING: the dog is being redesigned as Miya (cream / apricot
-// Goldendoodle) from the owner's photos in references/miya; these are the old v1 values until then.
-export const DOG = {
-  coat: '#c69a6b',
-  coatShade: '#9c6d43',
-  mark: '#f6ead3',
-  markShade: '#e2cfae',
-  tongue: '#c9645a',
-  nose: '#1d1915',
+// Miya's own colours, sampled from the owner's photos (references/miya) and tuned to read on cream paper.
+// Fixed in every video so the character never changes.
+export const MIYA = {
+  coat: '#F3E4CB',        // cream coat (a step warmer and darker than the paper so she separates from it)
+  coatShade: '#DCC4A0',   // coat in shadow: cel crescents, far legs
+  coatDeep: '#C9AE87',    // far-side legs / deepest curl shadow
+  apricot: '#EBCB9F',     // ears, the warmth on her face
+  apricotShade: '#CFA77A',
+  patch: '#D8AC7C',       // apricot patches round the eyes
+  beard: '#FAEFDC',       // beard / muzzle, a touch lighter than the coat
+  nose: '#2A1F1B',
+  tongue: '#DB7480',
+  tongueShade: '#B85662',
 };
