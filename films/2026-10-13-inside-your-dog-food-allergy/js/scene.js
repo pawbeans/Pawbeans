@@ -1,0 +1,521 @@
+// BEANS · Inside Your Dog: Food Allergy. 58 s, 1080×1920, 24 fps, cel / line boil (BEANS house style).
+// Built from the owner's production brief (2026-10-13): script, shot list, timings and cast; look per the motion bible.
+import * as G from '../../../cel/engine.js';
+import { PAL, ACCENTS, MIYA } from '../../../cel/palette.js';
+import { loadPaper, drawPaper, drawTooth } from '../../../cel/paper.js';
+import * as FX from '../../../cel/fx.js';
+import { drawMiya, pose, locate } from '../../../characters/miya/miya.js';
+import * as CA from './cast.js';
+
+const { K, E, hs, lerp, clamp, inv, sstep, spline, circlePts, fillShape, inkLoop, inkStroke, polyPath } = G;
+const { COL } = CA;
+export const W = 1080, H = 1920, FPS = 24, DUR = 58;
+let ctx, DPR = 1, LOGO;
+
+// ------------------------------------------------------------------ exposure sheet: on 2s, fast action on 1s, holds on 3s
+const SCHED = [[0, 58, 1], [58, 77, 2], [77, 96, 1], [96, 706, 2], [706, 768, 1], [768, 1320, 2], [1320, 1392, 3]];
+function drawing(f) {
+  let id = 0;
+  for (const [a, b, s] of SCHED) {
+    if (f >= b) { id += Math.ceil((b - a) / s); continue; }
+    const k = Math.floor((f - a) / s);
+    return { fq: a + k * s, id: id + k, step: s };
+  }
+  return { fq: 1391, id, step: 3 };
+}
+const bv = (D) => (D.step === 3 ? D.id % 3 : D.id % 4);
+
+export async function init(canvas, dpr) {
+  DPR = dpr; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  ctx = canvas.getContext('2d');
+  await loadPaper();
+  LOGO = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = '/beans/assets/brand/logo/beans-wordmark-navy.png'; });
+  await LOGO.decode();
+}
+
+// ------------------------------------------------------------------ script (captions), scene titles
+const md = (s) => { let b = false; return s.split(' ').map((w) => { const st = w.startsWith('**'); if (st) b = true; const ww = w.replace(/\*\*/g, ''); const o = { w: ww, b }; if (w.endsWith('**') || (st && w.slice(2).includes('**'))) b = false; return o; }); };
+const CAPS = [
+  [0.2, 2.3, 'Your dog isn\'t itchy because of **fleas.**'],
+  [2.3, 4.0, 'It might be **dinner.**'],
+  [4.3, 6.8, 'Food gets broken down in the gut.'],
+  [6.8, 11.0, 'But sometimes, **protein** pieces slip through the gut wall **intact.**'],
+  [11.2, 13.8, 'The **immune system** spots them and makes a **mistake.**'],
+  [13.8, 16.4, 'It tags that protein as an **invader...**'],
+  [16.4, 19.0, '...and builds **antibodies** against it.'],
+  [19.3, 22.2, 'Those antibodies load onto **mast cells** in the skin and gut.'],
+  [22.2, 26.0, 'Nothing happens yet. Your dog **seems fine.**'],
+  [26.2, 28.2, 'Next meal. **Same protein.**'],
+  [28.2, 30.8, 'It **locks** onto the antibodies...'],
+  [30.8, 35.0, '...and the mast cells **burst,** releasing **histamine** and **itch signals.**'],
+  [35.2, 37.4, 'In the skin, those signals fire up the **nerves.**'],
+  [37.4, 39.6, 'The message races to the **brain...**'],
+  [39.6, 43.0, '...and the brain says one thing: **scratch.**'],
+  [43.2, 45.6, 'In the gut, the same reaction causes **inflammation.**'],
+  [45.6, 48.0, 'Food rushes through. Hello, **bad poops.**'],
+  [48.2, 50.6, 'The body only reacts to proteins it has **met before.**'],
+  [50.6, 53.0, 'So vets use a protein your dog has **never eaten.**'],
+  [53.0, 55.0, '**No antibodies. No reaction.**'],
+].map(([a, b, s]) => [a, b, md(s)]);
+const TITLES = [['1 · THE GUT', 4.0, 11.0], ['2 · THE MISTAKE', 11.0, 19.0], ['3 · THE TRAP IS SET', 19.0, 26.0], ['4 · THE REACTION', 26.0, 35.0],
+  ['5 · THE ITCH', 35.0, 43.0], ['6 · THE GUT, AGAIN', 43.0, 48.0], ['7 · THE FIX', 48.0, 55.0]];
+const popK = (t, t0, d = 0.35) => (t < t0 ? 0 : K(t, [[t0, 0], [t0 + d * 0.6, 1.14, 'out3'], [t0 + d, 1.0]]));
+function label(c, txt, x, y, t, t0, t1, v, o = {}) {
+  if (t < t0 || (t1 && t >= t1)) return;
+  const fade = t1 ? clamp((t1 - t) / 0.2) : 1;
+  CA.pill(c, txt, x, y, { ...o, scale: popK(t, t0), alpha: fade, seed: o.seed ?? (txt.length * 7) }, v);
+}
+function overlays(c, t, v) {
+  if (t >= 0.2 && t < 55) { // series tag
+    const a = clamp((t - 0.2) / 0.4) * clamp((55 - t) / 0.4);
+    CA.pill(c, 'INSIDE YOUR DOG', 540, 214, { size: 28, fill: PAL.navy, color: PAL.hi, edge: PAL.navyDeep, alpha: a * 0.92, seed: 11, shadow: false }, v);
+  }
+  for (const [txt, a, b] of TITLES) {
+    if (t < a || t >= b) continue;
+    const u = E.out3(clamp((t - a) / 0.35)), out = clamp((b - t) / 0.25);
+    CA.pill(c, txt, 540, 279 + 14 * (1 - u) + 20, { size: 38, fill: PAL.orange, color: PAL.hi, alpha: u * out, seed: 21 }, v);
+  }
+  for (const [a, b, words] of CAPS) CA.caption(c, words, 500, 1410, t, a, b, v);
+}
+
+// ------------------------------------------------------------------ shot 1 · hook (0–4), cream paper
+const DOG1 = { x: 520, y: 1180, s: 2.5, view: 15 };
+function shotHook(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  drawPaper(c, W, H);
+  CA.glow(c, 520, 860, 380, PAL.orange, 200, v, 0.07);
+  const eating = t >= 2.5;
+  const P = eating
+    ? pose('sit', { head: { pitch: 18, yaw: 18, roll: -4 }, face: { eyes: 'open', mouth: t >= 2.62 ? 'open' : 'smile', brow: 0.6 } })
+    : pose('scratch', { legs: { HN: f % 2 ? [[16, 72], [-10, 116], [14, 166]] : [[10, 78], [-20, 126], [2, 184]] }, head: { pitch: -12, yaw: 8, roll: f % 2 ? 12 : 16 } });
+  // zoom into the mouth (3.2–4.0), ease in, ×12
+  const u = E.in3(inv(3.2, 4.0, t)), z = lerp(1, 12, u);
+  const m = locate(P, DOG1, (R) => R.face.mouthO);
+  const o = { ...DOG1, x: lerp(m.x, W / 2, u) + (DOG1.x - m.x) * z, y: lerp(m.y, H / 2, u) + (DOG1.y - m.y) * z, s: DOG1.s * z, v, seed: 5000, accent: COL.guard,
+    w: 4.4 / Math.pow(z, 0.75), clip: { x0: -200, y0: -200, x1: W + 200, y1: H + 200 } };
+  G.GLOBAL.amp = 1 / Math.pow(z, 0.7);
+  drawMiya(c, P, o);
+  G.GLOBAL.amp = 1;
+  if (!eating) { // motion arcs + sparkles round the scratching paw (on 1s)
+    const paw = locate(P, o, (R) => R.legs.find((l) => l.key === 'HN').pts[3]);
+    for (let k = 0; k < 2; k++) {
+      const P2 = []; for (let i = 0; i <= 10; i++) { const a = -2.6 + k * 0.4 + i * 0.12; P2.push([paw.x + Math.cos(a) * (70 + 18 * k), paw.y + Math.sin(a) * (70 + 18 * k)]); }
+      inkStroke(c, P2, { seed: 210 + k + f, w: 4, t0: 10, t1: 10, min: 0.2, amp: 0.8, heavy: 0 });
+    }
+    FX.drawTwinkle(c, paw.x - 90, paw.y - 70 + (f % 2) * 8, 16, 220 + f, { fill: PAL.hi });
+    FX.drawTwinkle(c, paw.x + 30, paw.y - 120, 12 + (f % 2) * 4, 230 + f, { fill: PAL.hi });
+  }
+  // "FLEAS?" label, struck through by two orange strokes
+  if (t >= 0.7 && t < 2.5) {
+    const a = clamp((2.5 - t) / 0.3);
+    CA.pill(c, 'FLEAS?', 820, 560, { size: 64, scale: popK(t, 0.7, 0.3), alpha: a, seed: 41, color: PAL.navy }, v);
+    const s1 = clamp((t - 1.2) / 0.22), s2 = clamp((t - 1.425) / 0.22);
+    c.save(); c.globalAlpha = a;
+    if (s1 > 0) inkStroke(c, G.prefix([[730, 500], [910, 620]], s1), { seed: 43 + v, w: 12, t0: 6, t1: 6, min: 0.5, amp: 1, heavy: 0, color: PAL.orange, dense: true });
+    if (s2 > 0) inkStroke(c, G.prefix([[910, 500], [730, 620]], s2), { seed: 44 + v, w: 12, t0: 6, t1: 6, min: 0.5, amp: 1, heavy: 0, color: PAL.orange, dense: true });
+    c.restore();
+  }
+  // the trigger protein arcs in from the upper right into the mouth (2.5–3.25)
+  if (t >= 2.5 && t < 3.25) {
+    const k = E.io2(inv(2.5, 3.25, t)), p0 = { x: 1180, y: 380 };
+    const x = lerp(p0.x, m.x, k), y = lerp(p0.y, m.y, k) - Math.sin(Math.PI * k) * 260;
+    CA.proteinGem(c, x, y, lerp(70, 34, k), t * 3, 60, v);
+  }
+  // a deep-navy circle grows from the mouth to fill the frame (3.45–4.0)
+  if (t >= 3.45) {
+    const r = lerp(0, 1500, E.in2(inv(3.45, 4.0, t)));
+    const ring = circlePts(W / 2, H / 2, r, 120);
+    fillShape(c, ring, PAL.navyDeep, { seed: 250 + f, amp: 2 });
+    inkLoop(c, ring, { seed: 251 + f, w: 8, amp: 2 });
+  }
+}
+
+// ------------------------------------------------------------------ shot 2 · the gut (4–11) + shot 3 · the mistake (11–19): one world
+const WALL = 900, WALL_BASE = 1080, GAPS = [380, 700];
+function gutCam(t) { return lerp(-1000, 0, E.io2(inv(4.0, 5.4, t))) + lerp(0, 600, E.io2(inv(10.5, 11.7, t))); }
+const CHUNKS = [{ x: 170, land: 760 }, { x: 330, land: 700 }, { x: 540, land: 780 }, { x: 760, land: 690 }, { x: 920, land: 770 }];
+const INTACT = { 1: 0, 3: 1 }; // chunk index → gap index
+function intactPos(i, t) { // where the two intact proteins are (world coords)
+  const C = CHUNKS[i], g = GAPS[INTACT[i]];
+  const toGap = E.io2(inv(7.2, 8.1, t)), thr = E.io2(inv(8.1, 9.4, t));
+  const x = lerp(C.x, g, toGap), y0 = lerp(C.land, WALL - 40, toGap);
+  const y = lerp(y0, WALL_BASE + 120, thr);
+  const sq = 1 - 0.6 * Math.sin(Math.PI * thr); // squash to ~40 % width at the midpoint
+  const bob = t > 9.4 ? Math.sin(t * 2.4 + i) * 8 : 0;
+  return { x, y: y + bob, sx: sq, sy: 1 + 0.35 * (1 - sq) };
+}
+function drawGutWorld(c, t, f, D, camY, skipIntact = false) {
+  const v = bv(D), tq = D.fq / FPS;
+  c.save(); c.translate(0, -camY);
+  // lumen (peach) above the wall, tissue (navy) below
+  c.fillStyle = COL.gut; c.fillRect(0, -1200, W, WALL_BASE + 1200);
+  c.fillStyle = PAL.navy; c.fillRect(0, WALL_BASE - 20, W, 3000);
+  c.save(); c.globalAlpha = 0.5; G.hatch(c, [[0, WALL_BASE], [W, WALL_BASE], [W, WALL_BASE + 2000], [0, WALL_BASE + 2000]], { seed: 300 + v, gap: 46, ang: -0.6, w: 2.4, amp: 2, color: PAL.navyDeep, cx: W / 2, cy: WALL_BASE + 900 }); c.restore();
+  for (let i = 0; i < 16; i++) { // drifting bubbles in the gut
+    const bx = (hs(i, 1) * W + tq * 14 * (0.5 + hs(i, 2))) % W, by = -1100 + hs(i, 3) * (WALL + 900) - tq * 20 * hs(i, 4) % 300;
+    CA.celMass(c, circlePts(bx, by, 10 + 16 * hs(i, 5), 18), PAL.hi, null, 310 + i, v, { w: 2.6, amp: 1 });
+  }
+  for (let i = 0; i < 20; i++) { // particles in the tissue
+    const px = (hs(i, 6) * W + tq * 10) % W, py = WALL_BASE + 60 + hs(i, 7) * 1700;
+    fillShape(c, circlePts(px, py, 3 + 4 * hs(i, 8), 10), PAL.navyLight, { seed: 330 + i, amp: 0.6 });
+  }
+  // the gaps in the wall (glow when the proteins arrive)
+  const gl = sstep(7.2, 8.1, t) * (1 - sstep(9.4, 10.0, t));
+  for (const gx of GAPS) {
+    if (gl > 0) CA.glow(c, gx, WALL + 80, 90, PAL.orange, 340, v, 0.3 * gl);
+    fillShape(c, CA.roundRect(gx - 34, WALL - 30, 68, WALL_BASE - WALL + 40, 30), PAL.navyDeep, { seed: 345 + gx, amp: 1.4 });
+  }
+  // villi: rounded pills swaying, skipping the gaps
+  for (let x = -40; x < W + 80; x += 116) {
+    if (GAPS.some((g) => Math.abs(x - g) < 70)) continue;
+    CA.villus(c, x, WALL_BASE, WALL_BASE - WALL + 30 + 26 * hs(x, 1), 100, Math.sin(tq * 1.6 + x * 0.01) * 10, 360 + x, v);
+  }
+  inkStroke(c, [[-40, WALL_BASE], [W + 40, WALL_BASE]], { seed: 370 + v, w: 6, t0: 10, t1: 10, min: 0.5, amp: 1.5, heavy: 0 });
+  // food chunks drop in (4.3–6.4), crumbs shrink (5.7–7.1), three gems break (6.7–7.7), two slip through
+  CHUNKS.forEach((C, i) => {
+    const t0 = 4.3 + i * 0.12, fall = clamp((t - t0) / 0.9);
+    if (fall <= 0) return;
+    const y = lerp(-900, C.land, E.outBack(fall, 1.2));
+    const crumbs = 1 - E.io2(inv(5.7 + i * 0.1, 7.1, t));
+    if (INTACT[i] === undefined) {
+      const br = inv(6.7, 7.7, t);
+      if (br <= 0) CA.foodChunk(c, C.x, y, 52, crumbs, 0.4 + i, 380 + i * 7, v);
+      else for (let k = 0; k < 7; k++) { // fragments
+        if (br >= 1) break;
+        const a = k * 0.9 + i, d = 20 + 120 * E.out2(br);
+        c.save(); c.globalAlpha = 1 - br;
+        CA.proteinGem(c, C.x + Math.cos(a) * d, y + Math.sin(a) * d * 0.8 + 60 * br * br, 16, a * 3, 390 + k, v, { glow: 0 });
+        c.restore();
+      }
+    } else {
+      if (skipIntact) return;
+      const p = t < 7.2 ? { x: C.x, y, sx: 1, sy: 1 } : intactPos(i, t);
+      if (t < 7.2) CA.foodChunk(c, p.x, p.y, 52, crumbs, 0.4 + i, 380 + i * 7, v);
+      else {
+        CA.proteinGem(c, p.x, p.y, 52, 0.4 + i + t * 0.4, 400 + i, v, { sx: p.sx, sy: p.sy });
+        if (t >= 9.4 && t < 11) { const pr = (t - 9.4) % 0.55 / 0.55; c.save(); c.globalAlpha = 1 - pr; inkLoop(c, circlePts(p.x, p.y, 60 + 70 * pr, 40), { seed: 410 + i + f, w: 5, amp: 1, color: PAL.orange }); c.restore(); }
+      }
+    }
+  });
+  c.restore();
+  label(c, 'INTACT PROTEIN', 540, WALL_BASE + 210 - camY, t, 9.5, 10.7, v, { size: 34 });
+}
+function shotGut(c, t, f, D) { drawGutWorld(c, t, f, D, gutCam(t)); }
+
+function protein3(i, t) { const p = intactPos(i, Math.min(t, 10.4)); return { x: p.x, y: p.y - gutCam(Math.min(t, 11.75)) + Math.sin(t * 2.2 + i) * 10 }; }
+function shotMistake(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  drawGutWorld(c, Math.min(t, 11.75), f, D, gutCam(Math.min(t, 11.75)), true);
+  // the proteins keep bobbing in the tissue
+  const L = protein3(1, tq), R = protein3(3, tq);
+  CA.proteinGem(c, L.x, L.y, 52, 1.4 + tq * 0.4, 401, v);
+  CA.proteinGem(c, R.x, R.y, 52, 3.4 + tq * 0.4, 403, v);
+  // the guard cell slides in, gets curious, then alarmed
+  const gx = lerp(-260, 250, E.out3(inv(11.3, 12.5, tq))) + lerp(0, 50, E.io2(inv(12.6, 13.5, tq)));
+  const alarm = sstep(13.8, 13.85, t) * (1 - sstep(15.2, 16.0, t));
+  const hop = t >= 13.8 && t < 14.2 ? Math.sin(Math.PI * (t - 13.8) / 0.4) * 40 : 0;
+  const shocked = t >= 13.8 && t < 15.6;
+  CA.guardCell(c, gx, 900 - hop, 120, tq, 501, v, { face: shocked ? 'shocked' : 'curious', look: 0.8, alarm });
+  if (shocked) label(c, '!', gx, 900 - 210 - hop, t, 13.8, 15.6, v, { size: 46, fill: PAL.orange, color: PAL.hi, seed: 61 });
+  if (t >= 13.8 && t < 16.4) { // lock-on ring + sonar
+    const u = E.out3(inv(13.8, 14.3, t)), rr = lerp(170, 86, u);
+    c.save(); c.setLineDash([18, 14]); c.lineDashOffset = -t * 60; c.strokeStyle = PAL.orange; c.lineWidth = 6; c.beginPath(); c.arc(L.x, L.y, rr, t * 1.5, t * 1.5 + 6.28); c.stroke(); c.restore();
+    for (let k = 0; k < 3; k++) { const pr = ((t - 13.8) / 0.7 + k / 3) % 1; c.save(); c.globalAlpha = (1 - pr) * 0.8; inkLoop(c, circlePts(L.x, L.y, 90 + 220 * pr, 50), { seed: 520 + k + f, w: 4, amp: 1, color: PAL.orange }); c.restore(); }
+  }
+  label(c, 'INVADER', L.x + 30, L.y - 150, t, 14.3, 16.4, v, { size: 40, fill: PAL.orange, color: PAL.hi, seed: 62 });
+  // the B cell pops in, then pumps out antibodies (16.4–19.0, one every 0.17 s)
+  if (t >= 15.6) {
+    const pop = E.outBack(clamp((t - 15.6) / 0.4), 1.8);
+    const pump = t >= 16.4 ? Math.sin(((t - 16.4) / 0.17) * Math.PI * 2) * 0.06 : 0;
+    CA.bCell(c, 790, 1080, 110 * pop, tq, 531, v, { face: t >= 16.4 ? 'happy' : 'open', sx: 1 + pump, sy: 1 - pump });
+  }
+  label(c, 'B CELL', 790, 1240, t, 16.0, 19.0, v, { size: 34 });
+  for (let k = 0; k < 17; k++) { // fired antibodies: arc left, then sweep down off-screen, tumbling
+    const t0 = 16.4 + k * 0.17, u = (t - t0) / 1.3;
+    if (u <= 0 || u >= 1) continue;
+    const x = 790 - 520 * E.out2(Math.min(1, u * 1.4)) - 60 * u, y = 1040 - 200 * Math.sin(Math.PI * Math.min(1, u * 1.2)) + 900 * u * u;
+    CA.antibody(c, x, y, k * 0.7 + u * 6, 1.4, 540 + k, v);
+  }
+  label(c, 'IgE ANTIBODIES', 230, 1150, t, 17.1, 19.0, v, { size: 32 });
+}
+
+// ------------------------------------------------------------------ shots 4–5 · the trap / the reaction (19–35)
+const HERO = { x: 540, y: 820, r: 230 }, BG1 = { x: 905, y: 455, r: 100 }, BG2 = { x: 165, y: 1120, r: 100 };
+const ANG = CA.dockAngles(10), ANG6 = CA.dockAngles(6);
+function dockPos(C, a, extra = 0) { return { x: C.x + Math.cos(a) * (C.r + 4 + extra), y: C.y + Math.sin(a) * (C.r + 4 + extra) }; }
+function drawMastWithAntibodies(c, C, t, tq, v, seed, n, o) {
+  const angs = n === 10 ? ANG : ANG6, sc = C.r / 230;
+  const body = CA.mastCell(c, C.x, C.y, C.r, tq, seed, v, o);
+  angs.forEach((a, i) => {
+    const td = o.dockT0 + i * o.dockStep, u = E.out3(clamp((t - td) / 0.6));
+    if (t < td || o.antibodiesGone) return;
+    const end = dockPos(C, a), start = { x: C.x + Math.cos(a) * 200 + (hs(seed, i) - 0.5) * 300, y: -200 };
+    let x = lerp(start.x, end.x, u), y = lerp(start.y, end.y, u), ang = lerp(i * 2.1, a + Math.PI / 2, u);
+    if (o.lean && i < 2) { const li = o.lean * (i === 0 ? 1 : -1) * 0.35; ang += li; }
+    if (o.sway) ang += Math.sin(tq * 2 + i) * 0.06;
+    CA.antibody(c, x, y, ang, 1.45 * Math.max(0.55, sc * 1.1), seed + 20 + i, v, { triggered: o.triggered && i < 2 });
+  });
+  return body;
+}
+const PROT5 = [{ C: HERO, from: { x: 1180, y: 160 }, t0: 26.35 }, { C: BG1, from: { x: 1180, y: -60 }, t0: 26.6 }, { C: BG2, from: { x: -150, y: 700 }, t0: 26.85 }];
+function protein5(k, t) {
+  const P = PROT5[k], C = P.C, hover = { x: C.x, y: C.y - C.r - 150 * (C.r / 230) - 20 };
+  const u = E.out3(clamp((t - P.t0) / 1.35));
+  let x = lerp(P.from.x, hover.x, u), y = lerp(P.from.y, hover.y, u) + Math.sin(t * 3 + k) * 10 * u;
+  const lockT = k === 0 ? 29.4 : k === 1 ? 29.9 : 30.3;
+  const desc = E.io2(inv(lockT - 1.0, lockT, t));
+  y = lerp(y, C.y - C.r - 60 * (C.r / 230), desc);
+  return { x, y, r: 48 * Math.max(0.6, C.r / 230), locked: t >= lockT, lockT };
+}
+function shotTrap(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  c.fillStyle = PAL.navy; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = 0.5; G.hatch(c, [[0, 0], [W, 0], [W, H], [0, H]], { seed: 600 + v, gap: 46, ang: -0.6, w: 2.4, amp: 2, color: PAL.navyDeep, cx: W / 2, cy: H / 2 }); c.restore();
+  for (let i = 0; i < 22; i++) fillShape(c, circlePts((hs(i, 6) * W + tq * 10) % W, hs(i, 7) * H, 3 + 4 * hs(i, 8), 10), PAL.navyLight, { seed: 610 + i, amp: 0.6 });
+
+  // reaction timeline (26–35)
+  const lockT = 29.4, burst = 31.0;
+  const heat = t < burst ? clamp((t - lockT) / 1.3) : lerp(1, 0.2, E.out2(clamp((t - burst) / 1.2))), swell = t < burst ? (t < 30.7 ? lerp(1, 1.11, clamp((t - lockT) / 1.3)) : lerp(1.11, 0.84, E.in2(inv(30.7, 31.0, t)))) : 1 + 0.16 * Math.exp(-3 * (t - burst)) * Math.cos((t - burst) * 18);
+  const shake = t >= lockT && t < burst ? 6 * clamp((t - lockT) / 1.3) : t >= burst ? 42 * Math.exp(-(t - burst) / 0.35) : 0;
+  const push = t >= lockT && t < burst ? lerp(1, 1.09, E.io2(clamp((t - lockT) / 1.3))) : t >= burst ? lerp(0.965, 1, E.out3(clamp((t - burst) / 0.5))) : 1;
+  c.save();
+  c.translate(540 + (hs(f, 1) - 0.5) * 2 * shake, 820 + (hs(f, 2) - 0.5) * 2 * shake); c.scale(push, push); c.translate(-540, -820);
+
+  // background cells (dimmed)
+  for (const [C, seed, lt, bt] of [[BG1, 700, 29.9, 31.4], [BG2, 720, 30.3, 31.8]]) {
+    c.save(); c.globalAlpha = 0.6;
+    const burstB = t >= bt;
+    drawMastWithAntibodies(c, C, t, tq, v, seed, 6, { dockT0: 20.6, dockStep: 0.25, face: burstB ? 'dizzy' : t >= lt ? 'shocked' : 'asleep', heat: t >= lt && !burstB ? clamp((t - lt) / 1) : 0,
+      empty: burstB ? 0.8 : 0, antibodiesGone: burstB, triggered: t >= lt, sway: true, w: 3 });
+    c.restore();
+  }
+  // hero
+  const burst0 = t >= burst;
+  drawMastWithAntibodies(c, HERO, t, tq, v, 740, 10, { dockT0: 19.7, dockStep: 0.24, face: burst0 ? 'dizzy' : t >= lockT ? 'shocked' : 'asleep',
+    heat, swell, jitter: t >= lockT && !burst0 ? 6 + 10 * heat : 0, sx: t >= 30.7 && !burst0 ? 1.05 : 1, empty: burst0 ? 0.85 : 0,
+    lean: E.io2(inv(28.4, 29.4, t)), triggered: t >= lockT, antibodiesGone: burst0, sway: true });
+  // proteins hovering, locking (26.35–31)
+  if (t >= 26.35 && t < 31.6) PROT5.forEach((_, k) => {
+    const p = protein5(k, t);
+    if ((k === 0 && t >= burst) || (k === 1 && t >= 31.4) || (k === 2 && t >= 31.8)) {
+      const u = (t - (k === 0 ? burst : k === 1 ? 31.4 : 31.8)) / 0.6; if (u > 1) return;
+      CA.proteinGem(c, p.x + 300 * u, p.y - 900 * u, p.r, t * 6, 760 + k, v); return; // shoots up and away
+    }
+    if (t < p.lockT && t < PROT5[k].t0 + 1.35) for (let g = 1; g <= 2; g++) { // ghost trails while flying in
+      const q = protein5(k, t - g * 0.08); c.save(); c.globalAlpha = 0.25 / g; CA.proteinGem(c, q.x, q.y, p.r, 0, 750 + k, v, { glow: 0 }); c.restore();
+    }
+    CA.proteinGem(c, p.x, p.y, p.r, 0.3 + Math.sin(t * 1.5 + k) * 0.2, 760 + k, v, { glow: p.locked ? 2 : 1 });
+    if (t >= p.lockT && t < p.lockT + 0.18) FX.drawStarburst(c, p.x, p.y + p.r, 120 * (k ? 0.5 : 1), 770 + f, 0.3, [PAL.hi, PAL.hi, PAL.orange], { n: 10, w: 5 });
+  });
+  // the burst (31.0): shockwave rings, granules, membrane fragments, flying antibodies
+  if (t >= burst && t < 35.2) {
+    const u = t - burst;
+    for (const [k, sp] of [[0, 1400], [1, 900]]) { const r = sp * E.out2(clamp(u / 0.6)); if (u < 0.6) { c.save(); c.globalAlpha = 1 - u / 0.6; inkLoop(c, circlePts(HERO.x, HERO.y, r, 80), { seed: 780 + k + f, w: 10 - k * 3, amp: 2, color: PAL.hi }); c.restore(); } }
+    for (let i = 0; i < 78; i++) { // granules: explode, slow, drift down, glowing
+      const a = (i / 78) * 6.28 + hs(i, 31) * 0.4, v0 = 900 + 900 * hs(i, 32), drag = 3.2;
+      const d = (v0 / drag) * (1 - Math.exp(-drag * u)), x = HERO.x + Math.cos(a) * (60 + d), y = HERO.y + Math.sin(a) * (60 + d) * 0.9 + 60 * u * u;
+      const col = i % 3 ? COL.histamine : COL.itch, gr = 9 + 7 * hs(i, 33);
+      if (u < 0.5) { const sp = Math.exp(-drag * u); inkStroke(c, [[x - Math.cos(a) * 80 * sp, y - Math.sin(a) * 80 * sp], [x, y]], { seed: 790 + i, w: gr * 0.8, t0: 30, t1: 2, min: 0.1, amp: 0.6, heavy: 0, color: col }); }
+      if (i % 4 === 0) CA.glow(c, x, y, gr * 1.6, col, 795 + i, v, 0.25);
+      fillShape(c, circlePts(x, y, gr, 12), col, { seed: 800 + i, amp: 0.5 });
+      inkLoop(c, circlePts(x, y, gr, 12), { seed: 801 + i + v, w: 2.2, amp: 0.5 });
+    }
+    if (u < 1.2) for (let i = 0; i < 12; i++) { // membrane arc fragments
+      const a = (i / 12) * 6.28, d = 240 + 700 * E.out2(clamp(u / 1.2)), sp = u * 6 * (i % 2 ? 1 : -1);
+      const cx = HERO.x + Math.cos(a) * d, cy = HERO.y + Math.sin(a) * d, P = [];
+      for (let j = 0; j <= 6; j++) { const b = a + sp + (j / 6 - 0.5) * 0.6; P.push([cx + Math.cos(b) * 50, cy + Math.sin(b) * 50]); }
+      c.save(); c.globalAlpha = 1 - u / 1.2; inkStroke(c, P, { seed: 830 + i + f, w: 14, t0: 6, t1: 6, min: 0.5, amp: 1, heavy: 0, color: COL.mastHotShade }); c.restore();
+    }
+    if (u < 0.9) ANG.forEach((a, i) => { const d = 260 + 900 * u; c.save(); c.globalAlpha = 1 - u / 0.9; CA.antibody(c, HERO.x + Math.cos(a) * d, HERO.y + Math.sin(a) * d, a + u * 8, 1.45, 860 + i, v, { triggered: i < 2 }); c.restore(); });
+  }
+  c.restore();
+  // overlays specific to the trap / reaction
+  label(c, 'MAST CELL', 230, 500, t, 20.4, 25.8, v, { size: 36 });
+  if (t >= 22.4 && t < 26) for (let k = 0; k < 3; k++) { // z z z
+    const u = ((t - 22.4) / 1.6 + k / 3) % 1;
+    c.save(); c.globalAlpha = Math.sin(Math.PI * u); c.font = `italic 600 ${44 + k * 10}px "Fraunces"`; c.fillStyle = PAL.hi;
+    c.fillText('z', 760 + 40 * u + k * 6, 640 - 160 * u - k * 30); c.restore();
+  }
+  if (t >= 23.1 && t < 25.8) { // callout card
+    const u = E.out3(clamp((t - 23.1) / 0.4)), a = clamp((25.8 - t) / 0.25);
+    c.save(); c.globalAlpha = a; c.translate(0, 60 * (1 - u));
+    const P = G.resample(CA.roundRect(330, 1100, 680, 120, 24), 6, true);
+    fillShape(c, P.map(([x, y]) => [x + 6, y + 8]), 'rgba(27,47,82,0.35)', { seed: 900 + v, amp: 1.2 });
+    fillShape(c, P, PAL.hi, { seed: 901 + v, amp: 1.4 }); inkLoop(c, P, { seed: 902 + v, w: 3.5, amp: 1.4 });
+    c.font = '600 34px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'left';
+    c.fillText('This is why allergies seem', 362, 1150); c.fillText('to come out of nowhere.', 362, 1196);
+    c.restore();
+  }
+  label(c, 'HISTAMINE', 250, 420, t, 32.3, 35.0, v, { size: 36, dot: COL.histamine });
+  label(c, 'IL-31 · THE ITCH SIGNAL', 690, 1230, t, 32.9, 35.0, v, { size: 32, dot: COL.itch });
+  // impact frames on the burst: two frames, then a cream flash fading over 0.2 s
+  const fb = Math.round(burst * FPS);
+  if (f === fb) FX.impactFrame(c, W, H, HERO.x, HERO.y, PAL.hi, PAL.orange, 950, { core: COL.itch, R: 760 });
+  else if (f === fb + 1) FX.impactFrame(c, W, H, HERO.x, HERO.y, PAL.navy, PAL.hi, 951, { core: COL.mast, R: 820, lines: true, lineColor: PAL.hi });
+  else if (t > burst && t < burst + 0.25) { c.save(); c.globalAlpha = 1 - (t - burst) / 0.25; c.fillStyle = PAL.hi; c.fillRect(0, 0, W, H); c.restore(); }
+}
+// push transition 19.0–19.9: the mistake slides up, the trap rises from below
+function shotPush(c, t, f, D) {
+  const u = E.io2(inv(19.0, 19.9, t));
+  c.save(); c.translate(0, -H * u); shotMistake(c, 18.99, f, D); c.restore();
+  c.save(); c.translate(0, H * (1 - u)); shotTrap(c, t, f, D); c.restore();
+}
+
+// ------------------------------------------------------------------ shot 6 · the itch (35–43)
+const BRAIN = { x: 540, y: 720 };
+function nervePath() { const P = []; for (let i = 0; i <= 20; i++) { const u = i / 20; P.push([540 + Math.sin(u * 9) * 26 * (1 - u), lerp(1150, BRAIN.y + 215, u)]); } return P; }
+function shotNerve(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  c.fillStyle = PAL.navy; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = 0.5; G.hatch(c, [[0, 0], [W, 0], [W, H], [0, H]], { seed: 1000 + v, gap: 46, ang: -0.6, w: 2.4, amp: 2, color: PAL.navyDeep, cx: W / 2, cy: H / 2 }); c.restore();
+  // skin cross-section across the bottom: top layer, dermis, three nerve endings
+  const top = []; for (let i = 0; i <= 24; i++) { const x = (i / 24) * (W + 80) - 40; top.push([x, 1150 + Math.sin(i * 0.8) * 16]); }
+  fillShape(c, [...top, [W + 40, H + 40], [-40, H + 40]], MIYA.patch, { seed: 1010 + v, amp: 1.6 });
+  fillShape(c, [...top, ...top.slice().reverse().map(([x, y]) => [x, y + 110 + Math.sin(x * 0.02) * 10])], MIYA.coat, { seed: 1011 + v, amp: 1.6, dx: CA.REG.dx, dy: CA.REG.dy });
+  inkStroke(c, top, { seed: 1012 + v, w: 6, t0: 10, t1: 10, min: 0.5, amp: 1.6, heavy: 0 });
+  for (const nx of [300, 540, 780]) for (const br of [-1, 0, 1]) inkStroke(c, [[nx, 1500], [nx + br * 10, 1340], [nx + br * 60, 1215]], { seed: 1020 + nx + br + v, w: 6, t0: 8, t1: 16, min: 0.3, amp: 1.2, heavy: 0, color: COL.bcell });
+  // the nerve up to the brain
+  const NP = nervePath();
+  inkStroke(c, NP, { seed: 1030 + v, w: 12, t0: 20, t1: 20, min: 0.5, amp: 1.4, heavy: 0, color: PAL.ink });
+  inkStroke(c, NP, { seed: 1030 + v, w: 7, t0: 20, t1: 20, min: 0.5, amp: 1.4, heavy: 0, color: COL.bcell });
+  // IL-31 rain (35.0–36.3) and hotspots where it lands
+  for (let i = 0; i < 18; i++) {
+    const t0 = 35.0 + i * 0.07, u = clamp((t - t0) / 0.55), x = 120 + hs(i, 41) * 840, y = lerp(-60, 1150 + 20 * hs(i, 42), E.in2(u));
+    if (u <= 0) continue;
+    if (u < 1) { fillShape(c, circlePts(x, y, 13, 12), COL.itch, { seed: 1040 + i, amp: 0.5 }); inkLoop(c, circlePts(x, y, 13, 12), { seed: 1041 + i + v, w: 2.4, amp: 0.5 }); }
+    else { const pr = 0.85 + 0.15 * Math.sin((t - t0) * 9 + i); CA.glow(c, x, y + 10, 40 * pr, PAL.orange, 1050 + i, v, 0.32); }
+  }
+  // pulses up the nerve: arrive 37.2, 37.9, 38.6 (0.8 s each)
+  for (const ta of [37.2, 37.9, 38.6]) { const u = (t - (ta - 0.8)) / 0.8; if (u > 0 && u < 1) { const p = G.prefix(NP, u), q = p[p.length - 1]; CA.glow(c, q[0], q[1], 26, COL.itch, 1060, v, 0.5); fillShape(c, circlePts(q[0], q[1], 15, 14), COL.itch, { seed: 1061 + f, amp: 0.5 }); inkLoop(c, circlePts(q[0], q[1], 15, 14), { seed: 1062 + f, w: 3, amp: 0.5 }); } }
+  const hit = [37.2, 37.9, 38.6].reduce((a, ta) => a + (t >= ta && t < ta + 0.2 ? 0.07 * (1 - (t - ta) / 0.2) : 0), 0);
+  const lit = t >= 38.6 ? E.out2(clamp((t - 38.6) / 0.3)) : 0;
+  CA.brain(c, BRAIN.x, BRAIN.y, 1.0, tq, 1070, v, { face: t >= 38.6 ? 'shocked' : t >= 37.2 ? 'open' : 'asleep', pop: 1 + hit, lit });
+  label(c, 'IL-31', 230, 960, t, 35.3, 37.0, v, { size: 34, dot: COL.itch });
+  label(c, 'SKIN', 840, 1230, t, 35.5, 39.6, v, { size: 34 });
+  label(c, 'NERVE', 360, 1020, t, 36.2, 39.6, v, { size: 34, dot: COL.bcell });
+  if (t >= 38.8) label(c, 'SCRATCH!', 540, 425, t, 38.8, 39.6, v, { size: 92, fill: PAL.orange, color: PAL.hi, edge: PAL.navy, rot: -0.052, seed: 77 });
+}
+const DOG6 = { x: 500, y: 1170, s: 2.2, view: 15 };
+function shotScratchDog(c, t, f, D) {
+  const v = bv(D);
+  drawPaper(c, W, H);
+  CA.glow(c, 500, 880, 380, PAL.orange, 1100, v, 0.1);
+  const P = pose('scratch', { legs: { HN: f % 2 ? [[16, 72], [-10, 116], [14, 166]] : [[10, 78], [-20, 126], [2, 184]] }, head: { pitch: -12, yaw: 8, roll: f % 2 ? 12 : 16 } });
+  const R = drawMiya(c, P, { ...DOG6, v, seed: 5100, accent: COL.guard });
+  const pj = (fn) => locate(P, DOG6, fn);
+  const ear = pj((R) => R.ears[0].bot), paws = pj((R) => R.legs.find((l) => l.key === 'FN').pts[3]), belly = pj((R) => R.torso[2].b);
+  const ring = (p, t0) => { if (t < t0) return; const pr = 0.85 + 0.15 * Math.sin((t - t0) * 8); inkLoop(c, circlePts(p.x, p.y, 54 * pr, 30), { seed: 1110 + Math.round(p.x) + v, w: 5, amp: 1, color: PAL.orange }); };
+  ring(ear, 40.1); ring(paws, 40.7); ring(belly, 41.3);
+  const lead = (p, x, y, t0) => { if (t >= t0) inkStroke(c, [[x, y], [p.x, p.y]], { seed: 1120 + x + v, w: 4, t0: 6, t1: 6, min: 0.4, amp: 1, heavy: 0, color: PAL.orange }); };
+  lead(ear, 210, 640, 40.1); lead(paws, 820, 1060, 40.7); lead(belly, 820, 900, 41.3);
+  label(c, 'EARS', 190, 640, t, 40.1, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  label(c, 'PAWS', 830, 1060, t, 40.7, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  label(c, 'BELLY', 830, 900, t, 41.3, 43.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+}
+
+// ------------------------------------------------------------------ shot 7 · the gut, again (43–48)
+function tubePath() { // an S-shaped intestine: three runs joined by U-bends, exiting bottom right
+  const P = [];
+  const run = (x0, x1, y) => { for (let i = 0; i <= 16; i++) P.push([lerp(x0, x1, i / 16), y]); };
+  const bend = (cx, y0, y1, sd) => { for (let i = 1; i < 16; i++) { const a = -Math.PI / 2 + Math.PI * i / 16; P.push([cx + sd * Math.cos(a) * (y1 - y0) / 2, (y0 + y1) / 2 + Math.sin(a) * (y1 - y0) / 2]); } };
+  P.push([-120, 640]); run(-60, 830, 640); bend(830, 640, 940, 1); run(830, 250, 940); bend(250, 940, 1240, -1); run(250, 900, 1240); P.push([1000, 1300], [1060, 1360]);
+  return spline(P, false, 6);
+}
+const TUBE = tubePath();
+function shotGutAgain(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  c.fillStyle = PAL.navyDeep; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = 0.18; c.fillStyle = PAL.orangeShade; c.fillRect(0, 0, W, H); c.restore();
+  const infl = E.io2(inv(43.4, 45.0, t)), throb = 9 * infl * Math.sin(tq * 9);
+  if (infl > 0) { c.save(); c.globalAlpha = 0.25 * infl * (0.8 + 0.2 * Math.sin(tq * 6)); inkStroke(c, TUBE, { seed: 1200 + v, w: 230, t0: 1, t1: 1, min: 1, amp: 1, heavy: 0, color: PAL.orange, dense: true }); c.restore(); }
+  inkStroke(c, TUBE, { seed: 1201 + v, w: 166 + throb, t0: 1, t1: 1, min: 1, amp: 1.6, heavy: 0, color: PAL.ink, dense: true });
+  const col = infl > 0.5 ? COL.mastHot : COL.gut;
+  inkStroke(c, TUBE, { seed: 1202 + v, w: 150 + throb, t0: 1, t1: 1, min: 1, amp: 1.6, heavy: 0, color: col, dense: true });
+  inkStroke(c, TUBE.map(([x, y]) => [x - 8, y - 22]), { seed: 1203 + v, w: 14, t0: 30, t1: 30, min: 0.3, amp: 1.2, heavy: 0, color: infl > 0.5 ? '#FFD2BC' : COL.villus, dense: true });
+  // food pellets drifting along it, rushing from 45.6
+  const Ls = G.arclen(TUBE), tot = Ls[Ls.length - 1];
+  const prog = (tq - 43) * 60 + Math.max(0, tq - 45.6) ** 2 * 900;
+  for (let k = 0; k < 9; k++) {
+    const s = ((k / 9) * tot + prog) % tot, pts = G.prefix(TUBE, s / tot), q = pts[pts.length - 1], q0 = pts[Math.max(0, pts.length - 4)];
+    if (t > 45.6) inkStroke(c, [[q[0] - (q[0] - q0[0]) * 6, q[1] - (q[1] - q0[1]) * 6], q], { seed: 1210 + k + f, w: 10, t0: 30, t1: 4, min: 0.1, amp: 0.8, heavy: 0, color: COL.crumbShade });
+    CA.celMass(c, circlePts(q[0], q[1], 24, 16), COL.crumb, COL.crumbShade, 1220 + k, v, { w: 3, sh: 5 });
+  }
+  label(c, 'INFLAMED', 250, 470, t, 44.3, 48.0, v, { size: 38, fill: PAL.orange, color: PAL.hi });
+  if (t >= 46.5) { const pop = E.outBack(clamp((t - 46.5) / 0.35), 2.2), j = 1 + 0.04 * Math.sin(tq * 14); c.save(); c.translate(830, 1215); c.scale(pop * j, pop / j); CA.poop(c, 0, 0, 0.85, tq, 1240, v); c.restore(); }
+}
+
+// ------------------------------------------------------------------ shot 8 · the fix (48–55)
+function shotFix(c, t, f, D) {
+  const v = bv(D), tq = D.fq / FPS;
+  c.fillStyle = PAL.navy; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = 0.5; G.hatch(c, [[0, 0], [W, 0], [W, H], [0, H]], { seed: 1300 + v, gap: 46, ang: -0.6, w: 2.4, amp: 2, color: PAL.navyDeep, cx: W / 2, cy: H / 2 }); c.restore();
+  if (t >= 51.7) CA.glow(c, HERO.x, HERO.y, 330 * E.out2(clamp((t - 51.7) / 0.8)), COL.neverMet, 1310, v, 0.1);
+  drawMastWithAntibodies(c, HERO, 99, tq, v, 1320, 10, { dockT0: 0, dockStep: 0, face: t >= 52.0 ? 'happy' : 'asleep', sway: true });
+  const dock = { x: HERO.x, y: HERO.y - HERO.r - 80 };
+  if (t >= 48.5 && t < 50.5) { c.save(); c.globalAlpha = Math.floor((t - 48.5) * 4) % 2 ? 0.35 : 0.75; CA.proteinGem(c, dock.x, dock.y, 48, 0.3, 1330, v); c.restore(); }
+  label(c, 'MET BEFORE = REACTS', 540, 400, t, 48.5, 50.6, v, { size: 36, fill: PAL.orange, color: PAL.hi });
+  let nm = null;
+  if (t >= 50.6) {
+    if (t < 51.7) { const u = E.io2(inv(50.6, 51.7, t)); nm = { x: lerp(1180, dock.x, u), y: lerp(160, dock.y, u) }; }
+    else { const u = E.out3(clamp((t - 51.7) / 1.0)); nm = { x: lerp(dock.x, 800, u), y: lerp(dock.y, 440, u) - Math.sin(Math.PI * u) * 60 + Math.sin(t * 2) * 8 * u }; }
+    CA.neverMet(c, nm.x, nm.y, 44, 1340, v);
+    if (t >= 51.7 && t < 52.5) { const u = (t - 51.7) / 0.8; c.save(); c.globalAlpha = 1 - u; inkLoop(c, circlePts(dock.x, dock.y + 30, 40 + 220 * u, 50), { seed: 1350 + f, w: 6, amp: 1, color: PAL.hi }); c.restore(); }
+  }
+  if (nm && t >= 51.0) label(c, 'NEVER MET', nm.x, nm.y - 90, t, 51.0, 55.0, v, { size: 34, fill: COL.neverMet, color: PAL.navy });
+  [['KANGAROO', 53.1, ACCENTS.kangaroo.c], ['VENISON', 53.35, ACCENTS.venison.c], ['RABBIT', 53.6, ACCENTS.rabbit.c]].forEach(([txt, t0, col], i) =>
+    label(c, txt, 250 + i * 290, 1200, t, t0, 55.0, v, { size: 36, fill: col, color: PAL.hi, seed: 1360 + i }));
+}
+
+// ------------------------------------------------------------------ end card (55–58)
+function shotEnd(c, t, f, D) {
+  const v = bv(D);
+  drawPaper(c, W, H);
+  CA.glow(c, 540, 820, 420, PAL.orange, 1400, v, 0.045);
+  const rise = (t0) => ({ a: E.out2(clamp((t - t0) / 0.4)), dy: 40 * (1 - E.out3(clamp((t - t0) / 0.4))) });
+  let r = rise(55.2);
+  if (r.a > 0) { c.save(); c.globalAlpha = r.a; c.translate(0, r.dy);
+    drawMiya(c, pose('wag', { face: { eyes: 'happy', mouth: 'tongue', brow: 0.6 }, tail: { a0: 92 + (f % 2 ? 22 : -22), curl: -32 } }), { x: 520, y: 830, s: 1.75, view: 25, v, seed: 5200, accent: COL.guard });
+    c.restore(); }
+  r = rise(55.42); // the wordmark: the supplied file, placed clean and still
+  if (r.a > 0) { const lw = 760, lh = lw * LOGO.height / LOGO.width; c.save(); c.globalAlpha = r.a; c.drawImage(LOGO, 500 - lw / 2, 1000 - lh / 2 + r.dy, lw, lh); c.restore(); }
+  r = rise(55.64);
+  if (r.a > 0) { c.save(); c.globalAlpha = r.a; c.font = '600 43px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'center'; c.fillText('Single-ingredient novel protein treats', 500, 1150 + r.dy); c.restore(); }
+  r = rise(56.0);
+  if (r.a > 0) CA.pill(c, 'beans.sg', 500, 1250 + r.dy, { size: 52, fill: PAL.orange, color: PAL.hi, alpha: r.a, seed: 1410 }, v);
+  r = rise(56.1);
+  if (r.a > 0) { c.save(); c.globalAlpha = r.a * 0.8; c.font = '500 32px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'center'; c.fillText('Suspect a food allergy? Talk to your vet.', 500, 1360 + r.dy); c.restore(); }
+}
+
+// ------------------------------------------------------------------ frame
+const XF = [[35.0, 0.45, shotTrap, shotNerve], [39.6, 0.3, shotNerve, shotScratchDog], [43.0, 0.4, shotScratchDog, shotGutAgain], [48.0, 0.4, shotGutAgain, shotFix], [55.0, 0.45, shotFix, shotEnd]];
+function shotAt(t) {
+  if (t < 4.0) return shotHook;
+  if (t < 11.0) return shotGut;
+  if (t < 19.0) return shotMistake;
+  if (t < 19.9) return shotPush;
+  if (t < 35.0) return shotTrap;
+  if (t < 39.6) return shotNerve;
+  if (t < 43.0) return shotScratchDog;
+  if (t < 48.0) return shotGutAgain;
+  if (t < 55.0) return shotFix;
+  return shotEnd;
+}
+const LAYER = { c: null };
+export function render(t) {
+  const f = Math.min(DUR * FPS - 1, Math.max(0, Math.round(t * FPS)));
+  const D = drawing(f), t1 = f / FPS;
+  const c = ctx;
+  c.setTransform(DPR, 0, 0, DPR, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.fillStyle = PAL.cream; c.fillRect(0, 0, W, H); // fresh page every frame: no stale pixels
+  const xf = XF.find(([at, d]) => t1 >= at && t1 < at + d);
+  if (xf) { // crossfade: draw the outgoing shot, then the incoming one over it at rising opacity via an offscreen layer
+    const [at, d, A, B] = xf;
+    A(c, Math.min(t1, at - 1 / FPS), f, D);
+    if (!LAYER.c) { const cv = document.createElement('canvas'); cv.width = W * DPR; cv.height = H * DPR; LAYER.c = cv.getContext('2d'); }
+    const L = LAYER.c; L.setTransform(1, 0, 0, 1, 0, 0); L.clearRect(0, 0, W * DPR, H * DPR); L.setTransform(DPR, 0, 0, DPR, 0, 0);
+    B(L, t1, f, D);
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = E.io2((t1 - at) / d); c.drawImage(L.canvas, 0, 0); c.restore();
+  } else shotAt(t1)(c, t1, f, D);
+  overlays(c, t1, bv(D));
+  drawTooth(c, W, H, bv(D), DPR, 0.13);
+}

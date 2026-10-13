@@ -2,7 +2,7 @@
 
 - [x] Gate 1: idea set by the owner (creative seed in the brief, 2026-10-13)
 - [x] Gate 2: script = the owner's seed; beat sheet below (owner waived a source for the line)
-- [ ] Gate 3: key frames + timeline approved by owner: `review/pilot-keyframes-v1.png` sent 2026-10-13
+- [x] Gate 3: key frames + timeline approved by owner ("render", 2026-10-13): `review/pilot-keyframes-v1.png`
 - [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown
 
 Spec: 10.0 s, 1080×1920, 24 fps, H.264 + AAC 48 kHz, −14 LUFS, TP ≤ −1 dBTP.

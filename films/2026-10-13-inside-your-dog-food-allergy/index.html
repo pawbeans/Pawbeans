@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>BEANS · Inside Your Dog: Food Allergy</title>
+<link rel="stylesheet" href="/beans/cel/fonts.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FFF7EA; overflow: hidden; }
+  canvas { display: block; width: 1080px; height: 1920px; }
+</style>
+<script type="importmap">{"imports":{"simplex-noise":"/node_modules/simplex-noise/dist/esm/simplex-noise.js"}}</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+  import { init, render, W, H, FPS, DUR } from './js/scene.js';
+  window.DEMO = { width: W, height: H, fps: FPS, duration: DUR };
+  (async () => {
+    await document.fonts.load('600 104px "Fraunces"');
+    await document.fonts.load('italic 600 104px "Fraunces"');
+    await document.fonts.load('600 50px "Inter"'); await document.fonts.load('800 50px "Inter"'); await document.fonts.load('600 34px "Oswald"');
+    await document.fonts.ready;
+    await init(document.getElementById('c'), window.devicePixelRatio || 1);
+    window.renderAt = async (t) => { render(t); };
+    render(0);
+    window.__ready = true;
+  })().catch((e) => { console.error('init failed', e && e.stack || e); });
+</script>
+</body>
+</html>

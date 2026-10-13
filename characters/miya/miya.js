@@ -68,7 +68,7 @@ const LEG_Z = { F: 25, H: 23 };
 // hip: torso pivot in the world; pitch: torso pitch (deg); neck: angle (deg from +X) + length;
 // head: { pitch, yaw, roll } (deg); legs: joints after the shoulder / hip: [elbow|stifle, wrist|hock, paw centre];
 // tail: { a0 (deg at the root), curl (deg per segment) }; ears: { swing } (deg, + = flung back);
-// face: { eyes: open|happy|squint|closed, mouth: closed|smile|tongue, brow: -1..1 }.
+// face: { eyes: open|happy|squint|closed, mouth: closed|smile|tongue|open (eating), brow: -1..1 }.
 export const POSES = {
   stand: {
     hip: [-60, 134], pitch: 2, neck: { a: 64, len: 52 }, head: { pitch: -6, yaw: 0, roll: 0 },
@@ -161,6 +161,7 @@ function rig(P) {
     mouth: [1, -1].map((sd) => [H(v3(66, -15, 0)), H(v3(60, -20, 7 * sd)), H(v3(50, -20, 14 * sd)), H(v3(44, -14, 18 * sd))]),
     mouthN: [1, -1].map((sd) => sub3(H(v3(50, -20, 30 * sd)), H(v3(50, -20, 0)))),
     tongue: [H(v3(62, -20)), H(v3(60, -42)), H(v3(51, -44)), H(v3(52, -22))],
+    mouthO: H(v3(56, -22)), // centre of the open mouth (eating)
     fringe: [-1, -0.5, 0, 0.5, 1].map((k) => H(v3(40 - 8 * Math.abs(k), 26 - 2 * Math.abs(k), 26 * k))),
     headC: H(v3(10, 10)),
     collar: [lerp3(neckBase, pivot, 0.42), neckBase, pivot],
@@ -411,6 +412,17 @@ function drawFace(c, R, P, Pj, dirZ, S, sd, W) {
     c.fillStyle = PAL.hi; c.beginPath(); c.arc(n.x - rx * 0.35, n.y - ry * 0.45, 2 * S, 0, 7); c.fill();
   }
   if (nf < -0.8) return;
+  // open mouth (eating): a dark oval under the nose with the tongue at its floor
+  if (mood.mouth === 'open') {
+    const m = Pj(F.mouthO), rx = 15 * S * (0.6 + 0.4 * Math.abs(nf)), ry = 17 * S;
+    const O = circlePts(m.x, m.y, ry, 22, rx);
+    fillShape(c, O, PAL.ink, { seed: sd + 740, amp: 0.6 * S });
+    c.save(); c.beginPath(); polyPath(c, O); c.clip();
+    fillShape(c, circlePts(m.x, m.y + ry * 0.75, ry * 0.6, 16, rx * 0.9), MIYA.tongue, { seed: sd + 741, amp: 0.5 * S });
+    c.restore();
+    inkLoop(c, O, { seed: sd + 742, w: 2.6 * S, amp: 0.6 * S, t0: 3, t1: 6 });
+    return;
+  }
   // tongue (happy pant): hangs below the beard, under the mouth line
   if (mood.mouth === 'tongue') {
     const T = F.tongue.map(Pj);
