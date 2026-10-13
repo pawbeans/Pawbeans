@@ -4,7 +4,7 @@ Source brief: `BRIEF.md` (owner, 2026-10-13). Adapted to the BEANS cel house sty
 
 - [x] Gate 1: idea set by the owner (production brief)
 - [x] Gate 2: script = the brief's 20 captions, used word for word (British spelling, no em dashes)
-- [ ] Gate 3: key frames for the whole film (66 stills, every second + 8 hero beats) → boards `review/inside-your-dog-keyframes-{a,b,c,d}.png`. **Waiting on owner approval. No video render before it.**
+- [x] Gate 3: key frames for the whole film (66 stills, every second + 8 hero beats) → boards `review/inside-your-dog-keyframes-{a,b,c,d}.png`. Approved by owner ("render", 2026-10-13): no sources needed for the on-screen claims, keep the poop.
 - [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown
 
 Spec: 58.0 s, 1080×1920, 24 fps (brief said 30; house rule is 24), H.264 + AAC 48 kHz, −14 LUFS, TP ≤ −1 dBTP.
@@ -35,6 +35,6 @@ Character: Miya (`characters/miya`, approved v3). Logo: `assets/brand/logo/beans
 
 ## Open flags
 
-1. Biology claims on screen need sources in `CREDITS.md` (copy rule: every on-screen fact sourced).
-2. The poop character and "Hello, bad poops." press against "premium, not childish".
-3. Sound not built yet (acoustic + soft foley at Gate 4).
+- Sources: owner waived them for this film (2026-10-13).
+- Poop character and "Hello, bad poops.": owner says keep.
+- Sound: `audio.py` (nylon guitar, warm pad, a few piano notes, soft foley; D major → B minor for the reaction → D).
