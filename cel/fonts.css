@@ -1,0 +1,5 @@
+/* BEANS cel fonts. PLACEHOLDERS (OFL) until the owner sends the brand fonts: then swap the files and keep the family names. */
+@font-face { font-family: 'BEANS Display'; src: url('/beans/assets/brand/fonts/placeholder/InstrumentSerif-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'BEANS Display'; src: url('/beans/assets/brand/fonts/placeholder/InstrumentSerif-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: block; }
+@font-face { font-family: 'BEANS Text'; src: url('/beans/assets/brand/fonts/placeholder/DMSans-VF.ttf') format('truetype'); font-weight: 100 1000; font-style: normal; font-display: block; }
+@font-face { font-family: 'BEANS Pencil'; src: url('/beans/assets/brand/fonts/placeholder/Caveat-VF.ttf') format('truetype'); font-weight: 400 700; font-style: normal; font-display: block; }

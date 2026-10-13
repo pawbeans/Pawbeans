@@ -1,303 +1,224 @@
 ---
 name: beans-motion
-description: The BEANS (beans.sg) motion bible and production workflow. Read it FIRST for any BEANS video, reel, short, social clip, motion graphic, animation or explainer, and before /hyperframes or any other video skill. Sets brand colours, type, the locked illustration style, the /assets library, the six motion primitives, pacing and safe zones, tone, and the four approval gates. Never render a BEANS video without the owner's explicit approval at Gate 3.
+description: The BEANS (beans.sg) motion bible and production workflow. Read it FIRST for any BEANS video, reel, short, social clip, motion graphic, animation or explainer, and before /hyperframes, /remotion or any other video skill. House style is cel animation with line boil (mg-styles-15, prompt 05-cel-boil), rendered with mg-styles-15/harness/render.mjs and lib/audio. Sets the palette, the BEANS dog character (never redraw it), type, tone, sound, output spec, safe zones, the review loop, and the four approval gates. Never render a BEANS video without the owner's explicit approval.
 ---
 
-# BEANS Motion Bible
+# BEANS Motion Bible: Cel Animation / Frame-by-Frame & Line Boil
 
-BEANS (beans.sg) is a premium Singapore brand of dog treats and supplements.
-Videos are 9:16 (1080×1920, 30fps) social explainers, and each one should look
-like an expensive motion designer made it. Every video follows this file. When
-this file and a generic skill (HyperFrames, OpenMontage, Remotion) disagree,
-this file wins on brand, style, pacing and approvals. The generic skill wins
-on technical mechanics.
+BEANS (beans.sg) is a premium Singapore dog treats and supplements brand. Every BEANS video is a hand-made-looking
+cel animation on warm paper, built in code and rendered frame by frame. It must look like a premium editorial studio
+made it (Buck, Giant Ant), never like a kids' cartoon. When this file and a generic skill disagree, this file wins.
 
 ## 0. Stack and where things live
 
-| Role | Tool | Notes |
+| Role | Where | Notes |
 |---|---|---|
-| Main engine | **HyperFrames** (`/hyperframes`, `npx hyperframes`) | HTML + GSAP, Apache 2.0, free at any company size. Every BEANS video renders here. |
-| Production helpers | **OpenMontage** (`OpenMontage/`, gitignored) | Research, TTS voiceover, music search/generation, image generation through its tool registry. Always set `render_runtime: hyperframes`, never Remotion. Run inside its venv: `source OpenMontage/.venv/bin/activate`. |
-| Fallback engine | **Remotion** (`/remotion-*`) | Only when HyperFrames cannot do it. **Licence gate:** free only for orgs with ≤3 employees. Confirm BEANS's headcount or a Company Licence before using it. |
-| Brand tokens | `assets/brand/frame.md` | Copy into each video project as `frame.md`. |
-| Motion primitives | `assets/motion/beans-motion.js` | `window.BEANS.*`; the only motion vocabulary. |
-| Asset library | `assets/` + `assets/manifest.json` | Reuse before you create (§4). |
-| Videos | `videos/<yyyy-mm-dd>-<slug>/` | One HyperFrames project per video. |
+| Style source | `mg-styles-15/` (gitignored; `scripts/setup-motion-stack.sh` re-clones it) | `prompts/05-cel-boil.md` is the full prompt structure for every film; `demos/05-cel-boil/` is the reference source; `rubric.md` is the review prompt. MIT licence. |
+| Renderer | `mg-styles-15/harness/render.mjs`, called through `scripts/cel-render.sh` | A page that draws any time t (`window.renderAt(t)`), captured in headless Chromium, muxed with ffmpeg. `mg-styles-15/beans` is a symlink back to this repo, so our pages load as `/beans/...`. |
+| Soundtrack | `mg-styles-15/lib/audio` (mgaudio) via each film's `audio.py` | Python venv: `mg-styles-15/.venv` (Python 3.12). |
+| Cel engine | `cel/engine.js` (brush, boil, fills, hatch), `cel/shape.js` (smooth-union silhouettes), `cel/paper.js`, `cel/palette.js`, `cel/fonts.css` | Shared by every film. Change these, not per-film copies. |
+| Character | `characters/beans-dog/dog.js` + `model-sheet/` | The one BEANS dog (§3). |
+| Films | `films/<yyyy-mm-dd>-<slug>/` | `index.html`, `js/scene.js`, `cues.json`, `audio.py`, `CREDITS.md`, `PRODUCTION.md`, `out/`. |
+| Fallback engines | `/hyperframes`, `/remotion-*` skills, `videos/` | Only if the cel route cannot do something, and only after telling the owner why. Remotion needs a paid licence above 3 employees. |
 
-New video project:
+Render commands (from the repo root):
 ```bash
-cd videos && npx hyperframes init <yyyy-mm-dd>-<slug> --non-interactive
-cd <yyyy-mm-dd>-<slug> && ln -s ../../assets assets && cp assets/brand/frame.md frame.md
-```
-Then load scripts in this order: GSAP 3.14.2 → (if scenes change)
-`@hyperframes/shader-transitions@0.8.151` → `assets/motion/beans-motion.js`.
-`videos/primitives-demo/` is a working reference for all six primitives.
-
-## 1. Brand colour
-
-Tokens live in `assets/brand/frame.md`. Values marked **PLACEHOLDER** are
-pending from the owner. Never invent or "improve" a hex, and never ship a final
-render that still uses a PLACEHOLDER value.
-
-- **Navy is the constant.** Every frame has navy as its ground. Light comes
-  from the lit navy (`navy-lift`) and the deepest shadow and vignette from
-  `navy-deep`. Type sits in cream on navy.
-- **Treats get earthy protein colours:** Kangaroo, Venison, Rabbit, Ostrich,
-  Turkey, Horse. Each has an `accent` (lit side, highlights, accent bar) and a
-  `shadow` (core shadow of that protein's hero object).
-- **Supplements get functional pastels:** Hip & Joint, Skin & Coat, Allergy &
-  Itch, Digestive Probiotics, Calming, Multivitamin. Same accent/shadow pair.
-- One product family per video at most. Topic-only videos with no product use
-  navy, cream and neutral illustration colours.
-- Colour ratio per frame: roughly 70% navy family, 20% illustration
-  midtones, 10% accent. The accent marks what matters, such as the stat, the
-  key word or the active organ.
-- Captions are always white on a navy scrim (§7) and never use a product
-  colour.
-
-## 2. Typography
-
-The brand fonts are **PENDING from the owner** (display + text). Until they
-arrive, drafts use `ui-sans-serif, system-ui` and say so on the storyboard.
-When the fonts arrive, put the `.woff2` files in `assets/brand/fonts/`,
-declare them with `@font-face` (HyperFrames lint requires it) and update
-`typography` in `frame.md`.
-
-Pairing: a heavy display face for headlines and stats, and a highly legible
-text face for captions, labels and body. Only these two families.
-
-Fixed type scale at 1080 wide. Never use sizes between steps.
-
-| Token | px | Line-height | Tracking | Use |
-|---|---|---|---|---|
-| stat | 220 | 1.0 | −0.04em | the single number of a data beat |
-| display | 132 | 1.05 | −0.03em | hook headline, max 3 lines |
-| h1 | 96 | 1.08 | −0.02em | beat headline |
-| h2 | 72 | 1.12 | −0.01em | sub-point |
-| caption | 52, weight 700 | 1.25 | 0 | spoken-word captions |
-| body | 44 | 1.3 | 0 | rare, max 12 words on screen |
-| label | 36 uppercase | 1.2 | 0.16em | kickers, organ / cell labels |
-| source | 28 | 1.3 | 0.02em | citations only |
-
-Nothing below 36px except citations. Use at most two type sizes per frame,
-plus captions. Stats use `font-variant-numeric: tabular-nums`. Use no
-`<br>`; control wrapping with width.
-
-## 3. Illustration style: "BEANS Lumen" (locked)
-
-There is one style for every asset: the dog character, organs, joints, skin,
-immune cells, microbes and protein hero objects. It sits in the spirit of
-premium science explainers such as Kurzgesagt: rich, layered and lit, with real
-depth. It is not flat clip-art and never built from stacked basic shapes.
-
-**Light.** There is one key light from the top left (about 45°), warm cream.
-The shadow side picks up a cool navy rim light from the bottom right. Every
-object therefore has a warm lit side, a navy-tinted core shadow, and a thin
-bright rim on the shadow edge.
-
-**Form: five layers minimum per object:**
-1. Base silhouette: organic, slightly irregular contours (no perfect circles
-   or rectangles), with the midtone colour.
-2. Form shadow: a soft gradient core shadow following the volume, with a
-   multiply tint from the navy family.
-3. Highlight: a lit plane plus a small specular hotspot on wet or glossy
-   things such as eyes, noses, cell membranes and meat.
-4. Rim light: a 2–6px bright edge on the shadow side.
-5. Texture: fine grain or paper texture at 6–10% plus surface detail
-   (fur strands, muscle fibre, cell-membrane speckle, bone porosity).
-Plus ambient occlusion where objects touch, and a soft, offset contact shadow.
-Outlines are never black; use self-colour darker lines only where needed.
-
-**Depth.** Every scene is built on four planes:
-far background (blurred 8–14px, desaturated, shifted toward navy), midground,
-subject, and an out-of-focus foreground element (blurred 4–8px, the darkest
-values). Atmospheric perspective means things get bluer and lower-contrast
-with distance. These planes are what the parallax primitive moves.
-
-**Shapes and proportion.** Friendly but credible. The dog is appealing, never
-babyish. Anatomy is simplified but correct, and a vet should recognise every
-organ, joint and cell type.
-
-**The dog hero (`assets/characters/dog-hero/`).** One recurring character.
-Name and breed are TBD by the owner; the default is a medium, breed-neutral
-dog in BEANS-friendly colouring. It is delivered as a rigged, layered SVG with
-named groups (`head`, `jaw`, `earL`, `earR`, `eyes`, `body`, `tail`, `legFL`,
-`legFR`, `legBL`, `legBR`) and documented pivot points. It also needs a
-turnaround (front, ¾, side), 6 expressions and 6 poses. Never redraw it
-inside a video.
-
-**How assets are made.** In order of preference:
-1. Library first. Reuse or re-pose an approved asset.
-2. AI generation with the style lock. Use OpenMontage image tools (needs an
-   image-gen key) with the locked style prompt and the approved style frames
-   in `assets/style-frames/` as references. Remove the background, split into
-   layers, and vectorise where possible (Recraft vector output preferred).
-3. Hand-authored layered SVG, with the five layers above built from SVG
-   gradients and filters (`feTurbulence` grain, `feGaussianBlur` AO). Good for
-   cells, microbes and simple organs.
-4. Human illustrator for the dog-hero master and style frames, which is
-   recommended for the first set.
-
-**Style-lock prompt** (prefix to every image generation and keep verbatim):
-> BEANS Lumen style: premium editorial science illustration, rich layered
-> vector-painterly rendering, warm cream key light from top-left, cool navy
-> rim light on shadow side, soft gradient form shadows, subtle specular
-> highlights, fine grain texture, deep navy (#0F1B33) atmosphere, depth of
-> field with blurred foreground and background, appealing but anatomically
-> credible, no outlines, no flat clip-art, no text, isolated subject.
-Update the hex when the real navy arrives.
-
-**Style QA, where any "no" means reject:** Is there a key light and a rim
-light? Are there at least 5 layers? Is there a texture? Does it look
-consistent next to `assets/style-frames/`? Does it read at 1080×1920 on a
-phone? Is it free of black outlines and flat fills?
-
-## 4. Asset library (`assets/`)
-
-```
-assets/
-  manifest.json          # registry of every asset: id, path, status, layers, used-in
-  brand/                 # frame.md, logo/ (SVG), fonts/
-  style-frames/          # approved BEANS Lumen reference frames (the style source of truth)
-  characters/dog-hero/   # parts/ (rig), poses/, expressions/, turnaround/
-  anatomy/               # joints/, skin-coat/, gut/, brain-nerves/, heart/, organs-misc/
-  microbio/              # immune-cells/, probiotics/, allergens/, pathogens/
-  proteins/              # kangaroo/ venison/ rabbit/ ostrich/ turkey/ horse/ (hero objects, raw + treat form)
-  supplements/           # hip-joint/ skin-coat/ allergy-itch/ digestive-probiotics/ calming/ multivitamin/ (ingredient & mechanism props)
-  environments/          # reusable backgrounds per depth plane
-  textures/              # grain, paper, noise overlays
-  icons/                 # small UI glyphs in Lumen style
-  audio/sfx/, audio/music/  # licensed sound only, with licence file alongside
-  motion/beans-motion.js # the six primitives
-  _inbox/                # unapproved incoming assets, never referenced by a video
+scripts/cel-render.sh films/<slug> --stills 0.4,1.5,3,6.8,9.5      # key-frame stills → films/<slug>/out/stills/
+mg-styles-15/.venv/bin/python films/<slug>/audio.py                  # soundtrack → films/<slug>/out/audio.wav
+scripts/cel-render.sh films/<slug> --workers 3                       # full render → films/<slug>/out/video.mp4  (Gate 4 only)
 ```
 
-Rules:
-- Search `assets/manifest.json` before creating anything. A video never draws
-  a one-off asset inside its own folder.
-- New assets go to `_inbox/`, get Style QA (§3) and owner approval, then move
-  to their folder and receive a manifest entry with status `approved`.
-- Name files `kebab-case--variant.svg|png`, e.g. `hip-joint--healthy.svg` or
-  `macrophage--engulf-pose.svg`. Layered assets are SVGs with named `<g id>`
-  groups, or folders of same-size PNG layers named `NN-layer.png`.
-- Every asset in a video is referenced through the `assets/` symlink.
+## 1. Style: signature features and key techniques
 
-## 5. Tone and content
+These are copied word for word from `mg-styles-15/prompts/05-cel-boil.md`. They define the style: every BEANS video
+is judged against them. Do not delete or paraphrase them.
 
-- This is a premium dog-education brand. Lead with one surprising, true
-  insight about dogs' bodies, diet or behaviour, then explain why it matters.
-- Content stays relevant to what BEANS sells (single-protein treats,
-  novel proteins, joints, skin, allergies, gut, calm, nutrition) but it
-  **teaches, it does not sell.** There are no prices, discount codes, "shop
-  now" lines or product shots mid-video.
-- **Logo end card only.** Branding appears once, on the final 1.5–2s card:
-  logo on navy and `beans.sg`. Nothing else in the video carries the logo.
-- Claims must be accurate. Every number on screen has a source line (28px
-  `source` style, bottom of the content box) and a source entry in the
-  script. No medical claims about curing or treating; say "supports" or "may
-  help", and suggest seeing a vet when it is relevant.
-- Voice is calm, warm, confident and clear, with no hype words, no exclamation
-  spam and no emoji on screen. Use Singapore/UK spelling (colour, flavour).
+```text
+# Signature features and key techniques (the result is judged against these)
+手绘逐帧或在矢量动画上叠加逐帧质感，标志性特征是 line boil——线条每隔几帧轻微抖动，仿佛画面在'呼吸'。Giant Ant、Buck 等工作室大量使用 cel 元素（烟、水花、速度线）点缀主动画，反数字精致感的核心手段。
+视觉特征 线条持续微抖(boil), 一拍二/一拍三节奏, smear拖影帧, 手绘烟火水花点缀, 纸纹底
+关键技法 打帧节奏：24fps 下'一拍二'（实际12fps）为主，快动作切'一拍一'，静止镜头'一拍三'
+line boil 伪造法：AE 用 Turbulent Displace（数量2~5、大小50）+ 每 2 帧随机化 evolution + Posterize Time 12fps；真 boil 则画 3~4 张微差线稿循环
+smear frame：快速位移的中间帧把物体拉长 150%~300% 只保留 1 帧
+cel FX 点缀层：烟/水花/闪电用纯手绘逐帧叠在矢量主体上（Buck 式 hybrid）
+整体叠纸纹（multiply 10~15%）统一手作气质
+```
 
-## 6. Motion primitives
+English reference translation (for reading only; the block above is the definitive version):
+hand-drawn frame by frame, or frame-by-frame texture over vector animation. The signature is line boil: lines jitter
+slightly every few frames so the picture seems to breathe. Studios such as Giant Ant and Buck use cel elements
+(smoke, splashes, speed lines) to accent the main animation, the core device against digital slickness.
+Visual traits: constant line boil, on-2s / on-3s timing, smear frames, hand-drawn fire / water FX accents, paper
+ground. Key techniques: timing on 2s at 24 fps (effectively 12 fps) by default, on 1s for fast action, on 3s for
+holds. Fake boil in AE with Turbulent Displace (amount 2–5, size 50) + evolution randomised every 2 frames + Posterize
+Time 12 fps; real boil = 3–4 slightly different line drawings cycled. Smear frame: stretch the object 150–300 % on the
+in-between of a fast move, for 1 frame only. Cel FX layer: smoke / splashes / lightning hand-drawn frame by frame
+over the vector body (Buck-style hybrid). Paper texture over everything (multiply 10–15 %) unifies the hand-made feel.
 
-Every video is built from these six, through `assets/motion/beans-motion.js`.
-Do not hand-roll an alternative. Timing changes happen here and in the JS
-file together, never per video.
+How BEANS implements them (all deterministic, seeded):
+- **Paper:** warm cream paper ground (`cel/paper.js drawPaper`), tooth plate multiplied over the whole frame so the deepest
+  grain darkens 10–15 % (`drawTooth(..., amount = 0.13)`), shifting with every drawing like a new sheet, plus scanner dust.
+- **Line boil:** ink linework is a variable-width brush (centreline + pressure → outline polygon) that is re-drawn with
+  3–4 jitter variants: `v = drawing.id % 4` on 2s (`% 3` on 3s), passed as the seed to every `inkStroke` / `inkLoop`.
+  Static things keep boiling; nothing on screen is ever perfectly still.
+- **Off-register fills:** colour is filled from an independently boiled outline, offset a few px from the line
+  (`REG`, about −4/+3 px) like hand colouring.
+- **Timing (exposure sheet):** an explicit `SCHED` of `[fromFrame, toFrame, exposure]` per film. On 2s at 24 fps by
+  default, on 1s for fast action (strikes, jumps, scratches, bursts), on 3s for holds (the end card).
+- **Smear frames:** on a fast move, one in-between drawing stretched 150–300 % along the path (or 2–3 multiples),
+  kept for 1 frame only.
+- **Cel FX (hand-drawn, frame by frame):** smoke puffs that dissipate through holes, sparks (teardrops), star bursts,
+  speed lines, dust puffs, impact frames. Reuse the patterns in `mg-styles-15/demos/05-cel-boil/js/scene.js`
+  (`smokeGroup`, `drawSpark`, `drawTwinkle`, `drawStarburst`, `speedLinesRadial`, `impactFrame`); lift them into
+  `cel/fx.js` the first time a film needs them, and every later film imports them from there.
+- **Shading:** flat cel fills, one cel shadow shape on the lower right (light from the top left), hand hatching in the
+  shadow, hatched contact shadows on the ground. No gradients, no soft airbrush, no glow.
 
-| # | Primitive | Call | Timing and easing |
-|---|---|---|---|
-| P1 | **Camera push-in** | `BEANS.pushIn(tl, sel, {at, duration})` | Drift: scale 1.00→1.08 over the beat (2–3s), `sine.inOut`. Hook "punch": `{punch:true}` 1.00→1.14 in 0.6s, `expo.out`. Apply to the scene's background/world group, never to text. |
-| P2 | **Multi-layer parallax** | `BEANS.parallax(tl, [{el, depth}], {at, duration, travel:90, axis})` | Depth multipliers: far 0.2, mid 0.5, subject 1.0, foreground 1.6. Subject travel 90px per 3s, `sine.inOut`, opposite drift across planes. Runs in every illustrated scene. |
-| P3 | **Shader wipe** | `HyperShader.init({bgColor:"#0F1B33", scenes, transitions:[BEANS.wipe(t)]})` | One brand transition: `cross-warp-morph`, 0.6s, for every scene change. Hard cuts are allowed only on a music hit, max 2 per video. Follow the shader-compatible CSS rules: literal hex, no `var()`, `.scene` divs with explicit `background-color`. |
-| P4 | **Kinetic headline reveal** | `BEANS.headline(tl, sel, {at, stagger:0.08, accent})` / `headlineOut` | Each word rises from a line mask: `yPercent` 115→0, 0.6s `expo.out`, 0.08s stagger. Accent bar wipes in at +0.3s, 0.45s `power3.out`. Exit: up and out, 0.35s `power2.in`, 0.04s stagger. Markup: `.bm-headline > .bm-line > .bm-word`. |
-| P5 | **Data counter** | `BEANS.counter(tl, sel, {at, to, duration:1.2, decimals, thousands})` | Fade-up 0.4s `power3.out`, then a 1.2s roll with `power2.out`. The unit pops in with `back.out(1.7)` as the number lands. Hold the final number at least 1.0s. Markup: `.bm-stat > .bm-num + .bm-unit`. |
-| P6 | **Character idle loop** | `BEANS.idle(tl, {body, head, tail, eyes, earL, earR}, {at, duration})` | Breath scaleY 1→1.015 every 2.4s; head sway ±1.5°; tail wag ±12° at 0.36s; one ear flick at +1.1s; blink (0.06s close/open) every 3.2s. All `sine.inOut`, finite repeats. The dog is never fully static on screen. |
+## 2. Palette
 
-Global easing: entrances use `expo.out`, exits `power2.in`, ambient motion
-`sine.inOut`, and small settles `power3.out`. Never use linear, except for
-blinks. Never use bounce or elastic on anything but the unit pop.
+Each video uses **ink + BEANS navy + cream paper + ONE warm accent**. Values live in `cel/palette.js`; every value
+marked PLACEHOLDER waits for the owner's real hex codes. Never invent or "improve" a brand hex.
 
-## 7. Pacing, captions and safe zones
+| Role | Token | Placeholder |
+|---|---|---|
+| Ink (all linework) | `PAL.ink` | `#1d1915` |
+| BEANS navy (type, collar, end card) | `PAL.navy` | `#1b2a4a` PLACEHOLDER |
+| Cream paper | `PAL.cream` | `#f4e9d0` PLACEHOLDER |
+| Paper-white highlight | `PAL.hi` | `#fff7e6` |
+| ONE accent per video | `ACCENTS[...]` | treats (earthy): Kangaroo, Venison, Rabbit, Ostrich, Turkey, Horse; supplements (pastels): Hip & Joint, Skin & Coat, Allergy & Itch, Digestive Probiotics, Calming, Multivitamin. All PLACEHOLDER. |
 
-- **Hook (0–2s):** the first frame is already moving and already shows the
-  subject. There are no logos, no titles fading in from black and no
-  "Did you know". The hook is a bold visual plus a ≤7-word display headline
-  or a stat, with P1 punch.
-- **A new visual beat every 1.5–3s.** A beat is a new primitive firing, a new
-  object entering, a camera change or a scene wipe. Nothing sits static for
-  more than 3s.
-- **Length:** 20–45s by default (max 60s). End card 1.5–2s.
-- **Captions are always on,** word-synced to the voiceover (or on-screen text
-  for music-only videos). Use the `caption` style, white, 2 lines max and about
-  6 words per line, on a soft navy scrim (`rgba(15,27,51,0.72)`, 20px
-  radius, 18px/28px padding). The active word gets the video's accent colour.
-  Captions live in the caption band.
-- **Safe zones (1080×1920):** platform UI covers the top 220px, the bottom
-  440px and the right-side buttons.
-  - Content box: x 60–940, y 220–1480. All text and key subject matter go here.
-  - Caption band: y 1220–1440, x 90–850.
-  - Below y 1480 and right of x 940: background art only.
-  - Run `npx hyperframes check`. It must pass with 0 errors, and text must not
-    be occluded by illustration.
-- **Sound:** voiceover at about −14 LUFS integrated, music ducked under it,
-  subtle SFX on primitive hits (whoosh on the wipe, tick on the counter).
-  All audio must be licensed, with the licence noted in `assets/audio/`.
+- The accent is the protein colour for a treats topic or the pastel for a supplement topic, and only one per video.
+  A topic film with no product uses the accent closest to its subject; ask the owner if unclear.
+- The dog's own colours (`DOG` in `cel/palette.js`: biscuit coat, coat shadow, cream markings, muted rose tongue)
+  are a fixed character palette, the same in every video. Its collar is navy; its tag takes the video's accent.
+- Extra colours are tints and shades of these, not new hues. Pencil blue (`PAL.pencil`) is only for construction
+  lines and notes on model sheets and storyboards, never in a film.
 
-## 8. Workflow and approval gates
+## 3. The BEANS dog (one character, every video)
 
-Every new video goes through four gates in order. **Never skip a gate. Never
-render without explicit owner approval at Gate 3.** Track the gates in
-`videos/<slug>/PRODUCTION.md`.
+`characters/beans-dog/dog.js` is the only BEANS dog. **Every BEANS video that shows a dog imports it. Never redraw the
+dog from scratch, never trace it, never substitute another dog.** If a shot needs a pose the library lacks, add a pose
+to `POSES` in `dog.js` (and to the model sheet), show it to the owner, then use it.
 
-**Gate 1 — Pitch.** Pitch 3–5 ideas. For each, give the title, the 0–2s hook
-(visual + line), the one insight, why it matters to a dog owner, which product
-family's colour it uses (or none), the assets it reuses and the new ones it
-needs, and a length. Then stop: **the owner picks one.**
+- Design: a Singapore Special (local mixed-breed street dog). Medium and lean, short biscuit coat, cream
+  muzzle / chest / socks / tail tip, upright triangular ears with the **left ear tip folded over**, sickle tail carried
+  up, a **bean-shaped nose**, a navy BEANS collar with a small tag in the video's accent colour.
+- Model sheet: `characters/beans-dog/model-sheet/` (render: `scripts/cel-render.sh characters/beans-dog/model-sheet --stills 0`).
+  Turnaround: front, three-quarter, side. Poses: `stand`, `sit`, `lie`, `pawRaise`, `scratch`, `wag`, `spin`.
+- Use:
+  ```js
+  import { drawDog, pose } from '/beans/characters/beans-dog/dog.js';
+  // x, y = ground point under the dog; s = scale; view = yaw in degrees (0 side, 45 three-quarter, 90 front);
+  // elev = camera looking down (deg); mirror = face left; v = boil variant of this drawing; accent = video accent
+  drawDog(ctx, pose('scratch', { face: { eyes: 'squint' } }), { x: 540, y: 1460, s: 2.2, view: 15, v: bv(D), accent });
+  ```
+- Animate by interpolating pose parameters between keys on the exposure sheet (on 2s), with smear or multiple frames
+  on fast moves (the scratch paw on 1s, the tail wag on 1s). Faces: `eyes` open / happy / squint / closed; `mouth`
+  closed / smile / open; `brow` −1..1.
+- Acting is understated and dignified: no rubber-hose limbs, no giant eyes, no gag expressions.
 
-**Gate 2 — Script.** Write a detailed script as a beat table with columns for
-time, voiceover line, on-screen text, visual, primitive(s), assets and source.
-The hook must land in under 2s, with a beat every 1.5–3s, and it ends with the
-logo end card. List every source. Then stop: **the owner refines and approves
-it.** Iterate until they say it's approved.
+## 4. Typography
 
-**Gate 3 — Storyboard and timeline.** Build the composition with placeholder or
-library assets, run `npx hyperframes check` until it passes, then show:
-- a contact sheet (`npx hyperframes snapshot --at <every beat midpoint>`
-  makes `snapshots/contact-sheet.jpg`);
-- the timeline (`npx hyperframes timeline`) as a beat-by-beat table;
-- the Studio preview link (`npx hyperframes preview --background`) where it
-  can be reached;
-- a list of any PLACEHOLDER tokens or assets still in use.
-Then stop: **the owner approves or gives notes.** Notes send you back through
-Gate 3.
+Restrained and editorial. Brand fonts are PENDING from the owner; until then `cel/fonts.css` maps placeholders (OFL):
+`BEANS Display` = Instrument Serif (headlines, the one key line), `BEANS Text` = DM Sans (captions, labels),
+`BEANS Pencil` = Caveat (model sheets and storyboard notes only). Swap the files, keep the family names.
 
-**Gate 4 — Render.** This happens only after the owner explicitly approves
-Gate 3 in writing for the current version. Render with
-`npx hyperframes render --quality delivery --output renders/<slug>-v<N>.mp4`.
-Verify with `ffprobe` (1080×1920, 30fps, expected duration), spot-check
-frames, and deliver. Any change after approval means re-approval before
-re-rendering. Draft or "quick" renders also need approval.
+- At most two type sizes on screen plus captions. Sentence case. No bouncy, outlined or cartoon lettering.
+- A key line may be hand-lettered with the brush (inked stroke by stroke, boiling), like the reference film's title,
+  as long as it stays calm and legible. Otherwise set type in `BEANS Display`, ink or navy on paper.
+- All on-screen text is in **English** (an override of the repo prompt's Chinese-text rule): correct, natural,
+  Singapore/UK spelling (colour, flavour), no typos.
+
+## 5. Tone and sound
+
+- Premium, editorial dog education. Calm, warm, confident and curious. **Not childish**: no gags, no squeaky voices,
+  no slapstick.
+- Teach, don't sell: the content is relevant to BEANS (proteins, allergies, joints, skin, gut, calm) but there are no
+  prices, offers or product pitches. **Logo end card only.**
+- Claims are accurate; numbers carry a source in the script; no cure / treat claims ("supports", "may help").
+- Music: warm, understated acoustic: nylon or steel guitar, upright bass, soft piano, brushed percussion, a little
+  vibraphone or harp at most (`pluck.guitar`, `pluck.harp`, `samples.inst('piano'|'vibraphone'|'harp')`, `drums.snare('brush')`).
+  Recipe starting points: `recipes.lofi(flavor='chill', keys='piano')` or `recipes.ambient(flavor='piano')`, then thin it out.
+- Sound design: soft foley (paper, pen, cloth, paws on floor, fur rustle, a breath), synced to the cue sheet.
+  **No zany cartoon SFX: no xylophone, no slide whistle, no boing, no cork pops, no squeaks.** Hero moments get weight
+  from a soft impact, a swell and a breath of silence, not from noise.
+- Master: −14 LUFS integrated, true peak ≤ −1 dBTP, stereo AAC 48 kHz (mgaudio `export` does this).
+
+## 6. Output spec (default)
+
+- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), −14 LUFS, TP ≤ −1 dBTP.
+  (The pilot and tests may be shorter, as briefed.)
+- Hook in the first 0.5 s: never open on more than 0.3 s of empty paper. One unmistakable hero moment at about
+  60–75 % of the runtime. End on the BEANS logo end card, held about 1 s with the line work boiling (on 3s).
+- The BEANS logo appears only on the end card, using the real logo SVG once the owner supplies it (until then a
+  clearly labelled placeholder wordmark). BEANS is the real brand: use its real name and logo (an override of the repo
+  prompt's "invent brand names" rule). No other real brands or trademarks.
+- **Captions always on** for any voiceover or spoken idea, in `BEANS Text`, ink on a cream paper card (hand-cut,
+  boiling edge), max 2 lines, inside the safe zones.
+- **Safe zones (1080×1920):** keep all text and key action inside x 60–940, y 220–1480 (platform UI covers the top
+  220 px, the bottom 440 px and the right-hand buttons). Captions sit in y 1220–1440. Below y 1480 and right of
+  x 940: paper, texture and background drawing only.
+
+## 7. Rules (from the repo prompt, with BEANS overrides)
+
+- **Deterministic frames:** every frame is a pure function of t. Seeded randomness only (`hs`, `mulberry32`); physics
+  and particles precomputed or closed-form; no clocks, no CSS transitions, no `Math.random()`.
+- **Licensed assets only:** CC0 / public domain / OFL / Apache / free for commercial use. Every film keeps a
+  `CREDITS.md` listing each asset, source and licence (start from the repo-level `CREDITS.md`).
+- **Overrides:** all on-screen text is English; BEANS is our real brand, so use the real name and logo.
+- Everything else in `prompts/05-cel-boil.md` applies: the Output checks, How to work (treatment → key frames → motion
+  → sound → final), the craft checklist, and the honest self-score.
+
+## 8. Prompt structure for every film
+
+Use `mg-styles-15/prompts/05-cel-boil.md` as the complete prompt structure. For each film, rewrite only:
+- **Output** → §6 above (1080×1920, 24 fps, the agreed length).
+- **Creative seed** → the approved script (story, beats, copy, palette = ink + navy + cream + the one accent, sound =
+  §5).
+Keep **Style**, **Signature features**, **How to work**, **Rules** (with §7's overrides), **Craft checklist** and
+**Before you deliver** exactly as they are.
+
+## 9. Workflow and approval gates
+
+Every new video goes through four gates, in order. **Never render without the owner's explicit approval.** Track
+the gates in `films/<slug>/PRODUCTION.md`.
+
+1. **Pitch.** Pitch 3–5 ideas: title, the 0.5 s hook, the one insight, why a dog owner cares, the accent colour,
+   dog poses needed (and any new ones), length. Stop: **the owner picks one.**
+2. **Script.** A detailed script with a strong hook: a beat table (time, picture, on-screen text / captions,
+   exposure on 1s/2s/3s, cel FX, sound), sources for any claim. Stop: **the owner refines and approves it.**
+3. **Storyboard and key frames.** Build the film page and cue sheet, then render **6–10 key-frame stills** with
+   `--stills` (plus a contact sheet). Show them with a beat-by-beat timeline. Stills are not a render of the video.
+   Stop: **the owner approves**, or gives notes and Gate 3 repeats.
+4. **Render.** Only after explicit approval of the current key frames. Render audio and video, check the spec
+   (duration, 1080×1920, 24 fps, −14 LUFS, TP ≤ −1 dBTP, no black frames, no fallback fonts, nothing outside the safe
+   zones), then run the **quality loop**:
+   - **Review:** a separate reviewer (a subagent that did not make the film) judges the render with
+     `mg-styles-15/rubric.md` step 1: contact sheet, filmstrips, full-res frames, spec checks, scores, and a fix list.
+   - **Revise once:** apply the critical and high-impact fixes (rubric step 2), re-render and re-check.
+   - Then show the owner the revised film, the review's scores, what changed and what's still weak.
+   Any change after approval that alters what the owner approved goes back to Gate 3.
 
 `PRODUCTION.md` template:
 ```
 # <title>
 - [ ] Gate 1: idea picked by owner (date, which idea)
 - [ ] Gate 2: script approved by owner (date, version)
-- [ ] Gate 3: storyboard + timeline approved by owner (date, version)
-- [ ] Gate 4: rendered (file, ffprobe summary)
+- [ ] Gate 3: key frames + timeline approved by owner (date, version)
+- [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown (files, spec numbers, scores)
 Placeholders in use: …
 Sources: …
 ```
 
-## 9. Pre-render checklist
+## 10. Pre-render checklist
 
 - [ ] Gate 3 approval recorded for this exact version
-- [ ] No PLACEHOLDER colours or fonts (or the owner explicitly accepted them for this render)
-- [ ] All assets come from `assets/` with manifest status `approved`
-- [ ] Hook within 2s; no static stretch over 3s
-- [ ] Captions on, in the band, scrimmed; content inside the content box
-- [ ] Only the six primitives; one wipe shader
-- [ ] Logo only on the end card; no hard-sell lines
-- [ ] Every number sourced; no cure/treat claims
-- [ ] `npx hyperframes check` passes with 0 errors
+- [ ] Every signature feature in §1 is visible: boil on everything, on-2s/1s/3s exposure sheet, ≥1 smear frame,
+      hand-drawn cel FX, paper multiply 10–15 %
+- [ ] The dog is `characters/beans-dog/dog.js`, unchanged in design
+- [ ] Palette = ink + navy + cream + one accent; no PLACEHOLDER brand hex left in a final render (unless the owner
+      accepted it)
+- [ ] English copy proofread; captions on and inside the safe zones
+- [ ] Logo on the end card only; no selling
+- [ ] Acoustic music + soft foley; no xylophone or cartoon SFX
+- [ ] `CREDITS.md` complete; deterministic page (no `Math.random`, no clocks)

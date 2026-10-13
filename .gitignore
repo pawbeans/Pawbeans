@@ -6,3 +6,11 @@ node_modules/
 videos/*/snapshots/
 videos/*/.thumbnails/
 videos/*/.hyperframes/
+# mg-styles-15 (house renderer), rebuilt by scripts/setup-motion-stack.sh
+mg-styles-15/
+# cel render outputs (keep stills for review, not frames or full renders)
+films/*/out/frames/
+films/*/out/*.wav
+films/*/out/*.mp4
+characters/*/model-sheet/out/frames/
+review/*.mp4

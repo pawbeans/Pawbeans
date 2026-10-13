@@ -1,3 +1,4 @@
+// FALLBACK ONLY: HyperFrames-era primitives. The BEANS house style is cel / line boil (.claude/skills/beans-motion/SKILL.md).
 /*
  * BEANS motion primitives — the only motion vocabulary BEANS videos use.
  * Spec and rationale: .claude/skills/beans-motion/SKILL.md (§6).
