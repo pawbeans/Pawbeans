@@ -1,0 +1,23 @@
+{
+ "fps": 24,
+ "duration": 10.0,
+ "comment": "Pilot: It's not the dog. It's the protein. All times in seconds on 24 fps frames.",
+ "exposure": [[0, 1.5, 2, "hook: Miya scratching (paw on 1s)"], [1.5, 2.5, 1, "push-in + fur iris (on 1s)"], [2.5, 5.5, 2, "under the skin"], [5.5, 7.5, 1, "cells gather, smear, BURST (on 1s)"], [7.5, 8.917, 2, "FX re-form into the line"], [8.917, 10.0, 3, "end card hold (on 3s)"]],
+ "callout": 0.25,
+ "push": [1.5, 2.5],
+ "iris": [2.17, 2.75],
+ "protein_in": [3.2, 4.2],
+ "protein_label": 3.6,
+ "notice": 4.333,
+ "gather": [5.5, 6.417],
+ "smear": 6.25,
+ "inhale": 6.417,
+ "burst": 6.5,
+ "impact_frames": [6.5, 6.542],
+ "paper_iris": [6.7, 7.333],
+ "words": [7.458, 7.625, 7.792, 7.958, 8.208, 8.375, 8.542],
+ "underline": [8.625, 8.75],
+ "endcard_wipe": [8.75, 9.0],
+ "logo": 8.958,
+ "end": 10.0
+}

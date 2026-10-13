@@ -180,7 +180,13 @@ function projector(o) {
 const prim2 = (q, P, S) => q.t === 'circle'
   ? (() => { const c = P(q.c); return { t: 'circle', x: c.x, y: c.y, r: q.r * S, k: (q.k ?? 10) * S }; })()
   : { t: 'cone', a: P(q.a), b: P(q.b), r1: q.r1 * S, r2: q.r2 * S, k: (q.k ?? 10) * S };
-function outlineOf(prims, cell) { return contours(field(prims), primBounds(prims, 10), cell)[0] || null; }
+let CLIP = null; // optional screen rectangle {x0,y0,x1,y1}: contours are traced only inside it (for push-ins)
+function outlineOf(prims, cell) {
+  let b = primBounds(prims, 10);
+  if (CLIP) b = { x0: Math.max(b.x0, CLIP.x0), y0: Math.max(b.y0, CLIP.y0), x1: Math.min(b.x1, CLIP.x1), y1: Math.min(b.y1, CLIP.y1) };
+  if (b.x1 <= b.x0 || b.y1 <= b.y0) return null;
+  return contours(field(prims), b, cell)[0] || null;
+}
 
 // ------------------------------------------------------------------ curly coat
 // scallop: push the outline outward in round bumps (one curl per bump), cusps between. Stable per pose; the
@@ -249,6 +255,9 @@ function shadeOf(hex, k = 0.86) {
   return `rgb(${Math.round((n >> 16) * k)},${Math.round(((n >> 8) & 255) * k)},${Math.round((n & 255) * k)})`;
 }
 
+// where a rig point lands on screen without drawing (e.g. the scratching paw, to aim a push-in)
+export function locate(P, o, pick) { const R = rig(P); return projector(o).P(pick(R)); }
+
 // ------------------------------------------------------------------ Miya
 // o: { x, y (ground point, screen px), s (scale), view, elev, mirror, v (boil variant), accent (video accent hex),
 //      seed (per-shot seed), shadow (false = no ground hatch), w (line weight) }
@@ -256,7 +265,8 @@ export function drawMiya(c, P, o = {}) {
   const R = rig(P);
   const { P: Pj, S, dirZ } = projector(o);
   const v = o.v ?? 0, sd = (o.seed ?? 2000) + v * 97;
-  const cell = Math.max(1.6, 2.6 * S), W = o.w ?? 4.4;
+  const cell = clamp(2.6 * S, 1.6, 4), W = o.w ?? 4.4;
+  CLIP = o.clip || null;
   const items = [];
   if (o.shadow !== false) {
     const xs = [...R.legs.map((l) => Pj(l.pts[3]).x), Pj(R.torso[0].c).x, Pj(R.torso[3].c).x];
@@ -337,6 +347,7 @@ export function drawMiya(c, P, o = {}) {
   for (const it of items) it.draw();
   if (P.scratch) scratchFX(c, R, Pj, S, sd);
   if (P.spin) spinArcs(c, Pj, S, sd, o, true);
+  CLIP = null;
   return { rig: R, project: Pj };
 }
 
