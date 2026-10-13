@@ -141,7 +141,7 @@ shared photos).
   // elev = camera looking down (deg); mirror = face left; v = boil variant of this drawing; accent = video accent (tag)
   drawMiya(ctx, pose('scratch'), { x: 540, y: 1460, s: 2.2, view: 15, v: bv(D), accent });
   ```
-  Poses: `stand`, `sit`, `lie`, `pawRaise`, `scratch`, `wag`, `spin`. Faces: `eyes` open / happy / squint / closed;
+  Poses: `stand`, `sit`, `lie`, `pawRaise`, `scratch`, `wag`, `spin`, plus `sleep` and `curl` (NEW 2026-10-13, Dog Decoded: shown to the owner on the night boards). Faces: `eyes` open / happy / squint / closed;
   `mouth` closed / smile / tongue; `brow` −1..1. Ears swing with `ears.swing`.
 - What to capture from the photos: a big, soft, rounded curly silhouette (no tapered limbs: plush, columnar legs with
   round "pom" paws), a round domed head with a fluffy top knot, long floppy ears that hang and blend into the

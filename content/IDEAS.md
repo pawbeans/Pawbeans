@@ -20,7 +20,7 @@ length · for Inside Your Dog: product tie-in + accent.
 
 ## Dog Decoded (viral, no BEANS mention)
 
-**D1 · Where your dog sleeps says a lot about your relationship** ★ owner's example
+**D1 · Where your dog sleeps says a lot about your relationship** ★ owner's example · MADE 2026-10-13 (six spots, `films/2026-10-13-where-your-dog-sleeps`)
 - Hook: "Where your dog sleeps says a lot about you." Counter 1/4 → 4/4.
 - Beats: on your bed (trust, pack warmth) → by the door (on watch) → touching you, back to you (has your back) →
   under the covers / tucked against your legs (the sweetest: security). Each spot = Miya in that spot, the room drawn

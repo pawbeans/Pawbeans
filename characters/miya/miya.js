@@ -109,6 +109,16 @@ POSES.spin = { // chasing her own tail: body curled into a C, head swung round t
     HN: [[-40, 84], [-70, 40], [-62, 18]], HF: [[-54, 84], [-96, 58], [-108, 38]] },
   tail: { a0: 40, curl: 30 }, ears: { swing: 30 }, face: { eyes: 'open', mouth: 'tongue', brow: 0.3 }, spin: true,
 };
+POSES.sleep = { // NEW (Dog Decoded, 2026-10-13): lying down asleep, chin resting on the front paws
+  ...POSES.lie, neck: { a: -10, len: 40 }, head: { pitch: -10, yaw: 0, roll: 0 },
+  face: { eyes: 'closed', mouth: 'closed', brow: 0 },
+};
+POSES.curl = { // NEW (Dog Decoded, 2026-10-13): curled "donut" asleep, rear swung round, tail wrapped over the front
+  // paws, nose tucked to the tail. Draw it seen from a little above: view ≈ 20, elev ≈ 45.
+  ...POSES.lie, bend: -170, neck: { a: 0, len: 40 }, head: { pitch: -20, yaw: -90, roll: 0 },
+  legs: { ...POSES.lie.legs, FN: [[64, 20], [92, 16], [104, 17]], FF: [[56, 22], [86, 18], [98, 17]] },
+  tail: { a0: 170, curl: -16 }, face: { eyes: 'closed', mouth: 'closed', brow: 0 },
+};
 
 // pose('sit', overrides) → a pose object (deep-merged for head / face / tail / legs / ears)
 export function pose(name, o = {}) {

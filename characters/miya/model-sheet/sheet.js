@@ -4,7 +4,7 @@ import { PAL, MIYA } from '../../../cel/palette.js';
 import { loadPaper, drawPaper, drawTooth } from '../../../cel/paper.js';
 import { drawMiya, pose } from '../miya.js';
 
-export const W = 2400, H = 1600;
+export const W = 2400, H = 2000;
 let ctx, DPR = 1;
 
 export async function init(canvas, dpr) {
@@ -27,6 +27,8 @@ const POSE_ROW = [
   { label: 'SCRATCHING', name: 'scratch', x: 300, y: 1470, view: 15, note: 'hook pose: paw on 1s' },
   { label: 'HAPPY TAIL WAG', name: 'wag', x: 830, y: 1470, view: 20, note: 'tail on 1s, 3 drawings' },
   { label: 'SPIN (CHASING TAIL)', name: 'spin', x: 1330, y: 1385, labelY: 1536, view: 0, elev: 38, note: 'on 1s, smear on the tail' },
+  { label: 'SLEEP (CHIN ON PAWS) · NEW', name: 'sleep', x: 330, y: 1850, view: 15, note: 'new 2026-10-13, awaiting approval', isNew: true },
+  { label: 'CURL (DONUT) · NEW', name: 'curl', x: 850, y: 1820, labelY: 1916, view: 20, elev: 45, note: 'new 2026-10-13: view 20, elev 45', isNew: true },
 ];
 
 function pencilLine(c, x0, y0, x1, y1, seed, w = 2) {
@@ -82,7 +84,7 @@ export function render(t) {
   // ---- poses
   for (const P of POSE_ROW) {
     drawMiya(c, pose(P.name), { x: P.x, y: P.y, s: S2, view: P.view, elev: P.elev || 0, v, seed: 300 + P.x + P.y, accent: PAL.orange });
-    label(c, P.label, P.x, (P.labelY ?? P.y + 66));
+    label(c, P.label, P.x, (P.labelY ?? P.y + 66), P.isNew ? { color: PAL.orange } : {});
     if (P.note) pencilNote(c, P.note, P.x, (P.labelY ?? P.y + 66) + 34, { font: '500 26px "Caveat"' });
   }
 
