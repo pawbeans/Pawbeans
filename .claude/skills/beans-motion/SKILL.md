@@ -124,7 +124,7 @@ Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
 Reference photos live in `references/miya/` (only the white / cream dog is Miya; ignore the black-and-white dog in
 shared photos).
 
-- **Status: model sheet v2 drawn (owner notes on v1 applied), awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
+- **Status: model sheet v3 drawn (owner notes on v1 and v2 applied), awaiting the owner's approval.** Module: `characters/miya/miya.js`; sheet:
   `characters/miya/model-sheet/` (render: `scripts/cel-render.sh characters/miya/model-sheet --stills 0`). Built in code
   from the five photos in `references/miya/`; no human illustrator for now. Colours: `MIYA` in `cel/palette.js`, sampled
   from the photos. Until approved, do not use her in a film.
@@ -145,6 +145,8 @@ shared photos).
 - Owner notes on v1 (applied in v2): smaller forehead, rounder face (not a tall oval), ears end at chin level, no curl
   marks, no leg tops showing inside the body (legs tuck under the body; a leg in front, like the scratching hind leg,
   has its top end left un-inked).
+- Owner notes on v2 (applied in v3): a lean, well-proportioned Goldendoodle (not fat, not skinny); no ghost circles
+  or loose curl marks in the scratching pose (scratch ticks only).
 - Once approved: **every BEANS video that shows a dog imports this module. Never redraw Miya from scratch, never
   trace, never substitute another dog.** A new pose is added to the module and the model sheet, shown to the owner,
   then used.

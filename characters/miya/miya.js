@@ -34,16 +34,16 @@ function rotX(p, a) { const c = Math.cos(a), s = Math.sin(a); return v3(p.x, p.y
 // ------------------------------------------------------------------ the rig (units: dog px, ground y = 0)
 // Torso space: hip socket at the origin, x toward the chest. Standing: withers ≈ 196, top knot ≈ 285.
 const TORSO = [
-  { t: 'circle', c: v3(-4, 6), r: 42 },                                   // haunch
-  { t: 'cone', a: v3(-8, 26), b: v3(104, 32), r1: 30, r2: 32, k: 22 },    // topline
-  { t: 'cone', a: v3(14, 2), b: v3(82, -8), r1: 30, r2: 40, k: 24 },      // belly → brisket
-  { t: 'circle', c: v3(100, -6), r: 46, k: 22 },                          // chest
-  { t: 'circle', c: v3(124, 4), r: 32, k: 16 },                           // forechest
-  { t: 'circle', c: v3(110, 34), r: 30, k: 14 },                          // withers
-  { t: 'circle', c: v3(102, 0, 24), r: 38, k: 20 },                       // shoulders: width across the chest
-  { t: 'circle', c: v3(102, 0, -24), r: 38, k: 20 },
-  { t: 'circle', c: v3(-4, 10, 22), r: 36, k: 20 },                       // hips: width across the rump
-  { t: 'circle', c: v3(-4, 10, -22), r: 36, k: 20 },
+  { t: 'circle', c: v3(-4, 6), r: 36 },                                   // haunch
+  { t: 'cone', a: v3(-8, 26), b: v3(104, 32), r1: 25, r2: 27, k: 20 },    // topline
+  { t: 'cone', a: v3(16, 6), b: v3(82, -4), r1: 22, r2: 33, k: 22 },      // loin → brisket (a little tuck-up)
+  { t: 'circle', c: v3(100, -4), r: 40, k: 20 },                          // chest
+  { t: 'circle', c: v3(124, 6), r: 27, k: 14 },                           // forechest
+  { t: 'circle', c: v3(110, 34), r: 26, k: 12 },                          // withers
+  { t: 'circle', c: v3(102, 2, 19), r: 32, k: 18 },                       // shoulders: width across the chest
+  { t: 'circle', c: v3(102, 2, -19), r: 32, k: 18 },
+  { t: 'circle', c: v3(-4, 10, 18), r: 30, k: 18 },                       // hips: width across the rump
+  { t: 'circle', c: v3(-4, 10, -18), r: 30, k: 18 },
 ];
 const SHOULDER = v3(110, -6), NECK_BASE = v3(126, 36), TAIL_ROOT = v3(-36, 28);
 // Head space: pivot at the top of the neck, x along the muzzle.
@@ -61,8 +61,8 @@ const EYE = v3(40, 12, 20), NOSE = v3(68, -3, 0);
 // pendant ears hanging from the sides of the skull, ending at chin level
 const EAR = { top: v3(-10, 26, 34), bot: v3(-6, -16, 40), r1: 15, r2: 22 };
 // leg radii at the joints [attach, mid, low] + pom paw radius
-const FRONT_R = [22, 17, 15.5, 19], HIND_R = [34, 20, 16, 19];
-const LEG_Z = { F: 30, H: 28 };
+const FRONT_R = [19, 14.5, 13.5, 17], HIND_R = [29, 17, 14, 17];
+const LEG_Z = { F: 25, H: 23 };
 
 // ------------------------------------------------------------------ poses (side-plane joints, Miya facing +X)
 // hip: torso pivot in the world; pitch: torso pitch (deg); neck: angle (deg from +X) + length;
@@ -303,7 +303,7 @@ export function drawMiya(c, P, o = {}) {
   // torso + neck ruff (+ collar peeking through)
   {
     const prims = R.torso.map((q) => prim2(q, Pj, S));
-    prims.push({ t: 'cone', a: Pj(R.neckBase), b: Pj(R.pivot), r1: 34 * S, r2: 28 * S, k: 18 * S });
+    prims.push({ t: 'cone', a: Pj(R.neckBase), b: Pj(R.pivot), r1: 29 * S, r2: 25 * S, k: 16 * S });
     const depth = Pj(R.torso[3].c).d * 0.5 + Pj(R.torso[0].c).d * 0.5;
     items.push({ depth, draw: () => {
       paintMass(c, outlineOf(prims, cell), { seed: sd + 300, S, w: W, nCurls: 7 });
@@ -433,20 +433,12 @@ function wagGhosts(c, P, o) {
   }
 }
 
-// itch: paw multiples (ink ghosts), scratch ticks, a few loose curls flying off
+// itch: scratch ticks only (owner: no ghost circles or loose curl marks)
 function scratchFX(c, R, Pj, S, sd) {
   const paw = Pj(R.legs.find((l) => l.key === 'HN').pts[3]);
-  c.save(); c.globalAlpha = 0.3;
-  for (const [dx, dy] of [[-13, 11], [11, -10]]) inkLoop(c, circlePts(paw.x + dx * S, paw.y + dy * S, 16 * S, 20, 18 * S), { seed: sd + 900 + dx, w: 3 * S, amp: 0.8 * S });
-  c.restore();
-  for (let k = 0; k < 3; k++) {
-    const a = -2.3 + k * 0.5, r0 = 30 * S, r1 = 46 * S;
+  for (let k = 0; k < 3; k++) { // scratch ticks: three short strokes fanning off the paw
+    const a = -2.3 + k * 0.5, r0 = 26 * S, r1 = 42 * S;
     inkStroke(c, [[paw.x + Math.cos(a) * r0, paw.y + Math.sin(a) * r0], [paw.x + Math.cos(a) * r1, paw.y + Math.sin(a) * r1]], { seed: sd + 910 + k, w: 3.2 * S, t0: 3 * S, t1: 5 * S, amp: 0.6 * S, heavy: 0 });
-  }
-  for (let k = 0; k < 4; k++) { // loose curls
-    const x = paw.x + (26 + 16 * k) * S * (k % 2 ? 1 : -0.6), y = paw.y - (22 + 14 * k) * S, r = 4 * S;
-    const P = []; for (let i = 0; i <= 8; i++) { const a = k + (i / 8) * 4.6; P.push([x + Math.cos(a) * r, y + Math.sin(a) * r]); }
-    inkStroke(c, P, { seed: sd + 920 + k, w: 2.4 * S, t0: 2 * S, t1: 4 * S, amp: 0.4 * S, heavy: 0, color: MIYA.apricotShade });
   }
 }
 

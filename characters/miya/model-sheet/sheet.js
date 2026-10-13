@@ -24,7 +24,7 @@ const POSE_ROW = [
   { label: 'SIT', name: 'sit', x: 300, y: 1060, view: 20 },
   { label: 'LIE DOWN', name: 'lie', x: 790, y: 1060, view: 15 },
   { label: 'PAW RAISE', name: 'pawRaise', x: 1310, y: 1060, view: 35 },
-  { label: 'SCRATCHING', name: 'scratch', x: 300, y: 1470, view: 15, note: 'hook pose: paw on 1s, multiples' },
+  { label: 'SCRATCHING', name: 'scratch', x: 300, y: 1470, view: 15, note: 'hook pose: paw on 1s' },
   { label: 'HAPPY TAIL WAG', name: 'wag', x: 830, y: 1470, view: 20, note: 'tail on 1s, 3 drawings' },
   { label: 'SPIN (CHASING TAIL)', name: 'spin', x: 1330, y: 1385, labelY: 1536, view: 0, elev: 38, note: 'on 1s, smear on the tail' },
 ];
@@ -58,7 +58,7 @@ export function render(t) {
   c.save();
   c.fillStyle = PAL.ink; c.textAlign = 'left';
   c.font = '600 78px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText('Miya', 96, 128);
-  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v2, for approval', 100, 176);
+  c.font = 'italic 400 34px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('the BEANS dog · model sheet v3, for approval', 100, 176);
   c.restore();
   label(c, 'GOLDENDOODLE · CEL / LINE BOIL · NEVER REDRAW: IMPORT characters/miya', 2304, 128, { align: 'right', font: '600 18px "Inter"', color: PAL.navy });
   G.inkStroke(c, [[96, 206], [2304, 206]], { seed: 11 + v, w: 3, t0: 30, t1: 30, min: 0.4, amp: 1.2, heavy: 0 });
