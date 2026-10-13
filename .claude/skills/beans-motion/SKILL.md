@@ -112,7 +112,7 @@ Calming lilac `#D4BAE9` (`#9F8BAF`) · Hip & Joint peach `#FDDBB4` (`#BEA487`).
   first and rejected: it turned the pastels garish, e.g. Skin & Coat → `#EC608A`.)
 - One product accent per video: the protein for a treats topic, the pastel for a supplement topic. A topic with no
   product uses navy + cream + orange only; ask the owner if unclear.
-- Brand orange is used sparingly, like beans.sg: handwritten callouts and their arrows, a sticker tag, one emphasised
+- Brand orange is used sparingly in every video (owner: yes), like beans.sg: handwritten callouts and their arrows, a sticker tag, one emphasised
   word. It never fills large areas and never competes with the product accent.
 - The paper ground is brand cream (`cel/assets/paper_base.jpg`, rebuilt to `#FFF7EA`); with grain on top it measures
   about `#FAF2E5`. Never a stark white frame.
@@ -192,9 +192,12 @@ What the site sounds like (2026-10-13):
   `CREDITS.md` (and in the script). Supplement benefits use the brand's own careful phrasing ("helps", "supports",
   "less scratching") and never claim to cure or treat.
 
-**Tone guardrail:** premium and warm, never cutesy, never clinical. Teach, don't sell: films can be product-forward
-in look (the beans.sg hero shows pouches and chew tins next to Miya), but there are no prices, discount codes or
-"shop now" lines, and the logo appears on the end card only.
+**Tone guardrail:** premium and warm, never cutesy, never clinical. Teach, don't sell: films may be product-forward
+(owner: yes): BEANS pouches and chew tins can be drawn as hero objects, redrawn from the product shots on beans.sg in the
+cel style. No prices, discount codes or "shop now" lines; the logo appears on the end card only.
+
+**Owner exceptions on sourcing:** the pilot's line "It's not the dog. It's the protein." is the brand's own message
+and needs no source (owner, 2026-10-13). Every other fact or number still needs one.
 
 **Sound:** warm, understated acoustic music: nylon or steel guitar, upright bass, soft piano, brushed percussion, a
 little vibraphone or harp at most (`pluck.guitar`, `pluck.harp`, `samples.inst('piano'|'vibraphone'|'harp')`,
@@ -205,20 +208,25 @@ Master −14 LUFS integrated, true peak ≤ −1 dBTP.
 
 ## 6. Logo
 
-- Files: `assets/brand/logo/`. Versions: (a) the BEANS wordmark with a paw print inside the A, (b) the standalone
-  paw-B icon; each in navy on cream and cream on navy.
-- Currently on file: `beans-logo-source.png` (navy wordmark, transparent, 424×154 px, from the owner's link). It is
-  too small to place sharply at end-card size; use it for drafts only. Final renders need the owner's vector (SVG)
-  or high-resolution files for all four versions.
-- **Never redraw, boil, trace, recolour, outline or restyle the logo.** Place the supplied file clean and still on
-  the end card (the paper and drawings around it may keep boiling). Navy-on-cream on a cream end card; cream-on-navy
-  on a navy end card.
-- Logo on the end card only.
+Files in `assets/brand/logo/` (owner-supplied 2026-10-13; this is the full set that exists):
+
+| File | Use |
+|---|---|
+| `beans-wordmark-navy.png` (1545×415, transparent) | **the end-card logo**: BEANS wordmark, paw print inside the A |
+| `beans-paw-b-icon-navy.png` (1343×1304, transparent) | standalone paw-B icon (small sign-offs, stickers) |
+| `*-on-white-2000.webp`, `*-navy-500.png`, `*-navy-829.png`, `beans-logo-source.png` | the owner's originals, kept as sources |
+
+- The transparent versions were made from the owner's 2000 px files by removing the white background only
+  (alpha = how far each pixel is from white; colour unchanged, navy `#264070`). The paw inside the A shows the paper.
+- Only navy-on-light versions exist. End cards are therefore cream paper + navy logo. **Never recolour the logo**
+  to make a cream-on-navy version; if a navy end card is ever wanted, ask the owner for that file.
+- **Never redraw, boil, trace, recolour, outline or restyle the logo.** Place the file clean and still on the end
+  card (the paper and drawings around it may keep boiling). Logo on the end card only.
 
 ## 7. Reference style
 
-- No reference reels yet. Benchmark against the 05-cel-boil demo in `mg-styles-15` plus Buck's and Giant Ant's
-  hand-drawn work.
+- No reference reels: BEANS films are meant to become the reference (owner). Benchmark craft against the 05-cel-boil
+  demo in `mg-styles-15` plus Buck's and Giant Ant's hand-drawn work.
 - Match the beans.sg hero: cream background, navy, product-forward (pouches and chew tins drawn as hero objects),
   playful handwritten callouts with arrows, small tilted Oswald stickers. Premium and warm, never cutesy, never clinical.
 
