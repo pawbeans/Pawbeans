@@ -4,8 +4,8 @@ Series: Dog Decoded (no BEANS mention: no logo, product or URL). Idea D1, owner'
 Hook formula: "Where your dog [sleeps] says a lot about you." Length 32.5 s, 1080×1920, 24 fps. Mood accent: lilac (Calming pastel, no product meaning).
 
 - [x] Gate 1: idea picked by owner (2026-10-13, ★1 D1, six spots)
-- [x] Gate 2: script: routine: standing approval (owner 2026-10-13), overnight veto
-- [x] Gate 3: key frames for the whole film (39 stills) → `review/2026-10-13-where-your-dog-sleeps-keyframes-{a,b,c}.png`: routine: standing approval (owner 2026-10-13), overnight veto
+- [x] Gate 2: script: approved by owner ("approved", 2026-10-13 night, this version)
+- [x] Gate 3: key frames for the whole film (39 stills) → `review/2026-10-13-where-your-dog-sleeps-keyframes-{a,b,c}.png`: approved by owner ("approved", 2026-10-13 night, this version)
 - [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown (08:28 run)
 
 Pending / unapproved inputs in use: Miya's NEW poses `sleep` (chin on paws) and `curl` (donut), added to `characters/miya/miya.js`
