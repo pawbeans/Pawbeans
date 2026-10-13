@@ -5,7 +5,10 @@ Source brief: `BRIEF.md` (owner, 2026-10-13). Adapted to the BEANS cel house sty
 - [x] Gate 1: idea set by the owner (production brief)
 - [x] Gate 2: script = the brief's 20 captions, used word for word (British spelling, no em dashes)
 - [x] Gate 3: key frames for the whole film (66 stills, every second + 8 hero beats) → boards `review/inside-your-dog-keyframes-{a,b,c,d}.png`. Approved by owner ("render", 2026-10-13): no sources needed for the on-screen claims, keep the poop.
-- [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown
+- [x] Gate 4: rendered → reviewed (rubric) → revised once → shown (v2, 2026-10-13)
+  - v1 rubric scores (separate review): style 6 · concept 6 · motion 5 · design 6 · finish 6 · sound 6 · technical 5. Failed true peak (−0.7 dBTP), caption safe zone, smear-frame check; ghost labels in crossfades.
+  - Revision 1 (v2): all critical and high fixes, plus N2 (contrast), N4, N5, N6, N7, N8. Not done: N1 (two fast captions), N3 (brain halo blend).
+  - v2 spec: 58.000 s, 1392 frames, 1080×1920, 24 fps, H.264 + AAC 48 kHz, −14.0 LUFS, −1.9 dBTP (master mp4). Master `out/inside-your-dog-v2.mp4` (93 MB, gitignored); viewing copy `review/inside-your-dog-v2.mp4` (24 MB).
 
 Spec: 58.0 s, 1080×1920, 24 fps (brief said 30; house rule is 24), H.264 + AAC 48 kHz, −14 LUFS, TP ≤ −1 dBTP.
 Character: Miya (`characters/miya`, approved v3). Logo: `assets/brand/logo/beans-wordmark-navy.png`, placed clean, never boiled.
