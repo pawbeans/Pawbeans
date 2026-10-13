@@ -17,3 +17,6 @@ review/*.mp4
 
 # full-size key-frame stills are regenerable (scripts/cel-render.sh --stills); boards + hero stills are committed explicitly
 films/*/out/stills/
+# daily-film deliverables are sent to the owner, not committed (too large to keep daily)
+films/*/review/*.mp4
+films/*/review/*.wav

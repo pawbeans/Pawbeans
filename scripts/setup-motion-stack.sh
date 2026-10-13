@@ -5,7 +5,15 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # 1. mg-styles-15 (MIT): renderer, audio toolkit, style prompts. Kept out of git (2 GB with its films).
-[ -d mg-styles-15 ] || git clone https://github.com/Vincentwei1021/mg-styles-15.git mg-styles-15
+# BEANS_MINIMAL=1 (the daily routine): shallow clone without the 420 MB videos/ folder, and skip the fallbacks below.
+if [ ! -d mg-styles-15 ]; then
+  if [ "${BEANS_MINIMAL:-0}" = 1 ]; then
+    git clone --depth 1 --filter=blob:none --no-checkout https://github.com/Vincentwei1021/mg-styles-15.git mg-styles-15
+    (cd mg-styles-15 && git sparse-checkout set --no-cone '/*' '!/videos/' && git checkout)
+  else
+    git clone https://github.com/Vincentwei1021/mg-styles-15.git mg-styles-15
+  fi
+fi
 (cd mg-styles-15 && npm install)
 PY=$(command -v python3.12 || command -v python3.11)
 [ -d mg-styles-15/.venv ] || "$PY" -m venv mg-styles-15/.venv
@@ -18,6 +26,7 @@ F=mg-styles-15/assets/fonts; mkdir -p $F/latin/caveat $F/cjk/longcang $F/cjk/lxg
 [ -f $F/cjk/longcang/LongCang-Regular.ttf ] || curl -sSf -o $F/cjk/longcang/LongCang-Regular.ttf "$R/google/fonts/main/ofl/longcang/LongCang-Regular.ttf"
 [ -f $F/cjk/lxgwmarkergothic/LXGWMarkerGothic-Regular.ttf ] || curl -sSf -o $F/cjk/lxgwmarkergothic/LXGWMarkerGothic-Regular.ttf "$R/lxgw/LxgwMarkerGothic/main/fonts/ttf/LXGWMarkerGothic-Regular.ttf"
 
+if [ "${BEANS_MINIMAL:-0}" = 1 ]; then echo "Done (minimal). Render with scripts/cel-render.sh."; exit 0; fi
 # 2. Fallback: HyperFrames headless Chrome
 npx -y hyperframes@latest browser ensure || true
 

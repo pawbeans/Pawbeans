@@ -1,6 +1,6 @@
 ---
 name: beans-motion
-description: The BEANS (beans.sg) motion bible and production workflow. Read it FIRST for any BEANS video, reel, short, social clip, motion graphic, animation or explainer, and before /hyperframes, /remotion or any other video skill. House style is cel animation with line boil (mg-styles-15, prompt 05-cel-boil), rendered with mg-styles-15/harness/render.mjs and lib/audio. Sets the brand palette, the BEANS dog Miya (never redraw her), fonts, logo rules, brand voice and copy rules, sound, output spec, safe zones, the review loop, and the four approval gates. Never render a BEANS video without the owner's explicit approval.
+description: The BEANS (beans.sg) motion bible and production workflow. Read it FIRST for any BEANS video, reel, short, social clip, motion graphic, animation or explainer, and before /hyperframes, /remotion or any other video skill. House style is cel animation with line boil (mg-styles-15, prompt 05-cel-boil), rendered with mg-styles-15/harness/render.mjs and lib/audio. Sets the brand palette, the BEANS dog Miya (never redraw her), fonts, logo rules, brand voice and copy rules, sound, output spec, safe zones, the review loop, the four approval gates, today's craft lessons and the daily series (Dog Decoded / Inside Your Dog). Never render a BEANS video without the owner's explicit approval; the daily routine has standing approval with an overnight veto (§14).
 ---
 
 # BEANS Motion Bible: Cel Animation / Frame-by-Frame & Line Boil
@@ -27,10 +27,16 @@ clinical. When this file and a generic skill disagree, this file wins.
 
 Render commands (from the repo root):
 ```bash
-scripts/cel-render.sh films/<slug> --stills 0.4,1.5,3,6.8,9.5      # key-frame stills → films/<slug>/out/stills/
-mg-styles-15/.venv/bin/python films/<slug>/audio.py                  # soundtrack → films/<slug>/out/audio.wav
-scripts/cel-render.sh films/<slug> --workers 3                       # full render → films/<slug>/out/video.mp4  (Gate 4 only)
+scripts/cel-render.sh films/<slug> --stills 0.5,1.5,2.5,...           # key-frame stills → films/<slug>/out/stills/ (~0.3 s each)
+mg-styles-15/.venv/bin/python films/<slug>/audio.py                  # sound effects → films/<slug>/out/audio.wav (~1 min)
+scripts/cel-render.sh films/<slug> --noaudio --workers 4 --out $PWD/films/<slug>/out/picture.mp4   # picture (~6 min for 58 s; Gate 4 only)
+ffmpeg -i out/picture.mp4 -i out/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 320k -ar 48000 -shortest -movflags +faststart out/<slug>-vN.mp4
+ffmpeg -i out/<slug>-vN.mp4 -af ebur128=peak=true -f null -          # loudness + true peak on the MUXED file, not the WAV
+ffmpeg -i out/<slug>-vN.mp4 -c:v libx264 -preset slow -b:v 3300k -maxrate 4000k -bufsize 8000k -pix_fmt yuv420p \
+       -c:a aac -b:a 192k -movflags +faststart review/<slug>-vN.mp4   # viewing copy under the 30 MB upload limit
 ```
+Full-size stills are gitignored (`films/*/out/stills/`); commit the boards and the hero stills only (`git add -f`).
+The master mp4 (~90 MB) stays local; the viewing copy and the SFX WAV go in `review/`.
 
 ## 1. Style: signature features and key techniques
 
@@ -199,16 +205,21 @@ cel style. No prices, discount codes or "shop now" lines; the logo appears on th
 **Owner exceptions on sourcing:** the pilot's line "It's not the dog. It's the protein." is the brand's own message
 and needs no source (owner, 2026-10-13). Every other fact or number still needs one.
 
-**Sound:** warm, understated acoustic music: nylon or steel guitar, upright bass, soft piano, brushed percussion, a
+**Sound: sound effects only, by default (owner, 2026-10-13).** The owner adds their own music in the edit. Deliver
+the film with soft, synced foley and no music bed, mastered at **−16 LUFS, true peak ≤ −2 dBTP** (measured on the
+muxed mp4: AAC adds about 0.5 dB), plus the SFX-only WAV as a stem in `review/`. Foley palette that worked: paper
+rustle for fur and scratching, soft pops for labels, soft impacts for hits, gentle squelch / gloop for gut moments,
+whooshes for camera moves, harp notes (not celesta, not sine blips) for "ping" moments, one cinematic impact for the
+hero beat. Every hit lands on its picture event (within one frame). Sampler note: mg-styles-15 ships only part of
+the VCSL library; build instruments with the shipped files only (see `avail()` in the Inside Your Dog `audio.py`).
+
+**Music, only when the owner asks for it** (the generated piano/guitar score was rejected: "doesn't suit the video
+at all"): warm, understated acoustic music: nylon or steel guitar, upright bass, soft piano, brushed percussion, a
 little vibraphone or harp at most (`pluck.guitar`, `pluck.harp`, `samples.inst('piano'|'vibraphone'|'harp')`,
 `drums.snare('brush')`); starting points `recipes.lofi(flavor='chill', keys='piano')` or
 `recipes.ambient(flavor='piano')`, thinned out. Soft foley (paper, pen, paws on the floor, fur rustle, a breath)
 synced to the cue sheet. **No zany cartoon SFX: no xylophone, no slide whistle, no boing, no cork pops, no squeaks.**
-Master −14 LUFS integrated, true peak ≤ −1 dBTP.
-**Owner feedback (2026-10-13, Inside Your Dog):** the owner hated the generated piano/guitar score ("doesn't suit
-the video at all") and adds music themselves. Default from now on: **deliver sound effects only** (no music bed),
-mastered at −16 LUFS with true peak ≤ −2 dBTP so their music fits on top, plus the SFX-only WAV as a stem. Only
-compose music when the owner asks for it. The foley approach (soft, synced, acoustic) was liked: keep it.
+With music: master −14 LUFS integrated, true peak ≤ −2 dBTP on the muxed file.
 
 ## 6. Logo
 
@@ -236,12 +247,17 @@ Files in `assets/brand/logo/` (owner-supplied 2026-10-13; this is the full set t
 
 ## 8. Output spec (default)
 
-- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), −14 LUFS, TP ≤ −1 dBTP.
-  (The pilot and tests may be shorter, as briefed.)
+- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), sound effects only at −16 LUFS,
+  TP ≤ −2 dBTP on the muxed file (§5). Daily series lengths in §14. A brief may set a longer runtime (Inside Your Dog
+  ran 58 s and was approved).
 - Hook in the first 0.5 s: never open on more than 0.3 s of empty paper. One unmistakable hero moment at about
-  60–75 % of the runtime. End on the BEANS logo end card (§6), held about 1 s while the drawing around it boils (on 3s).
+  60–75 % of the runtime. End on the BEANS logo end card (§6), held about 1 s while the drawing around it boils (on 3s). Exception: Dog
+  Decoded (viral) films never mention BEANS: no logo, no product, no beans.sg; they end on a question card (§14).
 - **Captions always on** for any voiceover or spoken idea: Inter on a card-cream caption card (hand-cut, boiling
-  edge), max 2 lines, inside the safe zones.
+  edge), max 2 lines, inside the safe zones. The card pops in opaque (scale 0.82 → 1.04 → 1) and only the words build
+  in; back-to-back cards stay up instead of re-popping (`caption()` in the Inside Your Dog `cast.js`).
+- **Reading pace:** at most about 3.5 words per second, and every card on screen for at least 1.5 s (the owner found
+  4.2 words/s too quick). Emphasised words in `PAL.orangeShade`, not light orange (contrast).
 - **Safe zones (1080×1920):** keep all text and key action inside x 60–940, y 220–1480 (platform UI covers the top
   220 px, the bottom 440 px and the right-hand buttons). Caption cards are centred at y 1440 (three-quarter height, owner 2026-10-13: higher cards covered the
   animation); a two-line card reaches about y 1533, accepted by the owner. Below y 1480 and right of
@@ -277,17 +293,20 @@ the gates in `films/<slug>/PRODUCTION.md`.
    Miya poses needed (and any new ones), length. Stop: **the owner picks one.**
 2. **Script.** A detailed script with a strong hook, written to §5: a beat table (time, picture, on-screen text /
    captions, exposure on 1s/2s/3s, cel FX, sound), a source for every fact. Stop: **the owner refines and approves it.**
-3. **Storyboard and key frames.** Build the film page and cue sheet, then render **6–10 key-frame stills** with
-   `--stills` (plus a contact sheet). Show them with a beat-by-beat timeline. Stills are not a render of the video.
+3. **Storyboard and key frames.** Build the film page and cue sheet, then render key frames **for the entire film**
+   (owner's preference): one still per second at x.5 s plus every hero beat, laid out on boards grouped by section
+   with timecodes (`review/<slug>-keyframes-{a,b,c,d}.png`, Oswald headings, hero frames marked in orange). Look at
+   every board yourself before sending (stale pixels, overlaps, safe zones). Stills are not a render of the video.
    Stop: **the owner approves**, or gives notes and Gate 3 repeats.
 4. **Render.** Only after explicit approval of the current key frames. Render audio and video, check the spec
-   (duration, 1080×1920, 24 fps, −14 LUFS, TP ≤ −1 dBTP, no black frames, no fallback fonts, nothing outside the safe
+   (duration, 1080×1920, 24 fps, −16 LUFS SFX-only, TP ≤ −2 dBTP on the mp4, no black frames, no fallback fonts, nothing outside the safe
    zones), then run the **quality loop**:
    - **Review:** a separate reviewer (a subagent that did not make the film) judges the render with
      `mg-styles-15/rubric.md` step 1: contact sheet, filmstrips, full-res frames, spec checks, scores, and a fix list.
    - **Revise once:** apply the critical and high-impact fixes (rubric step 2), re-render and re-check.
    - Then show the owner the revised film, the review's scores, what changed and what's still weak.
-   Any change after approval that alters what the owner approved goes back to Gate 3.
+   Any change after approval that alters what the owner approved goes back to Gate 3. Owner notes on a shown film
+   (timing, caption position, sound) are applied directly and re-rendered as the next version (v3 and on).
 
 `PRODUCTION.md` template:
 ```
@@ -313,3 +332,46 @@ Sources (also in CREDITS.md): …
 - [ ] Logo: the supplied file, placed clean, end card only, never boiled or restyled
 - [ ] Soft foley synced to picture (SFX only unless the owner asks for music); no xylophone or cartoon SFX
 - [ ] `CREDITS.md` complete; deterministic page (no `Math.random`, no clocks)
+
+## 13. Craft lessons (Inside Your Dog, 2026-10-13)
+
+What the first full film taught us. The reviewer caught most of these on v1; build them in from the start.
+- **Paint every pixel every frame.** `render()` starts with a full cream fill, and every shot's background covers the
+  whole frame (a 60 px unpainted band in the gut wall let a previous frame's label show through).
+- **Crossfades:** draw the outgoing shot at the real time, not frozen at the cut, and end its labels (fade done)
+  by the cut. Freezing it left half-transparent "ghost" labels for the whole fade.
+- **Smear frames are required:** one or two frames of the moving thing stretched along its path (about 2.4–3× long,
+  0.6× wide) on every fast move: things flying in, flying away, rebounds. Add a one-frame squash on contact.
+- **Fast motion goes on 1s** in `SCHED`, with speed capped at about 40 px per frame (on 2s, pellets jumped
+  200–360 px per drawing and strobed).
+- **Impact frames** (two frames, full-bleed flat colour + star) carry no captions, titles or labels.
+- **Logo above the grain:** draw the logo again after `drawTooth` once it is fully in, so the paper grain never
+  crawls over it.
+- **Hero text needs time:** a big word like SCRATCH! stays fully readable for at least 1.2 s, and the caption that
+  names it is on screen at the same time. Hide the section title while hero text owns the top of frame.
+- **Wipes start where the eye is:** a circle wipe grows from the projected point (Miya's mouth), not the frame
+  centre, and the next shot opens with an iris from the wipe colour (a hard cut from navy to peach was the biggest
+  jump in v1).
+- **Never two text blocks at once** (a callout card plus a caption): run them one after the other.
+- **Labels sit clear of caption cards** (cards are centred at y 1440; keep labels above about y 1250).
+- Owner preferences learned: bodily-function humour is fine when it is drawn with restraint (the poop stayed);
+  claims in a brief the owner supplies were waived for sources (that film only); whole-film key frames before any
+  render; sound effects only.
+
+## 14. Daily series (routine)
+
+Every day a new film is made automatically: concept, script and whole-film key frames at night; render, review,
+one revision and delivery in the morning. Two alternating series:
+- **Dog Decoded** (viral, educational, no BEANS mention at all): dog behaviour and dog science that hooks anyone with
+  a dog. Series tag "DOG DECODED". No logo, no product, no beans.sg; ends on a question card. Miya is the star.
+- **Inside Your Dog** (BEANS, educational): the body, food, allergies and wellbeing, pointing subtly to novel
+  proteins or a supplement. Series tag "INSIDE YOUR DOG". Product may appear as a hero object near the end; logo
+  end card as usual.
+
+The playbook (formats, hooks, retention rules, sourcing, the idea bank, the log and the night / morning runbooks)
+lives in `content/`: start at `content/PLAYBOOK.md`.
+
+**Standing approval (owner, 2026-10-13):** routine films may be rendered in the morning without a separate "render"
+from the owner. The night run sends the concept and key-frame boards; the owner can reply in that session overnight
+with notes (applied before the morning run) or "skip" (no render). Everything else in this bible still applies,
+including the review loop and the copy rules.
