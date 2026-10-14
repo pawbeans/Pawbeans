@@ -19,9 +19,19 @@ import soundfile as sf
 from math import gcd
 from scipy.signal import resample_poly
 
-DUR = 32.5
-RESOLVE = 25.21          # her head pops out, tucked against you: the music lands home here
-BAR = RESOLVE / 10       # ten bars of 4/4 up to the resolve (≈ 95 bpm, a gentle pace)
+# v5: the film is re-timed around the voiceover (vo.py → out/timeline.json). Every time below is written in animation
+# time (the 32.5 s cut, as in js/scene.js) and placed through the same warp, so each hit stays on its picture event.
+TL = json.load(open(os.path.join(HERE, 'out', 'timeline.json')))
+DUR = TL['dur']
+def new(t):
+    """animation time → film time"""
+    A = TL['warp']
+    for (n0, o0), (n1, o1) in zip(A, A[1:]):
+        if t <= o1: return n0 + (n1 - n0) * (t - o0) / ((o1 - o0) or 1)
+    return A[-1][0]
+RESOLVE = new(25.21)     # her head pops out, tucked against you: the music lands home here
+NB = max(4, round(RESOLVE / 2.52))   # whole bars of 4/4 up to the resolve, kept near 95 bpm (a gentle pace)
+BAR = RESOLVE / NB
 m = mg.Mix(duration=DUR, bpm=240 / BAR, anchor=0.0)
 m.master_kw.update(tilt=1.2, air=1.5)   # lift presence for phones
 
@@ -36,7 +46,7 @@ def avail(key):
 HARP = avail('harp')
 GLOCK = avail('glock')
 SFX_LIFT = 3.0   # foley sits under the voice
-S = lambda snd, at, gain=0.0, **kw: m.sfx(snd, at, gain=gain + SFX_LIFT, **kw)
+S = lambda snd, at, gain=0.0, **kw: m.sfx(snd, new(at), gain=gain + SFX_LIFT, **kw)
 harp = lambda note, at, gain=-13: S(HARP.play(note, 1.2, 0.4, release=0.6).loud(-18), at=at, gain=gain)
 
 # hook: a soft breath of fur as she settles, the caption pop
@@ -92,11 +102,11 @@ for ln in json.load(open(os.path.join(HERE, 'out', 'vo.json'))):
 m.group('vo').level = -16.0
 
 # ------------------------------------------------------------------ music: D major, ukulele + pizzicato + glockenspiel
-# D | Bm | G | A | D | Bm | G | A | G | A7 || D (bar 10 = the snuggle)
+# D | Bm | G | A (repeated) … | G | A7 || D (bar NB = the snuggle)
 UKE = {'D': ['F#4', 'A4', 'D5'], 'Bm': ['F#4', 'B4', 'D5'], 'G': ['G4', 'B4', 'D5'], 'A': ['E4', 'A4', 'C#5'],
        'A7': ['E4', 'G4', 'C#5']}
 BASS = {'D': ('D3', 'A2'), 'Bm': ('B2', 'F#3'), 'G': ('G2', 'D3'), 'A': ('A2', 'E3'), 'A7': ('A2', 'E3')}
-PROG = ['D', 'Bm', 'G', 'A', 'D', 'Bm', 'G', 'A', 'G', 'A7']
+PROG = (['D', 'Bm', 'G', 'A'] * 8)[:NB - 2] + ['G', 'A7']
 beat = lambda bar, b: bar * BAR + b * BAR / 4
 uke, pz, gl = (m.track(n, gain=g, sends={'room': -14}) for n, g in (('uke', 0.0), ('pizz', -4.0), ('glock', 2.0)))
 for i, ch in enumerate(PROG):
@@ -107,13 +117,13 @@ for i, ch in enumerate(PROG):
         r, f = BASS[ch]
         for b, nt in ((0, r), (1, f), (2, r), (3, f)):
             pz.add(pluck.pizz(nt, 0.5, 0.75 if b == 0 else 0.6, seed=200 + i * 4 + b), at=beat(i, b))
-# a walk-up into the resolve as she dives (bar 9, beats 2.5–3.5)
+# a walk-up into the resolve as she dives (the last bar, beats 2.5–3.5)
 for b, nt in ((2.5, 'B2'), (3, 'C#3'), (3.5, 'D3')):
-    pz.add(pluck.pizz(nt, 0.4, 0.7, seed=290 + int(b * 2)), at=beat(9, b))
+    pz.add(pluck.pizz(nt, 0.4, 0.7, seed=290 + int(b * 2)), at=beat(NB - 1, b))
 # glockenspiel: a small playful motif, every other bar, quiet
 MOTIF = [(0, 'F#5'), (0.5, 'A5'), (1, 'B5'), (2, 'A5')]
 ANSWER = [(0, 'D5'), (0.5, 'E5'), (1, 'F#5'), (2.5, 'E5')]
-for i in range(1, 10, 2):
+for i in range(1, NB, 2):
     for b, nt in (MOTIF if i % 4 == 1 else ANSWER):
         gl.add(GLOCK.play(nt, 1.0, 0.42, release=0.5), at=beat(i, b))
 # the resolve: a full strum, low pizz, a glockenspiel sparkle up to D6; it rings out and the music ends

@@ -32,8 +32,9 @@ without asking questions; where a decision is the owner's, make the safe choice 
 - Write `films/<today>-<slug>/PRODUCTION.md` with: title, series, hook formula, the beat table (time, picture,
   captions, exposure 1s/2s/3s, cel FX, foley), why it should travel (one line), sources, and gates:
   Gate 1–3 "routine: standing approval (owner 2026-10-13), overnight veto"; Gate 4 open.
-- Copy rules (bible §5) and the playbook's retention rules (hook ≤ 1.5 s and ≤ 7 words, change every 1.5–2.5 s,
-  numbered structure where it fits, payoff at 70–85 %, loop or question ending, ≤ 3.5 words/s, cards ≥ 1.5 s).
+- Write the voiceover first (playbook §2.7): spoken, natural sentences that name each item; the captions are those
+  exact words. Then copy rules (bible §5) and the playbook's retention rules (hook ≤ 1.5 s and ≤ 7 words, change every
+  1.5–2.5 s, numbered structure where it fits, payoff at 70–85 %, loop or question ending).
 - Dog Decoded: no BEANS mention anywhere (no logo, product, URL). Inside Your Dog: product near the end, logo end card.
 
 ## 3. Build

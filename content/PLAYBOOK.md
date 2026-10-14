@@ -34,8 +34,14 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
 5. **Pay off at 70–85 % of the runtime**, the hero beat (smear, impact frames, a big reveal).
 6. **End on a loop or a question.** Dog Decoded: question card, then the last frame matches the first so the replay
    is seamless. Inside Your Dog: one-line payoff, then the logo.
-7. **Captions carry the whole story** (there is no voiceover; the owner adds music). Max about 3.5 words per second,
-   every card at least 1.5 s, cards centred at y 1440.
+7. **Voice first (owner, 2026-10-14).** Write the script as a voiceover: what a warm, playful person would say to a
+   friend, so the film makes sense with your eyes shut. Name each item out loud ("First, on your bed. That usually
+   means you're family."), never fragments that lean on an on-screen label ("It can mean you're family."). The captions
+   are exactly the spoken words, cut into cards by sentence and built word by word as they are said; labels and
+   counters stay as visual extras. The voice sets the length: re-time the picture around it (see
+   `films/2026-10-13-where-your-dog-sleeps/vo.py`: one take per section, key moments landing on their words) rather
+   than squeezing the voice. Voice: ElevenLabs "Jessica" (needs `ELEVENLABS_API_KEY` in the environment), with
+   music and soft foley under it. Cards centred at y 1440.
 8. **Make it personal:** "your dog", "you", never "dogs in general" in the hook.
 9. **Shareable truth:** one line a viewer would send to a friend ("They literally evolved eyebrows for you.").
 10. **No bait we can't pay off.** If the hook promises a meaning, the film delivers it.
