@@ -21,3 +21,5 @@ films/*/out/stills/
 films/*/review/*.mp4
 films/*/review/*.wav
 films/*/out/stems/
+films/*/out/vo/raw/
+films/*/review/voice-samples/

@@ -4,21 +4,34 @@ The voice reads exactly the on-screen words: the hook headline, every caption ca
 as its card appears and ends before the card leaves; every caption word then builds in on the frame it is spoken
 (word times from forced alignment are written to js/vo.js and used by scene.js).
 
-Voice: Kokoro-82M (local, Apache-2.0), a blend of af_heart (warm) and af_bella (bright). Alignment: faster-whisper.
-Needs a Python with `kokoro-onnx soundfile faster-whisper` and the Kokoro model files that `npx hyperframes tts` caches:
-  <py> films/<slug>/vo.py   →  out/vo/<id>.wav, out/vo.json (placement for audio.py), js/vo.js (caption word times)
+Voice (owner, 2026-10-14): ElevenLabs Eleven v3 when ELEVENLABS_API_KEY is set (never commit the key), voice
+"Jessica – Playful, Bright, Warm" unless BEANS_VO_VOICE names another voice id; one gentle delivery tag per line.
+A take is redone (new seed) if the words heard don't match the card. Takes are cached in out/vo/raw/ by text, voice
+and seed, so re-runs spend no credits. Without a key it falls back to local Kokoro-82M (Apache-2.0).
+Alignment: faster-whisper. Needs a Python with `soundfile faster-whisper` (+ `kokoro-onnx` for the fallback):
+  ELEVENLABS_API_KEY=… <py> films/<slug>/vo.py  →  out/vo/<id>.wav, out/vo.json (for audio.py), js/vo.js (word times)
 """
-import json, os, re, difflib
+import json, os, re, difflib, hashlib, subprocess, urllib.request
 import numpy as np
 import soundfile as sf
-from kokoro_onnx import Kokoro
 from faster_whisper import WhisperModel
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.expanduser('~/.cache/hyperframes/tts')
 OUT = os.path.join(HERE, 'out', 'vo')
-SPEED, MAX_SPEED = 0.92, 1.25   # a gentle pace; a line only speeds up if its card is short
+SPEED, MAX_SPEED = 0.92, 1.25   # Kokoro: a gentle pace; a line only speeds up if its card is short
 MIX = (('af_heart', 0.6), ('af_bella', 0.4))
+EL_KEY = os.environ.get('ELEVENLABS_API_KEY')
+EL_VOICE = os.environ.get('BEANS_VO_VOICE', 'cgSgspJ2msm6clMCkdW9')   # Jessica – Playful, Bright, Warm
+# model: eleven_multilingual_v2 (default) takes a speed setting and fits the cards; eleven_v3 is more expressive but
+# slower (≈ 33 s of speech for this 32.5 s film) and ignores speed
+EL_MODEL = os.environ.get('BEANS_VO_MODEL', 'eleven_multilingual_v2')
+EL_SETTINGS = {'eleven_v3': {'stability': 0.5},
+               'eleven_multilingual_v2': {'stability': 0.4, 'similarity_boost': 0.8, 'style': 0.4, 'use_speaker_boost': True, 'speed': 1.0}}
+EL_TRIES, MAX_TEMPO = 4, 1.2   # a take longer than its card is sped up at most 1.2× (pitch kept)
+# delivery direction (Eleven v3 audio tags, not spoken); default [warmly]
+TAG = {'c0': '[playfully]', 'c3': '[softly]', 'c9': '[playfully]', 'c11': '[softly, teasing]', 'c12': '[tenderly]',
+       'q': '[playfully]'}
 
 # id, card in, card out, on-screen text (as in scene.js CAPS, ** = emphasis), card already up (no pop)
 LINES = [
@@ -43,7 +56,9 @@ SAY = {'q': 'Where does yours, sleep? Tell us below.'}
 LEAD_POP, LEAD_CONT, TAIL = 0.10, 0.03, 0.08   # voice starts once a popping card is up; ends before the card goes
 
 
-def norm(w): return re.sub(r'[^a-z0-9]', '', w.lower().replace('’', "'"))
+def norm(w):   # ASR can't hear the difference between homophones, so they count as a match
+    w = re.sub(r'[^a-z0-9]', '', w.lower().replace('’', "'"))
+    return {'youre': 'your'}.get(w, w)
 
 
 def tts_text(s):
@@ -58,27 +73,69 @@ def trim(y, sr, th=0.01):
     return y[a:b]
 
 
+def el_take(lid, say, seed):
+    """One ElevenLabs take as float mono at 24 kHz, cached by model + voice + settings + seed + text."""
+    if EL_MODEL == 'eleven_v3':   # audio tags are v3 only (other models would read them aloud)
+        say = f"{TAG.get(lid, '[warmly]')} {say}"
+    key = hashlib.sha1(f'{EL_MODEL}|{EL_VOICE}|{seed}|{json.dumps(EL_SETTINGS[EL_MODEL], sort_keys=True)}|{say}'.encode()).hexdigest()[:12]
+    raw = os.path.join(OUT, 'raw', f'{lid}-{key}.wav')
+    if not os.path.exists(raw):
+        os.makedirs(os.path.dirname(raw), exist_ok=True)
+        body = json.dumps({'text': say, 'model_id': EL_MODEL, 'seed': seed, 'voice_settings': EL_SETTINGS[EL_MODEL]}).encode()
+        req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{EL_VOICE}?output_format=pcm_24000', body,
+                                     {'xi-api-key': EL_KEY, 'Content-Type': 'application/json'})
+        pcm = np.frombuffer(urllib.request.urlopen(req, timeout=120).read(), dtype='<i2')
+        sf.write(raw, pcm.astype(np.float32) / 32768, 24000)
+    y, sr = sf.read(raw, dtype='float32')
+    return y, sr
+
+
+def tempo(y, sr, k):
+    """Speed up by k without changing pitch (ffmpeg atempo)."""
+    p = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(sr), '-ac', '1', '-i', '-', '-af', f'atempo={k:.4f}',
+                        '-f', 'f32le', '-'], input=y.astype('<f4').tobytes(), capture_output=True, check=True)
+    return np.frombuffer(p.stdout, dtype='<f4').copy()
+
+
+def heard_words(asr, path):
+    segs, _ = asr.transcribe(path, word_timestamps=True, language='en')
+    return [(w.start, w.word) for s in segs for w in s.words]
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
-    k = Kokoro(os.path.join(CACHE, 'models', 'kokoro-v1.0.onnx'), os.path.join(CACHE, 'voices', 'voices-v1.0.bin'))
-    voice = sum(w * k.get_voice_style(v) for v, w in MIX).astype(np.float32)
     asr = WhisperModel('small.en', device='cpu', compute_type='int8')
+    if not EL_KEY:
+        from kokoro_onnx import Kokoro
+        k = Kokoro(os.path.join(CACHE, 'models', 'kokoro-v1.0.onnx'), os.path.join(CACHE, 'voices', 'voices-v1.0.bin'))
+        voice = sum(w * k.get_voice_style(v) for v, w in MIX).astype(np.float32)
     place, caps, report = [], {}, []
     for lid, t0, t1, text, cont in LINES:
         start = t0 + (LEAD_CONT if cont else LEAD_POP)
         budget = t1 - TAIL - start
-        speed = SPEED
-        while True:
-            y, sr = k.create(SAY.get(lid) or tts_text(text), voice=voice, speed=speed, lang='en-us', sentence_pause=0.14)
-            y = trim(y, sr)
-            dur = len(y) / sr
-            if dur <= budget or speed >= MAX_SPEED: break
-            speed = min(MAX_SPEED, speed * dur / budget * 1.02)
-        path = os.path.join(OUT, f'{lid}.wav')
-        sf.write(path, y, sr)
-        segs, _ = asr.transcribe(path, word_timestamps=True, language='en')
-        heard = [(w.start, w.word) for s in segs for w in s.words]
         shown = [w.replace('**', '') for w in text.split(' ')]
+        path = os.path.join(OUT, f'{lid}.wav')
+        if EL_KEY:   # ElevenLabs: retake until every shown word is heard, then fit the card
+            seed0 = int(hashlib.sha1(lid.encode()).hexdigest()[:6], 16)
+            for n in range(EL_TRIES):
+                y, sr = el_take(lid, SAY.get(lid) or tts_text(text), seed0 + n)
+                y = trim(y, sr); sf.write(path, y, sr)
+                got = [norm(w) for _, w in heard_words(asr, path)]
+                if got == [norm(w) for w in shown]: break
+            speed = len(y) / sr / budget
+            if speed > 1.0:
+                y = trim(tempo(y, sr, min(speed, MAX_TEMPO)), sr); sf.write(path, y, sr)
+            speed = max(1.0, min(speed, MAX_TEMPO)); take = f'take {n + 1}'
+        else:        # Kokoro fallback
+            speed, take = SPEED, 'kokoro'
+            while True:
+                y, sr = k.create(SAY.get(lid) or tts_text(text), voice=voice, speed=speed, lang='en-us', sentence_pause=0.14)
+                y = trim(y, sr)
+                if len(y) / sr <= budget or speed >= MAX_SPEED: break
+                speed = min(MAX_SPEED, speed * len(y) / sr / budget * 1.02)
+            sf.write(path, y, sr)
+        dur = len(y) / sr
+        heard = heard_words(asr, path)
         # map each on-screen word to its spoken onset (sequence match on normalised tokens, gaps interpolated)
         a, b = [norm(w) for w in shown], [norm(w) for _, w in heard]
         on = [None] * len(shown)
@@ -92,7 +149,7 @@ def main():
         on = [round(start + max(0.0, v), 3) for v in on]
         caps[lid] = on
         place.append({'id': lid, 'at': round(start, 3), 'file': f'out/vo/{lid}.wav', 'dur': round(dur, 3)})
-        report.append(f'{lid:4s} {start:6.2f}–{start + dur:6.2f} (card {t0:.2f}–{t1:.2f}) speed {speed:.2f} '
+        report.append(f'{lid:4s} {start:6.2f}–{start + dur:6.2f} (card {t0:.2f}–{t1:.2f}) {take} speed {speed:.2f}{" OVER" if dur > budget + 0.01 else ""} '
                       f'{len(shown) / dur:.1f} w/s  matched {len(known)}/{len(shown)}  heard: {" ".join(w for _, w in heard).strip()}')
     json.dump(place, open(os.path.join(HERE, 'out', 'vo.json'), 'w'), indent=1)
     with open(os.path.join(HERE, 'js', 'vo.js'), 'w') as f:
