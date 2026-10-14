@@ -31,7 +31,8 @@ const setStep = (a, b, s) => { for (let f = Math.round(a * FPS); f < Math.min(NF
 setStep(4.0, 4.25, 1);                                  // punch-in
 for (const b of WHIPS) setStep(b - WH, b + WH, 1);      // whips
 setStep(24.4, 25.45, 1);                                // the dive and the pop-out
-setStep(21.6, 21.9, 1);                                 // the shuffle back
+setStep(21.6, 21.9, 1);
+setStep(6.1, 6.45, 1);                                  // the ear twitch and settle squash                                 // the shuffle back
 setStep(29.4, 31.2, 3);                                 // the question holds
 const FQ = new Int32Array(NF), ID = new Int32Array(NF);
 { let last = 0, id = 0; for (let f = 0; f < NF; f++) { if (f > 0 && (STEP[f] !== STEP[f - 1] || f - last >= STEP[f])) { last = f; id++; } FQ[f] = last; ID[f] = id; } }
@@ -48,26 +49,28 @@ export async function init(canvas, dpr) {
 const md = (s) => { let b = false; return s.split(' ').map((w) => { const st = w.startsWith('**'); if (st) b = true; const ww = w.replace(/\*\*/g, ''); const o = { w: ww, b }; if (w.endsWith('**') || (st && w.slice(2).includes('**'))) b = false; return o; }); };
 const CAPS = [
   [2.2, 4.0, 'Six spots. The best is **last.**'],
-  [4.2, 6.1, 'It can mean you\'re **family.**'],
-  [6.1, 7.9, 'Puppies pile up for **warmth and safety.**'],
+  [4.2, 5.8, 'It can mean you\'re **family.**'],
+  [5.8, 7.9, 'Puppies pile up for **warmth and safety.**'],
   [8.2, 10.1, 'Close to you...'],
   [10.1, 11.9, '...but **watching the room.**'],
   [12.2, 14.1, 'Often a dog on **guard duty.**'],
   [14.1, 15.9, 'They see themselves as your **protector.**'],
   [16.2, 18.1, 'Your **scent** comforts them...'],
   [18.1, 19.9, '...especially when **you\'re out.**'],
-  [20.2, 22.1, 'It can mean **"I\'ve got your back."**'],
-  [22.1, 23.9, 'It\'s a sign of **deep trust.**'],
+  [20.15, 22.2, 'It can mean **"I\'ve got your back."**'],
+  [22.2, 23.9, 'It\'s a sign of **deep trust.**'],
   [24.2, 25.9, 'And the sweetest spot...'],
   [25.9, 28.7, 'Against you? You\'re their **safe place.**'],
 ].map(([a, b, s]) => [a, b, md(s)]);
-const CAP_Y = 1440;
+const CAP_Y = 1440, CAP_X = 500; // x 500: cards stay left of the platform's right-hand buttons (x > 940)
 const popK = (t, t0, d = 0.35) => (t < t0 ? 0 : G.K(t, [[t0, 0], [t0 + d * 0.6, 1.14, 'out3'], [t0 + d, 1.0]]));
+// opaque pop-out on 1s (no half-transparent ghost): 1 → 1.06 → 0 over the last 3 frames before t1
+const popOut = (t, t1) => (t < t1 - 0.125 ? 1 : G.K(t, [[t1 - 0.125, 1], [t1 - 0.08, 1.06], [t1, 0]]));
 
 // the hook headline (frame 0 = the cover; it returns at the end so the loop is seamless)
-function headline(c, a, dy, v) {
-  if (a <= 0) return;
-  c.save(); c.globalAlpha = a; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+function headline(c, a, dy, v, sc = 1) {
+  if (a <= 0 || sc <= 0) return;
+  c.save(); c.globalAlpha = a; c.translate(540, 500); c.scale(sc, sc); c.translate(-540, -500); c.textAlign = 'center'; c.textBaseline = 'alphabetic';
   let size = 92;
   c.font = `600 ${size}px "Fraunces"`;
   const w1 = c.measureText('Where your dog sleeps').width;
@@ -83,39 +86,39 @@ function headline(c, a, dy, v) {
   inkStroke(c, [[x0 + wA, 450 + size * 1.1 + dy + 22], [x0 + wA + wB * 0.5, 450 + size * 1.1 + dy + 28], [x0 + wA + wB, 450 + size * 1.1 + dy + 20]], { seed: 31 + v, w: 7, t0: 6, t1: 10, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
   c.restore();
 }
-function headlineState(t) { // alpha, dy
-  if (t < 2.2) return [1, 0];
-  if (t < 2.45) { const u = E.in2(inv(2.2, 2.45, t)); return [1 - u, -40 * u]; }
-  if (t >= 32.0) { const u = E.out3(inv(32.0, 32.3, t)); return [u, 30 * (1 - u)]; }
-  return [0, 0];
+function headlineState(t) { // alpha, dy, scale: always opaque, it pops out and back in
+  if (t < 2.0) return [1, 0, 1];
+  if (t < 2.2) { const u = inv(2.0, 2.2, t); return [1, -30 * u, G.K(t, [[2.0, 1], [2.07, 1.05], [2.2, 0]])]; }
+  if (t >= 31.92) return [1, 0, G.K(t, [[31.92, 0.82], [32.02, 1.04, 'out3'], [32.1, 1]])];
+  return [0, 0, 0];
 }
 function questionCard(c, t, v) {
-  if (t < 29.0 || t >= 31.9) return;
-  const sIn = G.K(t, [[29.0, 0.82], [29.12, 1.05, 'out3'], [29.22, 1]]), out = clamp((31.9 - t) / 0.2);
-  c.save(); c.globalAlpha = out; c.translate(540, 520); c.scale(sIn * (1 - 0.1 * (1 - out)), sIn * (1 - 0.1 * (1 - out))); c.translate(-540, -520);
-  const P = G.resample(CA.roundRect(110, 360, 860, 330, 36), 6, true);
+  if (t < 29.0 || t >= 31.92) return;
+  const sIn = G.K(t, [[29.0, 0.82], [29.12, 1.05, 'out3'], [29.22, 1]]) * popOut(t, 31.92), out = 1, QX = 500;
+  c.save(); c.translate(QX, 520); c.scale(sIn, sIn); c.translate(-QX, -520);
+  const P = G.resample(CA.roundRect(90, 360, 820, 330, 36), 6, true);
   fillShape(c, P.map(([a, b]) => [a + 8, b + 10]), 'rgba(27,47,82,0.3)', { seed: 40 + v, amp: 1.4 });
   fillShape(c, P, PAL.hi, { seed: 41 + v, amp: 1.6 }); inkLoop(c, P, { seed: 42 + v, w: 4, amp: 1.6 });
   c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-  c.font = '600 80px "Fraunces"'; const a1 = 'Where does ', a3 = ' sleep?';
-  const w1 = c.measureText(a1).width, w3 = c.measureText(a3).width; c.font = 'italic 600 80px "Fraunces"'; const w2 = c.measureText('yours').width;
-  const x0 = 540 - (w1 + w2 + w3) / 2;
-  c.font = '600 80px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText(a1, x0, 520); c.fillText(a3, x0 + w1 + w2, 520);
-  c.font = 'italic 600 80px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('yours', x0 + w1, 520);
+  c.font = '600 72px "Fraunces"'; const a1 = 'Where does ', a3 = ' sleep?';
+  const w1 = c.measureText(a1).width, w3 = c.measureText(a3).width; c.font = 'italic 600 72px "Fraunces"'; const w2 = c.measureText('yours').width;
+  const x0 = QX - (w1 + w2 + w3) / 2;
+  c.font = '600 72px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText(a1, x0, 520); c.fillText(a3, x0 + w1 + w2, 520);
+  c.font = 'italic 600 72px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('yours', x0 + w1, 520);
   const u = clamp((t - 29.5) / 0.25);
-  if (u > 0) { c.globalAlpha = out * u; c.font = '600 50px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'center'; c.fillText('Tell us below.', 540, 615 + 10 * (1 - u)); }
+  if (u > 0) { c.globalAlpha = out * u; c.font = '600 50px "Inter"'; c.fillStyle = PAL.navy; c.textAlign = 'center'; c.fillText('Tell us below.', QX, 615 + 10 * (1 - u)); }
   c.restore();
 }
 function overlays(c, t, v) {
-  CA.pill(c, 'DOG DECODED', 540, 214, { size: 28, fill: PAL.navy, color: PAL.hi, edge: PAL.navyDeep, alpha: 0.92, seed: 11, shadow: false }, v);
+  CA.pill(c, 'DOG DECODED', 540, 252, { size: 28, fill: PAL.navy, color: PAL.hi, edge: PAL.navyDeep, alpha: 0.92, seed: 11, shadow: false }, v);
   for (const [a, b, txt] of SP) {
     const t0 = a + 0.15, t1 = b - WH - 0.02;
     if (t < t0 || t >= t1) continue;
-    CA.pill(c, txt, 540, 320, { size: 40, fill: PAL.orange, color: PAL.hi, scale: popK(t, t0), alpha: clamp((t1 - t) / 0.12), seed: 21, rot: -0.02 }, v);
+    CA.pill(c, txt, 540, 330, { size: 40, fill: PAL.orange, color: PAL.hi, scale: popK(t, t0) * popOut(t, t1), seed: 21, rot: -0.02 }, v);
   }
-  const [ha, hdy] = headlineState(t); headline(c, ha, hdy, v);
+  const [ha, hdy, hsc] = headlineState(t); headline(c, ha, hdy, v, hsc);
   questionCard(c, t, v);
-  CAPS.forEach(([a, b, words], i) => CA.caption(c, words, 540, CAP_Y, t, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b }));
+  CAPS.forEach(([a, b, words], i) => CA.caption(c, words, CAP_X, CAP_Y, t, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b }));
 }
 
 // ------------------------------------------------------------------ room props (a few lines each)
@@ -227,11 +230,17 @@ function shotBed(c, t, f, D) {
   bed(c, v, tq);
   // breathing, a tail thump at 6.1, a yawn at the end (31.2–31.9)
   const yawn = sstep(31.2, 31.45, tq) * (1 - sstep(31.7, 31.95, tq));
-  const thump = tq >= 6.1 && tq < 6.6 ? Math.sin(Math.PI * inv(6.1, 6.6, tq)) : 0;
-  const P = pose('curl', { tail: { a0: 170 + 12 * thump, curl: -16 }, head: { pitch: -20 + 26 * yawn, yaw: -90 + 20 * yawn, roll: 0 },
-    face: { eyes: yawn > 0.3 ? 'squint' : 'closed', mouth: yawn > 0.4 ? 'open' : 'closed', brow: 0 }, ears: { swing: 8 * yawn } });
+  const twitch = tq >= 6.1 && tq < 6.45 ? Math.sin(Math.PI * inv(6.1, 6.45, tq)) : 0, F_SQ = Math.round(6.2 * FPS);
+  const P = pose('curl', { tail: { a0: 170, curl: -16 }, head: { pitch: -20 + 26 * yawn, yaw: -90 + 20 * yawn, roll: 0 },
+    face: { eyes: yawn > 0.3 ? 'squint' : 'closed', mouth: yawn > 0.4 ? 'open' : 'closed', brow: 0 }, ears: { swing: 8 * yawn - 14 * twitch } });
   const br = 1 + 0.012 * Math.sin(tq * 2.6);
+  const sq = D.fq === F_SQ ? 1.05 : 1; // she settles: a 1-frame squash on the thump
+  c.save(); c.translate(CURL.x, CURL.y); c.scale(sq, 1 / sq); c.translate(-CURL.x, -CURL.y);
   drawMiya(c, P, { ...CURL, s: CURL.s * br, v, seed: 3000, accent: ACC });
+  c.restore();
+  if (tq >= 6.2 && tq < 6.7) { const u = inv(6.2, 6.7, tq); // a small dust puff off the duvet where she settles
+    for (let k = 0; k < 3; k++) { const P2 = circlePts(CURL.x + 150 + k * 26 + 40 * u, CURL.y - 30 - k * 14 - 26 * u, (15 - 3 * k) * (1 - 0.6 * u), 14);
+      c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 150 + k, amp: 1 }); inkLoop(c, P2, { seed: 153 + k + v, w: 3, amp: 1 }); c.restore(); } }
   if (tq < 31.0 || tq > 32.0) zzz(c, 800, 830, tq, tq >= 4 && tq < 29 ? 4.2 : 99, v);
   c.restore();
 }
@@ -319,46 +328,55 @@ const TUCK = { x: 470, y: 1012, s: 1.4, view: 10 };
 function shotTuck(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS;
   drawPaper(c, W, H);
-  const z = lerp(1, 1.42, E.io2(inv(25.5, 28.8, tq))), shake = tq >= DIVE + 0.08 && tq < DIVE + 0.5 ? 10 * Math.exp(-(tq - DIVE - 0.08) / 0.12) : 0;
-  c.save(); cam(c, lerp(540, 650, E.io2(inv(25.5, 28.8, tq))) + (hs(f, 1) - 0.5) * 2 * shake, lerp(960, 930, E.io2(inv(25.5, 28.8, tq))) + (hs(f, 2) - 0.5) * 2 * shake, z);
+  const z = lerp(1.15, 1.55, E.io2(inv(24.2, 28.8, tq))), shake = tq >= DIVE + 0.08 && tq < DIVE + 0.5 ? 10 * Math.exp(-(tq - DIVE - 0.08) / 0.12) : 0;
+  c.save(); cam(c, lerp(640, 650, E.io2(inv(24.2, 28.8, tq))) + (hs(f, 1) - 0.5) * 2 * shake, lerp(960, 930, E.io2(inv(25.5, 28.8, tq))) + (hs(f, 2) - 0.5) * 2 * shake, z);
   windowNight(c, 420, 560, 220, 270, v, tq);
   floor(c, v);
   const fdive = Math.round(DIVE * FPS);
   // the hump under the duvet: lands at 24.67, travels to her spot by 25.2, then stays as her body
   const land = (fdive + 2) / FPS, under = tq >= land && tq < 25.25;
-  const bump = under ? { x: lerp(820, 470, E.io2(inv(land, 25.2, tq))), h: 60 * (tq < land + 0.08 ? 1.3 : 1) + 8 * Math.sin(tq * 30) } : tq >= 25.2 ? { x: 450, h: 34 + 3 * Math.sin(tq * 2.6) } : null;
-  bed(c, v, tq, { person: true, bump });
+  const bump = under ? { x: lerp(740, 470, E.io2(inv(land, 25.2, tq))), h: 60 * (tq < land + 0.08 ? 1.3 : 1) + 8 * Math.sin(tq * 30) } : tq >= 25.2 ? { x: 450, h: 34 + 3 * Math.sin(tq * 2.6) } : null;
+  const topB = bed(c, v, tq, { person: true, bump });
   if (tq < DIVE) { // standing on the bed by your feet, then a crouch (anticipation)
-    const cr = E.io2(inv(24.3, DIVE, tq));
-    const P = pose('stand', { head: { pitch: -10 - 20 * cr, yaw: 10, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.4 }, tail: { a0: 100 + 30 * Math.sin(tq * 12), curl: -30 } });
-    c.save(); c.translate(880, 975); c.scale(1 + 0.06 * cr, 1 - 0.1 * cr); c.translate(-880, -975);
-    drawMiya(c, P, { x: 880, y: 975, s: 1.25, view: 20, mirror: true, v, seed: 3500, accent: ACC });
+    const cr = E.io2(inv(24.3, DIVE - 1 / FPS, tq)), rel = f === fdive - 1; // deep crouch, then a 1-frame stretch as she springs
+    const P = pose('stand', { head: { pitch: -10 - 35 * cr, yaw: 10, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.4 }, tail: { a0: 100 + 30 * Math.sin(tq * 12), curl: -30 } });
+    c.save(); c.translate(790, 975); if (rel) c.scale(0.9, 1.15); else c.scale(1 + 0.12 * cr, 1 - 0.22 * cr); c.translate(-790, -975);
+    drawMiya(c, P, { x: 790, y: 975, s: 1.25, view: 20, mirror: true, v, seed: 3500, accent: ACC });
     c.restore();
   } else if (f < fdive + 2) { // the dive, on 1s: one smear frame stretched 2.6× along the path, then she's gone
     const dir = Math.atan2(40, -120), k = f - fdive;
-    c.save(); c.translate(lerp(860, 780, k), lerp(900, 960, k)); c.rotate(dir); c.scale(k === 0 ? 2.6 : 1.8, 0.6); c.rotate(-dir); c.translate(-860, -900);
-    drawMiya(c, pose('stand', { face: { eyes: 'closed', mouth: 'closed', brow: 0 } }), { x: 860, y: 960, s: 1.15, view: 0, mirror: true, v, seed: 3510, accent: ACC, shadow: false });
+    c.save(); c.translate(lerp(770, 690, k), lerp(900, 960, k)); c.rotate(dir); c.scale(k === 0 ? 2.6 : 1.8, 0.6); c.rotate(-dir); c.translate(-770, -900);
+    drawMiya(c, pose('stand', { face: { eyes: 'closed', mouth: 'closed', brow: 0 } }), { x: 770, y: 960, s: 1.15, view: 0, mirror: true, v, seed: 3510, accent: ACC, shadow: false });
     c.restore();
-    for (let i = 0; i < 4; i++) inkStroke(c, [[930 + i * 10, 860 - i * 22], [1010 + i * 16, 830 - i * 30]], { seed: 520 + i + f, w: 4, t0: 20, t1: 4, min: 0.1, amp: 0.8, heavy: 0 });
+    for (let i = 0; i < 4; i++) inkStroke(c, [[840 + i * 10, 860 - i * 22], [920 + i * 16, 830 - i * 30]], { seed: 520 + i + f, w: 4, t0: 20, t1: 4, min: 0.1, amp: 0.8, heavy: 0 });
   }
   if (tq >= land && tq < land + 0.6) { // the duvet flops: dust puffs and twinkles burst off it
     const u = inv(land, land + 0.6, tq);
     for (let k = 0; k < 6; k++) {
-      const a = -Math.PI + k * (Math.PI / 5), d = 60 + 140 * E.out2(u), P2 = circlePts(820 + Math.cos(a) * d, 920 + Math.sin(a) * d * 0.6 - 30 * u, (22 - 2 * k % 3 * 3) * (1 - 0.7 * u), 14);
+      const a = -Math.PI + k * (Math.PI / 5), d = 60 + 140 * E.out2(u), P2 = circlePts(740 + Math.cos(a) * d, 920 + Math.sin(a) * d * 0.6 - 30 * u, (22 - 2 * k % 3 * 3) * (1 - 0.7 * u), 14);
       c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 530 + k, amp: 1 }); inkLoop(c, P2, { seed: 536 + k + v, w: 3.2, amp: 1 }); c.restore();
     }
-    if (u < 0.3) FX.drawStarburst(c, 820, 900, 120 * (1 - u), 545 + f, 0.4, [PAL.hi, PAL.hi, PAL.orange], { n: 10, w: 5 });
+    if (u < 0.3) FX.drawStarburst(c, 740, 900, 120 * (1 - u), 545 + f, 0.4, [PAL.hi, PAL.hi, PAL.orange], { n: 10, w: 5 });
   }
   if (tq >= 25.2) { // her head pops out at the duvet edge, tucked against your legs; the duvet covers her body
-    const pop = E.outBack(clamp((tq - 25.2) / 0.25), 1.8);
+    const pop = E.outBack(clamp((tq - 25.2) / 0.25), 2.6), CX = 640, CY = 975; // pivot: her chin at the duvet edge
     const P = pose('sleep', { head: { pitch: -6, yaw: 18, roll: -6 }, face: { eyes: tq >= 25.9 ? 'closed' : 'happy', mouth: 'smile', brow: 0.3 }, ears: { swing: 4 * Math.sin(tq * 2) } });
-    c.save(); c.beginPath(); c.rect(588, 0, 2000, 2000); c.clip(); // only her head and paws show past the duvet's edge
-    c.translate(TUCK.x + 160, TUCK.y); c.scale(pop, pop); c.translate(-TUCK.x - 160, -TUCK.y);
+    c.save(); c.translate(CX, CY); c.scale(pop, pop); c.translate(-CX, -CY);
     drawMiya(c, P, { ...TUCK, s: TUCK.s * (1 + 0.01 * Math.sin(tq * 2.6)), v, seed: 3520, accent: ACC, shadow: false });
+    c.restore();
+    // the duvet over her body: the same bed redrawn left of her neck, so its own top line hides her (no straight mask edge)
+    c.save(); c.beginPath(); c.rect(-2000, -2000, 2588, 6000); c.clip();
+    bed(c, v, tq, { person: true, bump });
     c.restore();
     // the duvet's folded edge over her neck
     const flap = R(spline([[548, 915], [590, 890], [618, 906], [624, 955], [604, 996], [560, 992]], true, 4));
+    c.save(); c.translate(CX, CY); c.scale(Math.max(pop, 0.6), Math.max(pop, 0.6)); c.translate(-CX, -CY);
     CA.celMass(c, flap, LIL, LILS, 560, v, { w: 5, sh: 8 });
+    c.restore();
+    if (tq < 25.7) { const u = inv(25.2, 25.7, tq); // a puff and twinkles as her head pops out
+      for (let k = 0; k < 4; k++) { const a = -0.9 + k * 0.45, d = 120 + 80 * E.out2(u), P2 = circlePts(CX + 40 + Math.cos(a) * d, CY - 10 + Math.sin(a) * d * 0.6, (16 - 2 * k) * (1 - 0.6 * u), 14);
+        c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 580 + k, amp: 1 }); inkLoop(c, P2, { seed: 584 + k + v, w: 3, amp: 1 }); c.restore(); }
+      FX.drawTwinkle(c, CX + 70, CY - 150, 18 * Math.sin(Math.PI * u), 590 + v, { fill: PAL.orange }); FX.drawTwinkle(c, CX - 80, CY - 120, 12 * Math.sin(Math.PI * u), 591 + v, { fill: PAL.hi }); }
     zzz(c, 760, 820, tq, 26.0, v, PAL.navyLight);
     if (tq >= 26.0) { FX.drawTwinkle(c, 760, 880, 13 + 4 * Math.sin(tq * 4), 570 + v, { fill: PAL.hi }); FX.drawTwinkle(c, 520, 820, 10 + 3 * Math.sin(tq * 3 + 1), 571 + v, { fill: PAL.hi }); }
   }
@@ -396,6 +414,11 @@ export function render(t) {
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.translate((W / 2 + dx) * DPR, 0); c.scale(sx, 1); c.drawImage(L.canvas, -W / 2 * DPR, 0); c.restore();
     for (let i = 0; i < 9; i++) { const y = 360 + i * 120 + hs(i, f) * 40, x0 = hs(i, f, 2) * 500; inkStroke(c, [[x0, y], [x0 + 420 + 200 * hs(i, 3), y + 6]], { seed: 900 + i + f, w: 5, t0: 30, t1: 30, min: 0.1, amp: 0.6, heavy: 0 }); }
   } else shotAt(t1)(c, t1, f, D);
+  const fImp = Math.round(DIVE * FPS) + 2;
+  if (f === fImp || f === fImp + 1) { // impact: flat lilac + a white star, on 1s; nothing else on it
+    FX.impactFrame(c, W, H, 560, 920, f === fImp ? LIL : PAL.navy, f === fImp ? PAL.hi : LIL, 600 + f, { lines: f === fImp, R: 560 });
+    drawTooth(c, W, H, v, DPR, 0.13); return;
+  }
   overlays(c, t1, v);
   drawTooth(c, W, H, v, DPR, 0.13);
 }

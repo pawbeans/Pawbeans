@@ -61,7 +61,7 @@ export function pill(c, text, x, y, o, v) {
 // o.hold: the next caption starts where this one ends, so the card doesn't pop out.
 export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
   if (t < tIn || t >= tOut) return;
-  const size = 50, lh = 70, maxW = 860;
+  const size = 50, lh = 70, maxW = 740;
   c.save(); c.font = `600 ${size}px "Inter"`;
   const sp = c.measureText(' ').width;
   const lines = [[]]; let lw = 0;
@@ -72,10 +72,11 @@ export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
     lines[lines.length - 1].push({ ...wd, width: w }); lw += w + sp;
   }
   c.restore();
-  const boxW = Math.min(940, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
+  const boxW = Math.min(810, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
   const sIn = o.cont ? 1 : K(t, [[tIn, 0.82], [tIn + 0.1, 1.04, 'out3'], [tIn + 0.18, 1]]);
-  const outU = o.hold ? 0 : clamp((t - (tOut - 0.12)) / 0.12);
-  const sc = sIn * (1 - 0.12 * outU), fade = 1 - outU;
+  // out: an opaque pop-out on 1s (1 → 1.06 → 0 over 3 frames), never a half-transparent ghost card
+  const sOut = o.hold || t < tOut - 0.125 ? 1 : K(t, [[tOut - 0.125, 1], [tOut - 0.08, 1.06], [tOut, 0]]);
+  const sc = sIn * sOut, fade = 1;
   c.save(); c.globalAlpha = fade; c.translate(x, y); c.scale(sc, sc); c.translate(-x, -y);
   const P = G.resample(roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 28), 6, true);
   fillShape(c, P.map(([a, b]) => [a + 6, b + 8]), 'rgba(27,47,82,0.3)', { seed: 300 + v, amp: 1.2 });

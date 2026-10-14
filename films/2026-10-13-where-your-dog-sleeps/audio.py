@@ -40,7 +40,7 @@ S(sfx.whoosh(0.35, 'swish', peak=0.6), at=3.92, gain=-9)
 for b in (8.0, 12.0, 16.0, 20.0, 24.0, 28.8):
     S(sfx.whoosh(0.45, 'air', peak=0.5), at=b - 0.22, gain=-7)
 # 1 on your bed: the tail thump
-S(sfx.impact('soft', size=0.25), at=6.2, gain=-14)
+S(sfx.impact('soft', size=0.25), at=6.208, gain=-14)   # the settle squash (frame 149)
 S(sfx.paper('rustle', 0.3, seed=3), at=6.15, gain=-15)
 # 2 foot of the bed: she turns to watch the room
 S(sfx.paper('rustle', 0.25, seed=5), at=10.0, gain=-14)
@@ -52,26 +52,26 @@ S(sfx.paper('rustle', 0.2, seed=7), at=13.95, gain=-14)
 # 4 on your clothes: scent drifting up, a contented smile
 for k in range(3):
     S(sfx.paper('slide', 0.6, seed=9 + k), at=17.2 + k * 0.53, gain=-19)
-harp('D6', 18.0, -15); harp('F#6', 18.12, -16)
+harp('D6', 18.2, -15); harp('F#6', 18.32, -16)
 # 5 back against you: the shuffle, the squish, two twinkles
 S(sfx.paper('rustle', 0.3, seed=11), at=21.6, gain=-11)
 S(sfx.impact('soft', size=0.3), at=21.85, gain=-12)
 harp('E6', 22.0, -15)
 # 6 tucked against you (hero): the crouch, the dive, the duvet flop, travelling under, the pop out
 S(sfx.paper('rustle', 0.2, seed=13), at=24.35, gain=-14)
-S(sfx.whoosh(0.3, 'swish', peak=0.7), at=24.45, gain=-6)
+S(sfx.whoosh(0.3, 'swish', peak=0.7), at=24.40, gain=-6)
 S(sfx.impact('soft', size=0.7), at=24.67, gain=-4)
 S(sfx.paper('crumple', 0.5, seed=14), at=24.7, gain=-10)
 for k in range(5):
     S(sfx.paper('rustle', 0.12, seed=20 + k), at=24.8 + k * 0.08, gain=-13)
-S(sfx.pop('soft', 0.9), at=25.25, gain=-8)
+S(sfx.pop('soft', 0.9), at=25.21, gain=-8)
 for j, x in enumerate(['D5', 'F#5', 'A5', 'D6']):
     harp(x, 25.3 + 0.1 * j, -12)
 # end: the question card, the yawn, the headline back (loops to frame 0)
 S(sfx.paper('slide', 0.4), at=29.0, gain=-11)
 S(sfx.pop('soft', 1.0), at=29.5, gain=-14)
 S(sfx.paper('rustle', 0.4, seed=30), at=31.2, gain=-13)
-S(sfx.pop('soft', 1.1), at=32.0, gain=-15)
+S(sfx.pop('soft', 1.1), at=31.92, gain=-15)
 
 if __name__ == '__main__':
     os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
