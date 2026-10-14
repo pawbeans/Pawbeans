@@ -19,7 +19,8 @@ owner's standing approval (bible §14). Work end to end without asking questions
 - `mg-styles-15/.venv/bin/python films/<slug>/audio.py`
 - `scripts/cel-render.sh films/<slug> --noaudio --workers 4 --out $PWD/films/<slug>/out/picture.mp4`
 - Mux and measure exactly as in the bible's render commands (§0). Spec: duration as scripted, 1080×1920, 24 fps,
-  −16 LUFS ±1, TP ≤ −2 dBTP on the mp4, no black frames, no fallback fonts.
+  −14 LUFS ±1, TP ≤ −2 dBTP on the mp4, music 12 LU under the voice (stems), no black frames, no fallback fonts.
+  If the owner's overnight notes changed the script, re-run `vo.py` first (needs `ELEVENLABS_API_KEY`).
 
 ## 3. Review (separate reviewer) and revise once
 - Spawn a subagent that did not make the film. Give it the mp4 path, the film folder, `content/PLAYBOOK.md`,
@@ -32,9 +33,10 @@ owner's standing approval (bible §14). Work end to end without asking questions
   Re-render, re-measure, and check the transitions frame by frame. One revision only.
 
 ## 4. Deliver
-- Viewing copy under 30 MB and the SFX-only WAV in `films/<slug>/review/` (commands in bible §0). These files are
+- Viewing copy under 30 MB, the soundtrack WAV and the voiceover stem in `films/<slug>/review/` (commands in bible
+  §0; copy the master's audio stream into the viewing copy so TP stays ≤ −2). These files are
   not committed (gitignored): send them.
-- Send the owner: the film, the WAV, then a short message: title · the reviewer's scores · what changed in the
+- Send the owner: the film, the soundtrack WAV, then a short message: title · the reviewer's scores · what changed in the
   revision · anything still weak · a suggested post caption (two short lines in the brand voice, British spelling,
   no em dashes) and 3–5 hashtags. Dog Decoded captions never mention BEANS.
 - Update `PRODUCTION.md` (Gate 4: files, spec numbers, scores, changes) and the `LOG.md` row (status `delivered v2`,

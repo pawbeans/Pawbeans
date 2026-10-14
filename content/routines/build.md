@@ -39,7 +39,10 @@ without asking questions; where a decision is the owner's, make the safe choice 
 
 ## 3. Build
 - `films/<today>-<slug>/`: `index.html`, `js/scene.js`, `js/cast.js` (copy only the helpers you need), `audio.py`
-  (sound effects only, −16 LUFS, TP −2 dBTP, `avail()` samplers), `boards.json`, `CREDITS.md`, `PRODUCTION.md`.
+  (voiceover + a new background instrumental + foley, −14 LUFS, TP −2 dBTP, `avail()` samplers), `vo.py`,
+  `boards.json`, `CREDITS.md`, `PRODUCTION.md`. Copy `vo.py` and the time-warp pattern from
+  `films/2026-10-13-where-your-dog-sleeps/` and run `vo.py` before the key frames: the voice sets the timing, so the
+  boards show the real cut. Without `ELEVENLABS_API_KEY` it falls back to the local voice: say so in the summary.
 - Follow the bible's §13 craft lessons from the start (paint every pixel, smear frames, fast moves on 1s, no overlays
   on impact frames, logo above the grain, labels clear of captions, captions centred at y 1440).
 - Miya: import `characters/miya/miya.js`. A missing pose is added to the module and the model sheet without changing

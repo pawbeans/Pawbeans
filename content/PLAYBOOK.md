@@ -41,7 +41,8 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
    counters stay as visual extras. The voice sets the length: re-time the picture around it (see
    `films/2026-10-13-where-your-dog-sleeps/vo.py`: one take per section, key moments landing on their words) rather
    than squeezing the voice. Voice: ElevenLabs "Jessica" (needs `ELEVENLABS_API_KEY` in the environment), with
-   music and soft foley under it. Cards centred at y 1440.
+   music made for each film, sitting quietly in the background (owner, 2026-10-14: not the same instrumental every
+   time, a similar vibe; never overbearing, just there and pleasing to hear), and soft synced foley. Cards centred at y 1440.
 8. **Make it personal:** "your dog", "you", never "dogs in general" in the hook.
 9. **Shareable truth:** one line a viewer would send to a friend ("They literally evolved eyebrows for you.").
 10. **No bait we can't pay off.** If the hook promises a meaning, the film delivers it.
@@ -85,7 +86,18 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
   (exposure sheet, captions, labels, crossfades, smear helpers, end card).
 - A recurring look per series builds recognition: Dog Decoded opens on Miya on cream paper with the hook in Fraunces;
   Inside Your Dog dives "inside" to navy.
-- Sound: soft synced foley only (bible §5). No music.
+- Sound (owner, 2026-10-14): **voiceover + background music + soft foley** (bible §5).
+  - Voice on top: warm, bright, playful, conversational (ElevenLabs "Jessica").
+  - Music: a **new instrumental for each film**, written in that film's `audio.py`, in the same family as the first one
+    (`films/2026-10-13-where-your-dog-sleeps/audio.py`: ukulele, pizzicato, glockenspiel, D major, ≈ 92–95 bpm, landing
+    a short happy resolve on the hero beat). Vary the key, tempo, chords, melody and lead instrument from film to film
+    (ukulele, nylon guitar, soft piano, harp, light vibraphone or glockenspiel, pizzicato or upright bass, brushed
+    percussion at most) so it never sounds like the same track, but keep the vibe: gentle, warm, light, a little
+    playful, pleasing on loop.
+  - Background, never overbearing: music sits 12 LU under the voice (a quarter of its volume; `level` on the music
+    group), sparse arrangement, nothing busy under the words, no drops or big builds; it may swell a touch on the
+    hero beat and rest where the voice rests.
+  - Master −14 LUFS, true peak ≤ −2 dBTP on the muxed mp4.
 
 ## 6. Delivery (what the owner gets)
 
@@ -93,7 +105,7 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
   with a number before **22:30**; no reply means the top pick.
 - **On the pick, or at the 22:30 cut-off:** the script with sources and whole-film key-frame boards (`routines/build.md`), sent
   in that session. The owner may reply with notes or "skip" until **05:30**.
-- **08:28 SGT, render:** the rendered film (viewing copy under 30 MB), the SFX-only WAV, the reviewer's scores
+- **08:28 SGT, render:** the rendered film (viewing copy under 30 MB), the soundtrack WAV and the voiceover stem, the reviewer's scores
   and what changed in the one revision, plus a suggested post caption with 3–5 hashtags.
 
 ## 7. Measuring and learning

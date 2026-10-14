@@ -207,21 +207,25 @@ and needs no source (owner, 2026-10-13). Every other fact or number still needs 
 Dog Decoded (§14) uses light sourcing: popular dog-behaviour lore framed as "can mean" needs no citation (owner,
 2026-10-13); health, medical and food-safety lines still need to be right.
 
-**Sound: sound effects only, by default (owner, 2026-10-13).** The owner adds their own music in the edit. Deliver
-the film with soft, synced foley and no music bed, mastered at **−16 LUFS, true peak ≤ −2 dBTP** (measured on the
-muxed mp4: AAC adds about 0.5 dB), plus the SFX-only WAV as a stem in `review/`. Foley palette that worked: paper
+**Sound: voiceover + background music + soft foley, by default (owner, 2026-10-14; this replaces "sound effects
+only").** Films are written voice first (playbook §2.7): a warm, bright, playful female voiceover (ElevenLabs
+"Jessica", `ELEVENLABS_API_KEY` in the environment, never committed) says the script, and the captions are exactly her
+words. Under it: a new instrumental for each film in a similar vibe (playbook §5), sitting in the background 12 LU
+under the voice, never overbearing, plus soft synced foley. Master **−14 LUFS, true peak ≤ −2 dBTP** (measured on the
+muxed mp4: AAC adds about 0.5 dB; export the WAV at −2.5). Deliver the soundtrack WAV and the voiceover stem in
+`review/`. Reference implementation: `films/2026-10-13-where-your-dog-sleeps/` (`vo.py`, `audio.py`). Foley palette that worked: paper
 rustle for fur and scratching, soft pops for labels, soft impacts for hits, gentle squelch / gloop for gut moments,
 whooshes for camera moves, harp notes (not celesta, not sine blips) for "ping" moments, one cinematic impact for the
 hero beat. Every hit lands on its picture event (within one frame). Sampler note: mg-styles-15 ships only part of
 the VCSL library; build instruments with the shipped files only (see `avail()` in the Inside Your Dog `audio.py`).
 
-**Music, only when the owner asks for it** (the generated piano/guitar score was rejected: "doesn't suit the video
-at all"): warm, understated acoustic music: nylon or steel guitar, upright bass, soft piano, brushed percussion, a
-little vibraphone or harp at most (`pluck.guitar`, `pluck.harp`, `samples.inst('piano'|'vibraphone'|'harp')`,
+**Music** (a piano/guitar score generated with a lofi recipe was rejected on 2026-10-13: "doesn't suit the video at
+all"; the hand-written ukulele + pizzicato + glockenspiel piece of 2026-10-14 was liked): warm, light, understated
+acoustic music, written note by note per film: ukulele, nylon or steel guitar, pizzicato or upright bass, soft piano,
+brushed percussion, a little glockenspiel, vibraphone or harp (`pluck.guitar`, `pluck.harp`, `samples.inst('piano'|'vibraphone'|'harp')`,
 `drums.snare('brush')`); starting points `recipes.lofi(flavor='chill', keys='piano')` or
 `recipes.ambient(flavor='piano')`, thinned out. Soft foley (paper, pen, paws on the floor, fur rustle, a breath)
 synced to the cue sheet. **No zany cartoon SFX: no xylophone, no slide whistle, no boing, no cork pops, no squeaks.**
-With music: master −14 LUFS integrated, true peak ≤ −2 dBTP on the muxed file.
 
 ## 6. Logo
 
@@ -249,7 +253,7 @@ Files in `assets/brand/logo/` (owner-supplied 2026-10-13; this is the full set t
 
 ## 8. Output spec (default)
 
-- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), sound effects only at −16 LUFS,
+- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), voiceover + background music + foley at −14 LUFS,
   TP ≤ −2 dBTP on the muxed file (§5). Daily series lengths in §14. A brief may set a longer runtime (Inside Your Dog
   ran 58 s and was approved).
 - Hook in the first 0.5 s: never open on more than 0.3 s of empty paper. One unmistakable hero moment at about
@@ -301,7 +305,7 @@ the gates in `films/<slug>/PRODUCTION.md`.
    every board yourself before sending (stale pixels, overlaps, safe zones). Stills are not a render of the video.
    Stop: **the owner approves**, or gives notes and Gate 3 repeats.
 4. **Render.** Only after explicit approval of the current key frames. Render audio and video, check the spec
-   (duration, 1080×1920, 24 fps, −16 LUFS SFX-only, TP ≤ −2 dBTP on the mp4, no black frames, no fallback fonts, nothing outside the safe
+   (duration, 1080×1920, 24 fps, −14 LUFS, TP ≤ −2 dBTP on the mp4, no black frames, no fallback fonts, nothing outside the safe
    zones), then run the **quality loop**:
    - **Review:** a separate reviewer (a subagent that did not make the film) judges the render with
      `mg-styles-15/rubric.md` step 1: contact sheet, filmstrips, full-res frames, spec checks, scores, and a fix list.
@@ -332,7 +336,7 @@ Sources (also in CREDITS.md): …
 - [ ] Every on-screen fact sourced in `CREDITS.md`; no invented health claims
 - [ ] Captions on and inside the safe zones
 - [ ] Logo: the supplied file, placed clean, end card only, never boiled or restyled
-- [ ] Soft foley synced to picture (SFX only unless the owner asks for music); no xylophone or cartoon SFX
+- [ ] Voiceover = captions word for word; music in the background (12 LU under the voice); soft foley synced to picture; no xylophone or cartoon SFX
 - [ ] `CREDITS.md` complete; deterministic page (no `Math.random`, no clocks)
 
 ## 13. Craft lessons (Inside Your Dog, 2026-10-13)
@@ -358,7 +362,7 @@ What the first full film taught us. The reviewer caught most of these on v1; bui
 - **Labels sit clear of caption cards** (cards are centred at y 1440; keep labels above about y 1250).
 - Owner preferences learned: bodily-function humour is fine when it is drawn with restraint (the poop stayed);
   claims in a brief the owner supplies were waived for sources (that film only); whole-film key frames before any
-  render; sound effects only.
+  render; sound effects only (superseded 2026-10-14: voiceover first, background music, foley; see §5).
 
 ## 14. Daily series (routine)
 
