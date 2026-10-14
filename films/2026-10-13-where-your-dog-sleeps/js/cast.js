@@ -59,6 +59,7 @@ export function pill(c, text, x, y, o, v) {
 // caption card: card-cream, hand-cut boiling edge, CENTRED on y (owner: three-quarter height). The card pops in opaque (scale, no grey half-alpha slab); only the words build in, one by one, highlight
 // words in orange. o.cont: the previous caption ends where this one starts, so the card is already up (no re-pop);
 // o.hold: the next caption starts where this one ends, so the card doesn't pop out.
+// o.on: the second each word is spoken (voiceover); a word builds in one frame before it is heard.
 export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
   if (t < tIn || t >= tOut) return;
   const size = 50, lh = 70, maxW = 740;
@@ -88,7 +89,7 @@ export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
     let wx = x - lwid / 2;
     const wy = y - boxH / 2 + 23 + lh * (li + 0.5) + size * 0.34;
     for (const wd of L) {
-      const tw = tIn + 0.05 + k * 0.07, u = clamp((t - tw) / 0.14);
+      const tw = o.on ? o.on[k] - 1 / 24 : tIn + 0.05 + k * 0.07, u = clamp((t - tw) / 0.14);
       if (u > 0) {
         c.save(); c.globalAlpha = fade * u; c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`; c.fillStyle = wd.b ? PAL.orangeShade : PAL.navy; c.textBaseline = 'alphabetic';
         c.fillText(wd.w, wx, wy + 10 * (1 - E.out3(u))); c.restore();

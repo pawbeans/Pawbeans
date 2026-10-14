@@ -1,0 +1,92 @@
+[
+ {
+  "id": "hook",
+  "at": 0.03,
+  "file": "out/vo/hook.wav",
+  "dur": 1.592
+ },
+ {
+  "id": "c0",
+  "at": 2.3,
+  "file": "out/vo/c0.wav",
+  "dur": 1.594
+ },
+ {
+  "id": "c1",
+  "at": 4.3,
+  "file": "out/vo/c1.wav",
+  "dur": 1.137
+ },
+ {
+  "id": "c2",
+  "at": 5.83,
+  "file": "out/vo/c2.wav",
+  "dur": 1.954
+ },
+ {
+  "id": "c3",
+  "at": 8.3,
+  "file": "out/vo/c3.wav",
+  "dur": 0.812
+ },
+ {
+  "id": "c4",
+  "at": 10.13,
+  "file": "out/vo/c4.wav",
+  "dur": 1.025
+ },
+ {
+  "id": "c5",
+  "at": 12.3,
+  "file": "out/vo/c5.wav",
+  "dur": 1.578
+ },
+ {
+  "id": "c6",
+  "at": 14.13,
+  "file": "out/vo/c6.wav",
+  "dur": 1.688
+ },
+ {
+  "id": "c7",
+  "at": 16.3,
+  "file": "out/vo/c7.wav",
+  "dur": 1.361
+ },
+ {
+  "id": "c8",
+  "at": 18.13,
+  "file": "out/vo/c8.wav",
+  "dur": 1.27
+ },
+ {
+  "id": "c9",
+  "at": 20.25,
+  "file": "out/vo/c9.wav",
+  "dur": 1.516
+ },
+ {
+  "id": "c10",
+  "at": 22.23,
+  "file": "out/vo/c10.wav",
+  "dur": 1.392
+ },
+ {
+  "id": "c11",
+  "at": 24.3,
+  "file": "out/vo/c11.wav",
+  "dur": 1.183
+ },
+ {
+  "id": "c12",
+  "at": 25.93,
+  "file": "out/vo/c12.wav",
+  "dur": 1.96
+ },
+ {
+  "id": "q",
+  "at": 29.1,
+  "file": "out/vo/q.wav",
+  "dur": 2.293
+ }
+]
