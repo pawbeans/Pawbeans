@@ -119,6 +119,17 @@ POSES.curl = { // NEW (Dog Decoded, 2026-10-13): curled "donut" asleep, rear swu
   legs: { ...POSES.lie.legs, FN: [[64, 20], [92, 16], [104, 17]], FF: [[56, 22], [86, 18], [98, 17]] },
   tail: { a0: 170, curl: -16 }, face: { eyes: 'closed', mouth: 'closed', brow: 0 },
 };
+POSES.squat = { // NEW (Inside Your Dog, 2026-10-14): toilet squat, side view: rear lowered, hind legs tucked forward,
+  // front legs straight, tail held up and out. Drawn with restraint (a bush or the frame edge covers the rear).
+  ...POSES.sit, hip: [-40, 64], pitch: 24, neck: { a: 70, len: 50 }, head: { pitch: -4, yaw: 10, roll: 0 },
+  legs: { FN: [[56, 78], [60, 30], [66, 18]], FF: [[48, 78], [48, 30], [54, 18]],
+    HN: [[14, 46], [-24, 28], [6, 18]], HF: [[6, 46], [-32, 28], [-4, 18]] },
+  tail: { a0: 128, curl: -16 }, ears: { swing: 0 }, face: { eyes: 'open', mouth: 'closed', brow: -0.2 }, over: ['FN'],
+};
+POSES.lookDown = { // NEW (Inside Your Dog, 2026-10-14): standing, head lowered to look at something on the ground
+  ...POSES.stand, neck: { a: 12, len: 50 }, head: { pitch: -48, yaw: 8, roll: 0 }, ears: { swing: -8 },
+  tail: { a0: 150, curl: -14 }, face: { eyes: 'open', mouth: 'closed', brow: -0.3 },
+};
 
 // pose('sit', overrides) → a pose object (deep-merged for head / face / tail / legs / ears)
 export function pose(name, o = {}) {

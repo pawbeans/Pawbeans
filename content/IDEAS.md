@@ -221,7 +221,7 @@ length · for Inside Your Dog: product tie-in + accent.
   → what the vet does for each.
 - Tie-in: Allergy & Itch chews, gently. Accent: sky. Sources: vet derm guidance (*verify* distribution patterns). 35–40 s.
 
-**B6 · The poop chart**
+**B6 · The poop chart** · MADE 2026-10-14 (`films/2026-10-14-the-poop-chart`)
 - Hook: "Your dog's poop is talking to you." A 1–7 score with drawn examples (restrained), the ideal is a 2.
 - Beats: too hard, ideal, too soft → what shifts it (diet change speed, fibre, stress) → when to see a vet.
 - Tie-in: Digestive Probiotics, "Firmer poops, happier walks." Accent: sage. Source: Purina faecal scoring chart

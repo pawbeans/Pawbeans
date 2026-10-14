@@ -1,0 +1,68 @@
+[
+ {
+  "id": "hook",
+  "at": 0.05,
+  "file": "out/vo/hook.wav",
+  "dur": 1.683
+ },
+ {
+  "id": "scale",
+  "at": 3.425,
+  "file": "out/vo/scale.wav",
+  "dur": 3.147
+ },
+ {
+  "id": "soft",
+  "at": 7.572,
+  "file": "out/vo/soft.wav",
+  "dur": 4.215
+ },
+ {
+  "id": "logs",
+  "at": 12.787,
+  "file": "out/vo/logs.wav",
+  "dur": 3.961
+ },
+ {
+  "id": "dry",
+  "at": 17.748,
+  "file": "out/vo/dry.wav",
+  "dur": 2.756
+ },
+ {
+  "id": "close",
+  "at": 21.504,
+  "file": "out/vo/close.wav",
+  "dur": 3.043
+ },
+ {
+  "id": "goal",
+  "at": 25.547,
+  "file": "out/vo/goal.wav",
+  "dur": 3.806
+ },
+ {
+  "id": "moves",
+  "at": 30.672,
+  "file": "out/vo/moves.wav",
+  "dur": 4.175
+ },
+ {
+  "id": "vet",
+  "at": 35.147,
+  "file": "out/vo/vet.wav",
+  "dur": 3.051
+ },
+ {
+  "id": "tin",
+  "at": 39.199,
+  "file": "out/vo/tin.wav",
+  "dur": 4.988
+ },
+ {
+  "id": "q",
+  "at": 45.187,
+  "file": "out/vo/q.wav",
+  "dur": 1.838
+ }
+]

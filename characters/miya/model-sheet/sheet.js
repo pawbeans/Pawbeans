@@ -29,6 +29,8 @@ const POSE_ROW = [
   { label: 'SPIN (CHASING TAIL)', name: 'spin', x: 1330, y: 1385, labelY: 1536, view: 0, elev: 38, note: 'on 1s, smear on the tail' },
   { label: 'SLEEP (CHIN ON PAWS) · NEW', name: 'sleep', x: 330, y: 1850, view: 15, note: 'new 2026-10-13, awaiting approval', isNew: true },
   { label: 'CURL (DONUT) · NEW', name: 'curl', x: 850, y: 1820, labelY: 1916, view: 20, elev: 45, note: 'new 2026-10-13: view 20, elev 45', isNew: true },
+  { label: 'SQUAT · NEW', name: 'squat', x: 1330, y: 1850, view: 10, note: 'new 2026-10-14, awaiting approval', isNew: true },
+  { label: 'LOOK DOWN · NEW', name: 'lookDown', x: 1730, y: 1850, view: 15, note: 'new 2026-10-14, awaiting approval', isNew: true },
 ];
 
 function pencilLine(c, x0, y0, x1, y1, seed, w = 2) {
