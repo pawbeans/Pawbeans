@@ -215,7 +215,7 @@ length · for Inside Your Dog: product tie-in + accent.
 - Source: Mueller, Olivry & Prélaud 2016, BMC Veterinary Research (beef, dairy, chicken, wheat) (*verify*).
   Tie-in: novel proteins. Accent: Venison. 30 s.
 
-**B5 · Itchy dog? Food, fleas or the environment**
+**B5 · Itchy dog? Food, fleas or the environment** (pitched 2026-10-14 reshaped as "Where your dog scratches is a clue": tail base = fleas, face/paws seasonal = environment, all year = food)
 - Hook: "3 reasons your dog won't stop scratching."
 - Beats: fleas (base of tail) → environmental allergy (seasonal, paws and face) → food (year-round, ears, paws, bottom)
   → what the vet does for each.
