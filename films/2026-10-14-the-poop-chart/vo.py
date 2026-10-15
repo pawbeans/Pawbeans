@@ -25,18 +25,19 @@ EL_MODEL = os.environ.get('BEANS_VO_MODEL', 'eleven_multilingual_v2')
 EL_SETTINGS = {'eleven_v3': {'stability': 0.5},
                'eleven_multilingual_v2': {'stability': 0.4, 'similarity_boost': 0.8, 'style': 0.4, 'use_speaker_boost': True, 'speed': 1.0}}
 EL_TRIES = 4
-KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.95
+KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.88
 
 # ------------------------------------------------------------------ the script (spoken = shown; ** = emphasised word)
 # id, section, text, picture moment to land on a word: (old time, keep-speed duration, word, offset from its onset)
 SCRIPT = [
     ('hook', 0, "Your dog's poop is **talking** to you.", None),
     ('scale', 1, 'Vets score it from one to seven. Only one is **the goal.**', None),
-    ('soft', 2, 'A seven is a puddle. A six is a pile with no shape. **Too soft.**', None),
+    ('soft', 2, 'A seven is a puddle.', None),   # own take: the puddle card needs its 1.5 s
+    ('soft2', 2, 'A six is a pile with no shape. **Too soft.**', None),
     ('logs', 3, 'Five and four look like logs, but they **fall apart** when you pick them up.', (13.2, 0.7, 'fall', -0.05)),
     ('dry', 4, 'A one is hard, dry little pellets. **Too dry.**', (16.3, 0.9, 'hard', -0.1)),
     ('close', 5, 'A three holds its shape when you pick it up. That\'s **close.**', None),
-    ('goal', 6, 'And a two is the one. **Firm, in segments,** and easy to pick up.', (22.85, 0.75, 'two', -0.12)),
+    ('goal', 6, 'And a two is the one. **Firm, in segments,** and easy to pick up.', (22.725, 0.875, 'two', -0.245)),
     ('moves', 7, 'What moves the number? Switching food too fast, a new treat, or **stress.**', (29.0, 0.0, 'switching', -0.1)),
     ('vet', 7, 'Soft for more than a day, or any blood? **Call your vet.**', None),
     ('tin', 8, 'Our Digestive Probiotics support a happy gut. **Firmer poops, happier walks.**', (34.15, 0.3, 'our', -0.2)),
@@ -45,7 +46,7 @@ SCRIPT = [
 # named word onsets (film seconds) for the picture: name → (line id, word, nth occurrence)
 MARKS = {
     'one': ('scale', 'one', 0), 'seven': ('scale', 'seven', 0), 'goal': ('scale', 'goal.**', 0),
-    'seven2': ('soft', 'seven', 0), 'six': ('soft', 'six', 0), 'toosoft': ('soft', '**too', 0),
+    'seven2': ('soft', 'seven', 0), 'six': ('soft2', 'six', 0), 'toosoft': ('soft2', '**too', 0),
     'five': ('logs', 'five', 0), 'four': ('logs', 'four', 0), 'pick': ('logs', 'pick', 0),
     'one2': ('dry', 'one', 0), 'toodry': ('dry', '**too', 0),
     'three': ('close', 'three', 0), 'close': ('close', 'close.**', 0),
@@ -59,7 +60,7 @@ NO_CAPTION = {'hook', 'q'}   # the hook headline and the question card are the t
 OLD = [(0.0, 3.0), (3.0, 6.5), (6.5, 11.0), (11.0, 15.5), (15.5, 19.0), (19.0, 22.0), (22.0, 27.0), (27.0, 34.0), (34.0, 37.5), (37.5, 41.5)]
 CUT = [0, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.25, 0.125, 0.125]
 LOGO_OLD, LOGO_HOLD = 39.5, 2.0   # the end card: the logo comes in after the question, held 2 s
-LEAD, TAIL, GAP = 0.3, 0.45, 0.3
+LEAD, TAIL, GAP = 0.3, 0.8, 0.4
 
 
 def norm(w):
@@ -203,8 +204,9 @@ def main():
     for i, c in enumerate(caps):
         nxt = caps[i + 1][0] if i + 1 < len(caps) else 1e9
         cut = min(x for x in cuts if x > c[0])
-        c[1] = round(min(cut, nxt if nxt - c[1] < 0.6 else c[1]), 3)
-        if c[1] > nxt: c[1] = nxt
+        c[1] = round(min(cut, nxt), 3)                                         # a card stays up to the next card or the cut
+    for p, c in zip(caps, caps[1:]):                                           # back to back: swap just before the first word
+        if p[1] == c[0]: c[0] = p[1] = round(max(c[0], c[3][0] - 0.04), 3)
     anchors = sorted(set((round(n, 4), round(o, 4)) for n, o in anchors))
     for (n0, o0), (n1, o1) in zip(anchors, anchors[1:]):
         assert n1 > n0 and o1 >= o0, ('warp not monotonic', (n0, o0), (n1, o1))

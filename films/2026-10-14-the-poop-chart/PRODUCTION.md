@@ -3,13 +3,40 @@
 Series: Inside Your Dog (BEANS: product near the end, logo end card). Idea B6, **auto-picked ★1 at the 22:30 SGT
 cut-off** (no reply to the 2026-10-14 pitch). Accent: Digestive Probiotics sage `#BFD8AE`; brand orange for stickers,
 rings and the hook word. Hook formula: "Your dog's X is talking to you." (a "you've been reading your dog wrong" cousin).
-Length **49.5 s** (voice-timed, local Kokoro voice; see flags), 1080×1920, 24 fps.
+Length **54.25 s** in v2 (49.5 s at the boards; voice slowed for reading time, local Kokoro voice; see flags), 1080×1920, 24 fps.
 
 - [x] Gate 1: routine: standing approval (owner 2026-10-13), overnight veto. Auto-picked ★1 at the cut-off.
 - [x] Gate 2: routine: standing approval (owner 2026-10-13), overnight veto. Script below.
 - [x] Gate 3: routine: standing approval (owner 2026-10-13), overnight veto. Key frames for the whole film (59 stills)
       → `review/2026-10-14-the-poop-chart-keyframes-{a,b,c,d}.png`; new poses → `review/miya-model-sheet-new-poses.png`.
-- [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown (08:28 SGT run)
+- [x] Gate 4: rendered → reviewed (rubric) → revised once → shown (2026-10-15 08:28 SGT run, delivered v2)
+  - v1 spec: 49.54 s, 1080×1920, 24 fps, H.264 + AAC 48 kHz, −14.0 LUFS, −2.3 dBTP (mp4), VO −22.0 / music −34.0 LUFS
+    (12 LU under), no black frames, all fonts loaded (Fraunces, Inter, Oswald, Caveat; no fallbacks).
+  - Review (separate subagent, `mg-styles-15/rubric.md`) of v1: style 7, concept/wow 6, motion craft 5, design/type 7,
+    finish 7, sound sync 6, technical 6. Critical: 12 of 21 caption cards under 1.5 s and 8 over 3.5 words/s; the time
+    warp broke one-frame moves (the hero 2 showed 1 of its 3 falling frames, smear frames held 2 frames, the tin fell
+    during the whip). High: tail strobe every frame (`f % 2`), ghost dissolve to the end card, 2-frame empty caption
+    card at every back-to-back change, "ahem." outside the safe zone with its arrow reading as a stick in Miya's mouth,
+    the bag hand parked half off frame, static holds (tin, question, river).
+  - v2 changes (one revision): voice re-made slower (Kokoro speed 0.95 → 0.88, gaps 0.3 → 0.4 s, section tails 0.45 →
+    0.8 s; "A seven is a puddle." as its own take) so every card is on screen ≥ 1.5 s; cards stay up to the next card
+    or the cut and swap 0.04 s before the first word; every one-frame event keyed to the film frame (`FF()` / `D.fn`):
+    ruler smear, hand smear and grab twinkle, pellets, the hero drop (3 falling frames + contact + 2 impact frames)
+    and the tin drop; hero keep-speed window widened in `vo.py`; tail wag on the drawing (`D.id % 2`); the end-card
+    dissolve replaced by a hard-edged paper wipe on 1s (5 frames); "ahem." moved above the bush, arrow to the bush;
+    the hand lifts up and left (cuff ≤ x 900); camera pushes on the tin (dz 0.12), question (0.08) and river (+8 %);
+    the series pill turns cream on navy. Copy, order and content unchanged from the boards.
+  - v2 spec: 54.25 s (1302 frames), 1080×1920, 24 fps, −14.0 LUFS, −2.7 dBTP (mp4 and viewing copy), VO −22.0 / music
+    −34.0 / foley −34.2 LUFS, no black frames. Transitions checked frame by frame (hero, tin, end wipe, caption swaps).
+  - Files (not committed): `review/2026-10-14-the-poop-chart-v2.mp4` (viewing copy, 22.9 MB),
+    `review/2026-10-14-the-poop-chart-v2-soundtrack.wav`, `review/2026-10-14-the-poop-chart-v2-voiceover.wav`.
+  - Still weak: the Kokoro voice is flat (no ElevenLabs key again); two cards still read a little fast ("A three holds
+    its shape when you pick it up." ≈ 4.1 w/s, "Soft for more than a day, or any blood?" ≈ 3.7 w/s); the hero sits at
+    ≈ 52 %; the bag hand's sleeve still runs off the right edge (cuff inside); 54 s is over the 45 s series target.
+    Not done (nice-to-have): tube bend spikes, a faint arc at the log residue, pellet size, sticker pop-out specks,
+    foley pre-roll on the squelch and tin, the soft sage glow, the iris freezing the outgoing shot.
+  - Needs the owner: move the hero later (shorter inside section); "poop" vs British "poo"; the Purina chart calls 5
+    "piles" (script says "Five and four look like logs"); ElevenLabs voice; more action at the tin moment.
 
 Pending / unapproved inputs in use: NEW Miya poses `squat` and `lookDown` (model sheet, awaiting the owner's OK);
 voice is the local Kokoro fallback (no `ELEVENLABS_API_KEY` in the build session); poop colour = the Venison accent

@@ -3,66 +3,72 @@
   "id": "hook",
   "at": 0.05,
   "file": "out/vo/hook.wav",
-  "dur": 1.683
+  "dur": 1.778
  },
  {
   "id": "scale",
   "at": 3.425,
   "file": "out/vo/scale.wav",
-  "dur": 3.147
+  "dur": 3.345
  },
  {
   "id": "soft",
-  "at": 7.572,
+  "at": 8.12,
   "file": "out/vo/soft.wav",
-  "dur": 4.215
+  "dur": 1.331
+ },
+ {
+  "id": "soft2",
+  "at": 9.851,
+  "file": "out/vo/soft2.wav",
+  "dur": 2.855
  },
  {
   "id": "logs",
-  "at": 12.787,
+  "at": 14.056,
   "file": "out/vo/logs.wav",
-  "dur": 3.961
+  "dur": 4.172
  },
  {
   "id": "dry",
-  "at": 17.748,
+  "at": 19.578,
   "file": "out/vo/dry.wav",
-  "dur": 2.756
+  "dur": 2.845
  },
  {
   "id": "close",
-  "at": 21.504,
+  "at": 23.773,
   "file": "out/vo/close.wav",
-  "dur": 3.043
+  "dur": 3.118
  },
  {
   "id": "goal",
-  "at": 25.547,
+  "at": 28.241,
   "file": "out/vo/goal.wav",
-  "dur": 3.806
+  "dur": 4.02
  },
  {
   "id": "moves",
-  "at": 30.672,
+  "at": 33.861,
   "file": "out/vo/moves.wav",
-  "dur": 4.175
+  "dur": 4.48
  },
  {
   "id": "vet",
-  "at": 35.147,
+  "at": 38.742,
   "file": "out/vo/vet.wav",
-  "dur": 3.051
+  "dur": 3.241
  },
  {
   "id": "tin",
-  "at": 39.199,
+  "at": 43.333,
   "file": "out/vo/tin.wav",
-  "dur": 4.988
+  "dur": 5.155
  },
  {
   "id": "q",
-  "at": 45.187,
+  "at": 49.838,
   "file": "out/vo/q.wav",
-  "dur": 1.838
+  "dur": 1.907
  }
 ]
