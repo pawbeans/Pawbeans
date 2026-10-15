@@ -1,15 +1,15 @@
 # Dog Decoded: 5 ways your dog says "I love you"
 
 Series: Dog Decoded (no BEANS mention: no logo, product or URL). Idea D30, **auto-picked ★1 at the 22:30 cut-off** (no reply in the pitch session, 2026-10-15).
-Hook formula: "4 signs your dog [trusts you…]" (numbered countdown, best saved for last). Length **44.25 s** (voice first, local Kokoro voice), 1080×1920, 24 fps. Mood accent: blossom (Skin & Coat pastel, no product meaning).
+Hook formula: "4 signs your dog [trusts you…]" (numbered countdown, best saved for last). Length **43.67 s** (voice first, ElevenLabs Jessica), 1080×1920, 24 fps. Mood accent: blossom (Skin & Coat pastel, no product meaning).
 Why it should travel: warm, every owner counts along, and "puppy eyes, evolved for you" is the line people send to a friend.
 
 - [x] Gate 1: idea: auto-picked ★1 at the cut-off (2026-10-15 22:30)
 - [x] Gate 2: script: routine: standing approval (owner 2026-10-13), overnight veto
-- [x] Gate 3: key frames (54 stills) → `review/2026-10-15-five-ways-i-love-you-keyframes-{a,b,c}.png`: routine: standing approval (owner 2026-10-13), overnight veto
+- [x] Gate 3: key frames (re-timed to the ElevenLabs voice) → `review/2026-10-15-five-ways-i-love-you-keyframes-{a,b,c}.png`: routine: standing approval (owner 2026-10-13), overnight veto
 - [ ] Gate 4: render → review (rubric) → revise once → shown (08:28 run)
 
-Pending / unapproved inputs in use: four NEW Miya poses (lean, carry, lookBack, face.lift brow raise), `review/miya-model-sheet-new-poses.png`. Voice: local Kokoro (no `ELEVENLABS_API_KEY` in this session): the morning run should re-run `vo.py` with the key if it has it.
+Pending / unapproved inputs in use: four NEW Miya poses (lean, carry, lookBack, face.lift brow raise), `review/miya-model-sheet-new-poses.png`. Voice: **ElevenLabs Jessica** (Multilingual v2), re-voiced 2026-10-15 night at the owner's request with the owner's key (kept outside the repo, never committed). All 14 takes match the script word for word; hook said at speed 0.88 ("like" 0.92); "five2" uses take seed +2 (a clear pause in "a hug, dog style"; the first take ran it together as "hugged dog"). Sync check: every line's voice onset is within 20 ms of its first caption word (voice-stem energy), each caption word builds one frame before it is spoken, and Whisper on the final mix hears the script word for word. One card is just under 1.5 s ("Wolves mostly don't.", 1.42 s, 3 words).
 Sources (also in CREDITS.md): Kaminski et al. 2019, PNAS 116(29):14677, "Evolution of facial muscle anatomy in dogs" (https://pmc.ncbi.nlm.nih.gov/articles/PMC6642381/): the inner-brow raiser (LAOM) uniformly present in dogs, scant/irregular in wolves; selection by humans is the authors' hypothesis, so the film says "scientists think". Everything else: behaviour lore (Dog Decoded light sourcing).
 
 ## Voiceover (= captions, word for word)
@@ -36,4 +36,6 @@ part is the authors' hypothesis, small samples, and a later study reportedly fou
 | 29.87–40.19 | 1/5 PUPPY EYES (hero, 70 %): blossom ground; on "puppy" the inner brows lift, eyes widen with a second glint: 1 smear frame (head stretched), punch-in, shake, speed lines, twinkle burst; "the brow muscle" callout with arrow; brows lift again on "eyebrows"; payoff "Puppy eyes, evolved *for you.*" replaces the pill | pill, callout, payoff + captions | lift on 1s | soft cinematic impact, harp run, music resolves (F) |
 | 40.19–44.25 | Question card "How many does *yours* do? / Tell us below." over the cover; she settles back into the cover pose and the headline returns (seamless loop) | question card, headline | question on 3s | paper slide, pop |
 
-Music: new instrumental in F major (soft piano broken chords, pizzicato bass, harp motif), ~90 bpm, resolving on the brow lift; 12 LU under the voice. Test mix: −14.1 LUFS, −2.6 dBTP (WAV).
+Music: new instrumental in F major (soft piano broken chords, pizzicato bass, harp motif), ~90 bpm, resolving on the brow lift; 12 LU under the voice. Mix with the ElevenLabs voice: −14.0 LUFS, −2.7 dBTP (WAV). Previews: `review/*-soundtrack-preview.m4a`, `review/*-voiceover-preview.m4a`.
+
+Notes: 2026-10-15 night, owner: "make sure vo is good and reads in line with captions" (ElevenLabs key supplied for this session). Applied as above; key frames re-rendered to the new 43.67 s timing.

@@ -25,6 +25,8 @@ EL_MODEL = os.environ.get('BEANS_VO_MODEL', 'eleven_multilingual_v2')
 EL_SETTINGS = {'eleven_v3': {'stability': 0.5},
                'eleven_multilingual_v2': {'stability': 0.4, 'similarity_boost': 0.8, 'style': 0.4, 'use_speaker_boost': True, 'speed': 1.0}}
 EL_TRIES = 4
+EL_PICK = {'five2': 2}   # chosen take (seed offset): a clear pause in "a hug, dog style" (seed +0 ran it together as "hugged dog")
+EL_SPEED = {'hook': 0.88, 'like': 0.92}   # per-line pace (Multilingual v2 speed): the hook is said a touch slower
 KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.9
 
 # ------------------------------------------------------------------ the script (spoken = shown; ** = emphasised word)
@@ -67,7 +69,7 @@ LEAD, TAIL, GAP = 0.3, 0.8, 0.4
 
 def norm(w):
     w = re.sub(r'[^a-z0-9]', '', w.lower().replace('’', "'"))
-    return {'youre': 'your', 'theyre': 'their', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', 'dont': 'dont'}.get(w, w)
+    return {'youre': 'your', 'theyre': 'their', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', 'dont': 'dont', 'favourite': 'favorite'}.get(w, w)
 
 
 def plain(s): return s.replace('**', '')
@@ -90,11 +92,13 @@ def take(lid, say, seed):
             k = Kokoro(os.path.join(CACHE, 'models', 'kokoro-v1.0.onnx'), os.path.join(CACHE, 'voices', 'voices-v1.0.bin'))
             _kokoro = (k, sum(w * k.get_voice_style(v) for v, w in KOKORO_MIX).astype(np.float32))
         return _kokoro[0].create(say, voice=_kokoro[1], speed=KOKORO_SPEED, lang='en-us')
-    key = hashlib.sha1(f'{EL_MODEL}|{EL_VOICE}|{seed}|{json.dumps(EL_SETTINGS[EL_MODEL], sort_keys=True)}|{say}'.encode()).hexdigest()[:12]
+    vs = dict(EL_SETTINGS[EL_MODEL])
+    if lid in EL_SPEED and 'speed' in vs: vs['speed'] = EL_SPEED[lid]
+    key = hashlib.sha1(f'{EL_MODEL}|{EL_VOICE}|{seed}|{json.dumps(vs, sort_keys=True)}|{say}'.encode()).hexdigest()[:12]
     raw = os.path.join(OUT, 'raw', f'{lid}-{key}.wav')
     if not os.path.exists(raw):
         os.makedirs(os.path.dirname(raw), exist_ok=True)
-        body = json.dumps({'text': say, 'model_id': EL_MODEL, 'seed': seed, 'voice_settings': EL_SETTINGS[EL_MODEL]}).encode()
+        body = json.dumps({'text': say, 'model_id': EL_MODEL, 'seed': seed, 'voice_settings': vs}).encode()
         req = urllib.request.Request(f'https://api.elevenlabs.io/v1/text-to-speech/{EL_VOICE}?output_format=pcm_24000', body,
                                      {'xi-api-key': EL_KEY, 'Content-Type': 'application/json'})
         pcm = np.frombuffer(urllib.request.urlopen(req, timeout=120).read(), dtype='<i2')
@@ -156,7 +160,7 @@ def main():
     takes = {}
     for lid, sec, text, ev in SCRIPT:
         shown = text.split(' ')
-        seed0 = int(hashlib.sha1(lid.encode()).hexdigest()[:6], 16)
+        seed0 = int(hashlib.sha1(lid.encode()).hexdigest()[:6], 16) + (EL_PICK.get(lid, 0) if EL_KEY else 0)
         path = os.path.join(OUT, f'{lid}.wav')
         for n in range(EL_TRIES if EL_KEY else 1):
             y, sr = take(lid, plain(text), seed0 + n)

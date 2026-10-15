@@ -3,84 +3,84 @@
   "id": "hook",
   "at": 0.05,
   "file": "out/vo/hook.wav",
-  "dur": 1.422
+  "dur": 1.211
  },
  {
   "id": "like",
-  "at": 1.872,
+  "at": 1.661,
   "file": "out/vo/like.wav",
-  "dur": 0.756
+  "dur": 0.634
  },
  {
   "id": "five",
-  "at": 3.978,
+  "at": 3.644,
   "file": "out/vo/five.wav",
-  "dur": 1.733
+  "dur": 1.995
  },
  {
   "id": "five2",
-  "at": 6.11,
+  "at": 6.04,
   "file": "out/vo/five2.wav",
-  "dur": 2.617
+  "dur": 2.828
  },
  {
   "id": "four",
-  "at": 10.078,
+  "at": 10.218,
   "file": "out/vo/four.wav",
-  "dur": 2.275
+  "dur": 1.958
  },
  {
   "id": "four2",
-  "at": 12.753,
+  "at": 12.576,
   "file": "out/vo/four2.wav",
-  "dur": 1.201
+  "dur": 0.892
  },
  {
   "id": "three",
-  "at": 15.303,
+  "at": 14.818,
   "file": "out/vo/three.wav",
-  "dur": 2.483
+  "dur": 2.732
  },
  {
   "id": "three2",
-  "at": 18.186,
+  "at": 17.95,
   "file": "out/vo/three2.wav",
-  "dur": 1.825
+  "dur": 1.419
  },
  {
   "id": "two",
-  "at": 21.361,
+  "at": 20.719,
   "file": "out/vo/two.wav",
-  "dur": 3.497
+  "dur": 4.067
  },
  {
   "id": "tease",
-  "at": 26.208,
+  "at": 26.136,
   "file": "out/vo/tease.wav",
-  "dur": 2.741
+  "dur": 2.608
  },
  {
   "id": "one",
-  "at": 30.299,
+  "at": 30.094,
   "file": "out/vo/one.wav",
-  "dur": 1.783
+  "dur": 1.722
  },
  {
   "id": "one2",
-  "at": 32.482,
+  "at": 32.216,
   "file": "out/vo/one2.wav",
-  "dur": 4.531
+  "dur": 4.164
  },
  {
   "id": "one3",
-  "at": 37.412,
+  "at": 36.78,
   "file": "out/vo/one3.wav",
-  "dur": 1.853
+  "dur": 1.689
  },
  {
   "id": "q",
-  "at": 40.615,
+  "at": 39.82,
   "file": "out/vo/q.wav",
-  "dur": 2.218
+  "dur": 2.461
  }
 ]
