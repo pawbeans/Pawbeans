@@ -68,7 +68,8 @@ const LEG_Z = { F: 25, H: 23 };
 // hip: torso pivot in the world; pitch: torso pitch (deg); neck: angle (deg from +X) + length;
 // head: { pitch, yaw, roll } (deg); legs: joints after the shoulder / hip: [elbow|stifle, wrist|hock, paw centre];
 // tail: { a0 (deg at the root), curl (deg per segment) }; ears: { swing } (deg, + = flung back);
-// face: { eyes: open|happy|squint|closed, mouth: closed|smile|tongue|open (eating), brow: -1..1 }.
+// face: { eyes: open|happy|squint|closed, mouth: closed|smile|tongue|open (eating), brow: -1..1, lift: 0..1 (puppy-eyes brow raise) };
+// tilt: whole-body lean in degrees (lean pose).
 export const POSES = {
   stand: {
     hip: [-60, 134], pitch: 2, neck: { a: 64, len: 52 }, head: { pitch: -6, yaw: 0, roll: 0 },
@@ -129,6 +130,23 @@ POSES.squat = { // NEW (Inside Your Dog, 2026-10-14): toilet squat, side view: r
 POSES.lookDown = { // NEW (Inside Your Dog, 2026-10-14): standing, head lowered to look at something on the ground
   ...POSES.stand, neck: { a: 12, len: 50 }, head: { pitch: -48, yaw: 8, roll: 0 }, ears: { swing: -8 },
   tail: { a0: 150, curl: -14 }, face: { eyes: 'open', mouth: 'closed', brow: -0.3 },
+};
+
+POSES.lean = { // NEW (Dog Decoded, 2026-10-15): standing, her whole weight tipped sideways into your shins, head tucked,
+  // eyes closed happy. Draw near front view (view ≈ 70) so the tilt reads; + tilt leans toward screen right.
+  ...POSES.stand, tilt: 13, head: { pitch: -10, yaw: 10, roll: 12 }, ears: { swing: -6 }, tail: { a0: 120, curl: -24 },
+  face: { eyes: 'happy', mouth: 'smile', brow: 0.4 },
+};
+POSES.carry = { // NEW (Dog Decoded, 2026-10-15): standing tall, head up and proud, mouth closed round a prop (the film draws
+  // the prop at locate(P, o, (R) => R.face.mouthO)).
+  ...POSES.stand, neck: { a: 70, len: 54 }, head: { pitch: 6, yaw: 6, roll: 0 }, tail: { a0: 84, curl: -32 },
+  face: { eyes: 'open', mouth: 'closed', brow: 0.4 }, wag: true,
+};
+POSES.lookBack = { // NEW (Dog Decoded, 2026-10-15): standing mid-walk, head turned back over her shoulder toward the viewer.
+  ...POSES.stand, neck: { a: 76, len: 50 }, head: { pitch: 2, yaw: -128, roll: -6 },
+  legs: { FN: [[60, 82], [66, 30], [76, 18]], FF: [[44, 82], [38, 30], [42, 18]],
+    HN: [[-44, 84], [-80, 40], [-80, 18]], HF: [[-50, 84], [-70, 40], [-60, 18]] },
+  tail: { a0: 104, curl: -28 }, ears: { swing: -10 }, face: { eyes: 'open', mouth: 'smile', brow: 0.4 },
 };
 
 // pose('sit', overrides) → a pose object (deep-merged for head / face / tail / legs / ears)
@@ -284,6 +302,10 @@ export function locate(P, o, pick) { const R = rig(P); return projector(o).P(pic
 // o: { x, y (ground point, screen px), s (scale), view, elev, mirror, v (boil variant), accent (video accent hex),
 //      seed (per-shot seed), shadow (false = no ground hatch), w (line weight) }
 export function drawMiya(c, P, o = {}) {
+  if (P.tilt && !o._tilted) { // NEW 2026-10-15 (lean): the whole dog tipped sideways about her ground point, degrees (+ = toward screen right)
+    c.save(); c.translate(o.x, o.y); c.rotate((o.mirror ? -1 : 1) * P.tilt * RAD); c.translate(-o.x, -o.y);
+    const r = drawMiya(c, P, { ...o, _tilted: true }); c.restore(); return r;
+  }
   const R = rig(P);
   const { P: Pj, S, dirZ } = projector(o);
   const v = o.v ?? 0, sd = (o.seed ?? 2000) + v * 97;
@@ -411,8 +433,13 @@ function drawFace(c, R, P, Pj, dirZ, S, sd, W) {
   for (const e of F.eyes) {
     const facing = dirZ(e.n) / (Math.hypot(e.n.x, e.n.y, e.n.z) || 1);
     if (facing < -0.2) continue;
-    const p = Pj(e.c), sq = clamp(0.4 + 0.6 * (facing + 0.2) / 1.2, 0.4, 1);
-    const rx = 6.2 * S * sq, ry = 6.6 * S, seed = sd + 700 + (e.side > 0 ? 0 : 10);
+    const p = Pj(e.c), sq = clamp(0.4 + 0.6 * (facing + 0.2) / 1.2, 0.4, 1), lift = mood.lift || 0;
+    const rx = 6.2 * S * sq * (1 + 0.22 * lift), ry = 6.6 * S * (1 + 0.22 * lift), seed = sd + 700 + (e.side > 0 ? 0 : 10);
+    if (lift > 0) { // NEW 2026-10-15 (brow raise, "puppy eyes"): the inner brow tuft lifts and tilts up toward the nose
+      const nx = Pj(F.nose).x, inner = Math.sign(nx - p.x) || 1, by = p.y - ry * (1.5 + 0.7 * lift);
+      inkStroke(c, [[p.x - inner * rx * 1.4, by + 3 * S], [p.x, by - 2 * S * lift], [p.x + inner * rx * 1.3, by - 13 * S * lift]],
+        { seed: seed + 3, w: (3.2 + 1.4 * lift) * S, t0: 3 * S, t1: 2 * S, amp: 0.5 * S, heavy: 0 });
+    }
     if (mood.eyes === 'happy') {
       inkStroke(c, [[p.x - rx * 1.3, p.y + 1.5 * S], [p.x, p.y - ry * 0.8], [p.x + rx * 1.3, p.y + 1.5 * S]], { seed, w: 3.4 * S, t0: 3 * S, t1: 3 * S, amp: 0.6 * S, heavy: 0 });
     } else if (mood.eyes === 'closed' || mood.eyes === 'squint') {
@@ -421,7 +448,8 @@ function drawFace(c, R, P, Pj, dirZ, S, sd, W) {
     } else {
       const loop = circlePts(p.x, p.y, ry, 18, rx);
       fillShape(c, loop, PAL.ink, { seed, amp: 0.5 * S });
-      c.fillStyle = PAL.hi; c.beginPath(); c.arc(p.x - rx * 0.3, p.y - ry * 0.35, 1.8 * S, 0, 7); c.fill();
+      c.fillStyle = PAL.hi; c.beginPath(); c.arc(p.x - rx * 0.3, p.y - ry * 0.35, 1.8 * S * (1 + 0.6 * lift), 0, 7); c.fill();
+      if (lift > 0.3) { c.beginPath(); c.arc(p.x + rx * 0.3, p.y + ry * 0.35, 1.1 * S * lift, 0, 7); c.fill(); } // a second glint: wet, pleading eyes
     }
   }
   // nose: broad, rounded, with a soft bean notch on top and a glint

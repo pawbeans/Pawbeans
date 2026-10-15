@@ -4,7 +4,7 @@ import { PAL, MIYA } from '../../../cel/palette.js';
 import { loadPaper, drawPaper, drawTooth } from '../../../cel/paper.js';
 import { drawMiya, pose } from '../miya.js';
 
-export const W = 2400, H = 2000;
+export const W = 2400, H = 2450;
 let ctx, DPR = 1;
 
 export async function init(canvas, dpr) {
@@ -31,6 +31,10 @@ const POSE_ROW = [
   { label: 'CURL (DONUT) · NEW', name: 'curl', x: 850, y: 1820, labelY: 1916, view: 20, elev: 45, note: 'new 2026-10-13: view 20, elev 45', isNew: true },
   { label: 'SQUAT · NEW', name: 'squat', x: 1330, y: 1850, view: 10, note: 'new 2026-10-14, awaiting approval', isNew: true },
   { label: 'LOOK DOWN · NEW', name: 'lookDown', x: 1730, y: 1850, view: 15, note: 'new 2026-10-14, awaiting approval', isNew: true },
+  { label: 'LEAN · NEW', name: 'lean', x: 330, y: 2300, view: 70, note: 'new 2026-10-15: view 70, tilt 13°', isNew: true },
+  { label: 'CARRY · NEW', name: 'carry', x: 850, y: 2300, view: 15, note: 'new 2026-10-15: prop at the mouth', isNew: true },
+  { label: 'LOOK BACK · NEW', name: 'lookBack', x: 1330, y: 2300, view: 10, note: 'new 2026-10-15, awaiting approval', isNew: true },
+  { label: 'BROW RAISE (FACE) · NEW', name: 'sit', x: 1850, y: 2300, view: 70, face: { eyes: 'open', mouth: 'closed', lift: 1 }, head: { pitch: 10, yaw: 0, roll: 0 }, note: 'new 2026-10-15: face.lift 0..1', isNew: true },
 ];
 
 function pencilLine(c, x0, y0, x1, y1, seed, w = 2) {
@@ -85,7 +89,7 @@ export function render(t) {
 
   // ---- poses
   for (const P of POSE_ROW) {
-    drawMiya(c, pose(P.name), { x: P.x, y: P.y, s: S2, view: P.view, elev: P.elev || 0, v, seed: 300 + P.x + P.y, accent: PAL.orange });
+    drawMiya(c, pose(P.name, { face: P.face, head: P.head }), { x: P.x, y: P.y, s: S2, view: P.view, elev: P.elev || 0, v, seed: 300 + P.x + P.y, accent: PAL.orange });
     label(c, P.label, P.x, (P.labelY ?? P.y + 66), P.isNew ? { color: PAL.orange } : {});
     if (P.note) pencilNote(c, P.note, P.x, (P.labelY ?? P.y + 66) + 34, { font: '500 26px "Caveat"' });
   }

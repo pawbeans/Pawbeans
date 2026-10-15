@@ -164,7 +164,7 @@ length · for Inside Your Dog: product tie-in + accent.
   scent is fading, one way they sense how long you've been gone → key in the door: instant zoomies. Ending: "Now you know
   why the welcome is so big." Miya: sit, lie, ★ sniff, ★ run.
 
-**D30 · 5 ways your dog says "I love you"** · 25–30 s
+**D30 · 5 ways your dog says "I love you"** · 25–30 s (made 2026-10-15, `films/2026-10-15-five-ways-i-love-you`)
 - Hook: "Your dog says I love you. Here's how." Countdown: leaning their weight on you → following you to the bathroom →
   bringing you their favourite toy → sleeping with their back to you → the puppy-eyes eyebrow raise, saved for last
   ("they evolved eyebrows for you"). Ending: "How many does yours do?" Miya: ★ lean, ★ brow raise.
