@@ -44,7 +44,7 @@ setStep(LEAN - 0.1, LEAN + 0.35, 1);                  // the lean lands
 setStep(mo('hug') - 0.05, mo('hug') + 0.2, 1);        // punch in on "hug"
 setStep(CREAK - 0.05, CREAK + 0.3, 1);                // the creak: ears up
 setStep(TROT0, TROT1, 1);                             // the trot in
-setStep(DROP - 0.05, DROP + 0.4, 1);                  // the sock drop and bounce
+setStep(DROP - 0.1, DROP + 0.4, 1);                   // the sock falls, the drop and bounce
 setStep(LOOK - 0.05, LOOK + 0.3, 1);                  // the look back
 setStep(LIFT - 0.1, LIFT + 0.6, 1);                   // the brow lift (hero)
 setStep(28.3, 30.4, 3);                               // the question holds
@@ -53,7 +53,9 @@ const oldFrame = (t) => Math.min(NFO - 1, Math.max(0, Math.round(toOld(t) * FPS)
 const STEP = Array.from({ length: NF }, (_, f) => STEPO[oldFrame(f / FPS)]);
 const FQ = new Int32Array(NF), ID = new Int32Array(NF);
 { let last = 0, id = 0; for (let f = 0; f < NF; f++) { if (f > 0 && (STEP[f] !== STEP[f - 1] || f - last >= STEP[f])) { last = f; id++; } FQ[f] = last; ID[f] = id; } }
-function drawing(f) { return { fq: oldFrame(FQ[f] / FPS), id: ID[f], step: STEP[f] }; }
+function drawing(f) { return { fq: oldFrame(FQ[f] / FPS), id: ID[f], step: STEP[f], fn: f }; }
+const firstFilmFrame = (tOld) => { for (let f = 0; f < NF; f++) if (toOld(f / FPS) >= tOld) return f; return NF - 1; };
+const SMEAR_TROT = firstFilmFrame(TROT0 + 0.08), SMEAR_LIFT = firstFilmFrame(LIFT); // one smear frame each
 const bv = (D) => (D.step === 3 ? D.id % 3 : D.id % 4);
 
 export async function init(canvas, dpr) {
@@ -189,7 +191,7 @@ function sock(c, x, y, rot, s, v, seed = 1300) { // the gift: a striped cream-an
 }
 function bathDoor(c, v, creak) { // a closed door with a light under it; creak: 0..1 opens a crack
   CA.celMass(c, rect(470, 420, 470, 850, 8), PAL.navyLight, PAL.navy, 100, v, { w: 6, sh: 12 }); // frame
-  const gap = 26 * creak;
+  const gap = 70 * creak;
   fillShape(c, rect(500, 450, 410, 805, 4), '#FAE588', { seed: 109 + v, amp: 1 }); // warm light behind the door
   CA.celMass(c, rect(500 + gap, 450, 410 - gap * 0.4, 805, 6), PAL.hi, '#EADFCB', 101, v, { w: 5, sh: 10 });
   for (const [y, h] of [[500, 320], [860, 330]]) inkLoop(c, rect(550 + gap, y, 310 - gap * 0.5, h, 10), { seed: 102 + y + v, w: 3.5, amp: 1.2, color: PAL.navy });
@@ -232,7 +234,7 @@ function shotCover(c, t, f, D) {
   c.save(); c.translate(COVER.x, COVER.y); c.scale(settle, 1 / settle); c.translate(-COVER.x, -COVER.y);
   drawMiya(c, coverPose(tq), { ...COVER, s: COVER.s * br, v, seed: 3000, accent: ACC });
   c.restore();
-  hearts(c, 790, 820, tq, 0.4, v, 2, 60);
+  hearts(c, 790, 820, tq, -1.5, v, 2, 60); // already drifting on frame 0, so the loop matches
   c.restore();
 }
 // 5/5: she leans her whole weight into your shins
@@ -243,7 +245,7 @@ function shotLean(c, t, f, D) {
   const z = lerp(1.0, 1.08, E.io2(inv(3.0, 7.5, tq))) + 0.35 * hg;
   c.save(); cam(c, lerp(560, 600, hg), lerp(980, 880, hg), z);
   floor(c, v);
-  shins(c, 860, v);
+  shins(c, 820, v);
   const L = E.in2(inv(LEAN - 0.35, LEAN, tq)); // she tips in, on 1s, squash on contact
   const hit = tq >= LEAN && tq < LEAN + 0.09;
   const P = pose('lean', { tilt: 13 * L - (hit ? -3 : 0), face: { eyes: L > 0.6 ? 'happy' : 'open', mouth: 'smile', brow: 0.4 }, head: { pitch: -10 * L + 6 * (1 - L), yaw: 10, roll: 12 * L } });
@@ -251,12 +253,12 @@ function shotLean(c, t, f, D) {
   c.save(); if (hit) { c.translate(x, 1250); c.scale(1.05, 0.96); c.translate(-x, -1250); }
   drawMiya(c, P, { x, y: 1250, s: 2.0, view: 70, v, seed: 3100, accent: ACC });
   c.restore();
-  if (tq >= LEAN && tq < LEAN + 0.6) puffs(c, 760, 900, inv(LEAN, LEAN + 0.6, tq), 4, 1110, v);
-  if (tq >= LEAN && tq < LEAN + 0.3) FX.drawTwinkle(c, 740, 760, 22 * Math.sin(Math.PI * inv(LEAN, LEAN + 0.3, tq)), 1120 + v, { fill: PAL.orange });
+  if (tq >= LEAN && tq < LEAN + 0.6) puffs(c, 800, 1236, inv(LEAN, LEAN + 0.6, tq), 4, 1110, v, 14, 90); // at the paws and shoe
+  if (tq >= LEAN && tq < LEAN + 0.3) FX.drawTwinkle(c, 810, 690, 22 * Math.sin(Math.PI * inv(LEAN, LEAN + 0.3, tq)), 1120 + v, { fill: PAL.orange });
   // weight arrows: two small orange arcs pressing into your leg
   if (tq >= LEAN + 0.1) {
     const u = E.out2(inv(LEAN + 0.1, LEAN + 0.4, tq));
-    for (const [y, k] of [[1000, 0], [1080, 1]]) inkStroke(c, [[690, y], [720 + 20 * u, y - 6], [740 + 25 * u, y]], { seed: 1130 + k + v, w: 7, t0: 4, t1: 12, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
+    for (const [y, k] of [[1000, 0], [1080, 1]]) inkStroke(c, [[735, y], [755 + 15 * u, y - 6], [775 + 20 * u, y]], { seed: 1130 + k + v, w: 7, t0: 4, t1: 12, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
   }
   hearts(c, 640, 600, tq, mo('hug'), v, 3, 80);
   c.restore();
@@ -268,13 +270,20 @@ function shotEscort(c, t, f, D) {
   const z = lerp(1.0, 1.12, E.io2(inv(7.5, 11.5, tq)));
   c.save(); cam(c, 560, 1000, z);
   floor(c, v);
-  const creak = tq >= CREAK && tq < CREAK + 0.5 ? Math.sin(Math.PI * inv(CREAK, CREAK + 0.5, tq)) : 0;
+  const creak = E.out3(inv(CREAK, CREAK + 0.25, tq)); // the door creaks open a crack and stays open
   bathDoor(c, v, creak);
-  const perk = E.out3(inv(CREAK, CREAK + 0.12, tq)) * (1 - sstep(CREAK + 0.9, CREAK + 1.4, tq));
-  const P = pose('sit', { head: { pitch: 4 + 10 * perk, yaw: 0, roll: 6 * perk }, face: { eyes: 'open', mouth: 'closed', brow: 0.3 + 0.4 * perk, lift: 0.3 * perk }, ears: { swing: -16 * perk }, tail: { a0: 188 + 12 * Math.sin(tq * 10), curl: 18 } });
-  drawMiya(c, P, { x: 290, y: 1250, s: 1.75, view: 8, v, seed: 3200, accent: ACC });
-  if (creak > 0) for (let k = 0; k < 3; k++) { // creak ticks off the door edge
-    const a = -0.5 + k * 0.5, r0 = 40 + 30 * creak, r1 = r0 + 34;
+  if (creak > 0) { // a wedge of warm light spills across the floor toward her
+    c.save(); c.globalAlpha = 0.55 * creak;
+    fillShape(c, R([[500, 1252], [500 + 70 * creak, 1252], [420, 1330], [200, 1330]], 6), '#FAE588', { seed: 1215 + v, amp: 1 });
+    c.restore();
+  }
+  const perk = E.out3(inv(CREAK, CREAK + 0.12, tq));
+  const ev = mo('everywhere'), tilt = Math.sin(Math.PI * inv(ev - 0.05, ev + 0.6, tq)); // a head tilt and bob on "everywhere"
+  const bob = tq >= ev - 0.05 && tq < ev + 0.6 ? 8 * Math.abs(Math.sin((tq - ev) * 10)) : 0;
+  const P = pose('sit', { head: { pitch: 4 + 10 * perk, yaw: 0, roll: 6 * perk + 14 * tilt }, face: { eyes: 'open', mouth: 'closed', brow: 0.3 + 0.4 * perk, lift: 0.3 * perk }, ears: { swing: -30 * perk + 8 * tilt }, tail: { a0: 188 + 12 * Math.sin(tq * 10), curl: 18 } });
+  drawMiya(c, P, { x: 290, y: 1250 - bob, s: 1.75, view: 8, v, seed: 3200, accent: ACC });
+  if (tq >= CREAK && tq < CREAK + 0.5) for (let k = 0; k < 3; k++) { // creak ticks off the door edge
+    const a = -0.5 + k * 0.5, r0 = 40 + 30 * inv(CREAK, CREAK + 0.5, tq), r1 = r0 + 34;
     inkStroke(c, [[500 + Math.cos(Math.PI + a) * r0, 700 + Math.sin(Math.PI + a) * r0], [500 + Math.cos(Math.PI + a) * r1, 700 + Math.sin(Math.PI + a) * r1]], { seed: 1206 + k + v, w: 6, t0: 4, t1: 4, min: 0.4, amp: 0.8, heavy: 0, color: PAL.orange });
   }
   if (tq >= CREAK + 0.05 && tq < CREAK + 0.5) FX.drawTwinkle(c, 430, 640, 16, 1210 + v, { fill: PAL.orange });
@@ -287,27 +296,31 @@ function shotGift(c, t, f, D) {
   const z = lerp(1.0, 1.1, E.io2(inv(TROT1, 16.0, tq)));
   c.save(); cam(c, 560, 980, z);
   floor(c, v);
-  shins(c, 900, v);
+  shins(c, 860, v);
   const FX0 = -260, FX1 = 520;
   const u = inv(TROT0, TROT1, tq), x = lerp(FX0, FX1, E.out2(u));
   const moving = tq >= TROT0 && tq < TROT1 - 0.15;
   const dropped = tq >= DROP, drop = inv(DROP - 0.1, DROP, tq);
   const legs = moving ? walkLegs(tq * 26, 1.2) : undefined;
   const bob = moving ? 6 * Math.abs(Math.sin(tq * 26)) : 0;
-  const P = pose(dropped ? 'sit' : 'carry', { ...(legs ? { legs } : {}), head: dropped ? { pitch: 14, yaw: 14, roll: -6 } : { pitch: 6 - 30 * drop, yaw: 6, roll: 0 },
+  const settling = dropped && tq < DROP + 0.083; // a 2-drawing in-between as she sits, with a squash
+  const P = pose(dropped ? 'sit' : 'carry', { ...(legs ? { legs } : {}), ...(settling ? { hip: [-44, 70], pitch: 30 } : {}), head: dropped ? { pitch: 14, yaw: 14, roll: -6 } : { pitch: 6 - 30 * drop, yaw: 6, roll: 0 },
     face: dropped ? { eyes: 'happy', mouth: 'tongue', brow: 0.6 } : { eyes: 'open', mouth: 'closed', brow: 0.4 }, tail: { a0: dropped ? 188 + 10 * Math.sin(tq * 10) : 84 + 18 * Math.sin(tq * 14), curl: dropped ? 18 : -32 } });
   const mo2 = { x, y: 1250 - bob, s: 1.65, view: 15, v, seed: 3300, accent: ACC };
-  // smear on the fast part of the trot in
-  const sm = moving && u < 0.45 && (D.fq % 3 === 0);
-  c.save(); if (sm) { c.translate(x, 1100); c.scale(1.9, 0.82); c.translate(-x, -1100); }
+  // one smear frame on the fast part of the trot in: stretched back along her path, the sock inside the same stretch
+  const sm = D.fn === SMEAR_TROT;
+  const sockAt = () => { const m = locate(P, mo2, (Rg) => Rg.face.mouthO); return [m.x + 20, m.y + 18]; };
+  const dropK = tq >= DROP - 0.1 && tq < DROP ? E.in2(inv(DROP - 0.1, DROP, tq)) : -1; // the sock falls from her mouth to the floor
+  c.save();
+  if (sm) { c.translate(x - 120, 1100); c.scale(2.4, 0.65); c.translate(-(x - 120), -1100); }
+  if (settling) { c.translate(x, 1250); c.scale(1.06, 0.94); c.translate(-x, -1250); }
   drawMiya(c, P, mo2);
+  if (!dropped && dropK < 0) { const [sx, sy] = sockAt(); sock(c, sx, sy, 0.5 - 0.2 * Math.sin(tq * 14) * (moving ? 1 : 0.3), 0.85, v); }
   c.restore();
+  if (dropK >= 0) { const [sx, sy] = sockAt(); sock(c, lerp(sx, 760, dropK), lerp(sy, 1236, dropK), lerp(0.5, -0.08, dropK), 0.9, v); }
   if (moving && u < 0.6) for (let i = 0; i < 4; i++) inkStroke(c, [[x - 260 - i * 30, 940 + i * 50], [x - 120 - i * 20, 940 + i * 50]], { seed: 1320 + i + D.fq, w: 4, t0: 20, t1: 4, min: 0.1, amp: 0.8, heavy: 0 });
   // the sock: in her mouth, then dropped at your feet with a bounce
-  if (!dropped) {
-    const m = locate(P, mo2, (Rg) => Rg.face.mouthO);
-    sock(c, m.x + 20, m.y + 18, 0.5 - 0.2 * Math.sin(tq * 14) * (moving ? 1 : 0.3), 0.85, v);
-  } else {
+  if (dropped) {
     const k = tq - DROP, by = k < 0.12 ? -60 * (1 - k / 0.12) : k < 0.3 ? -22 * Math.sin(Math.PI * (k - 0.12) / 0.18) : 0;
     const sq = k >= 0.12 && k < 0.17 ? 1.15 : 1;
     c.save(); c.translate(760, 1236 + by); c.scale(sq, 1 / sq); sock(c, 0, 0, -0.08, 0.95, v); c.restore();
@@ -342,10 +355,12 @@ function shotWalk(c, t, f, D) {
 function shotTease(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS;
   drawPaper(c, W, H);
-  const z = lerp(1.05, 1.3, E.io2(inv(20.0, 22.0, tq)));
-  c.save(); cam(c, 540, 860, z);
+  const z = lerp(1.05, 1.45, E.io2(inv(20.0, 22.0, tq)));
+  c.save(); cam(c, 540, lerp(860, 820, E.io2(inv(20.0, 22.0, tq))), z);
   floor(c, v);
-  const P = pose('sit', { head: { pitch: 6, yaw: 0, roll: 6 * Math.sin(tq * 1.5) }, face: { eyes: 'open', mouth: 'smile', brow: 0.2 }, tail: { a0: 188, curl: 18 } });
+  const fc = mo('face'), tl = E.out3(inv(fc - 0.1, fc + 0.2, tq)); // a head tilt and a brow flick on "face"
+  const flick = Math.sin(Math.PI * inv(fc, fc + 0.4, tq));
+  const P = pose('sit', { head: { pitch: 6, yaw: 0, roll: 6 * Math.sin(tq * 1.5) * (1 - tl) - 12 * tl }, face: { eyes: 'open', mouth: 'smile', brow: 0.2, lift: 0.6 * flick }, tail: { a0: 188, curl: 18 } });
   drawMiya(c, P, { x: 540, y: 1250, s: 2.8, view: 82, v, seed: 3500, accent: ACC });
   c.restore();
 }
@@ -356,19 +371,27 @@ function shotHero(c, t, f, D) {
   c.save(); c.globalAlpha = 0.3; G.hatch(c, [[-300, -300], [W + 300, -300], [W + 300, H + 300], [-300, H + 300]], { seed: 1500 + v, gap: 46, ang: -0.7, w: 2.2, amp: 1.4, color: BLS, cx: 540, cy: 960 }); c.restore();
   // the camera: a punch-in on the lift (on 1s), then a slow drift
   const punch = E.out3(inv(LIFT, LIFT + 0.2, tq));
-  const z = lerp(1.12, 1.3, punch) + 0.05 * inv(LIFT + 0.2, 28.0, tq);
+  const z = lerp(1.12, 1.45, punch) + 0.05 * inv(LIFT + 0.2, 28.0, tq);
   const shake = tq >= LIFT && tq < LIFT + 0.4 ? 8 * Math.exp(-(tq - LIFT) / 0.1) : 0;
   c.save(); cam(c, 540 + (hs(f, 1) - 0.5) * 2 * shake, lerp(880, 860, punch) + (hs(f, 2) - 0.5) * 2 * shake, z);
   if (tq >= LIFT && tq < LIFT + 0.5) FX.speedLinesRadial(c, 540, 760, 360, 1100, 22, 1510 + f, 8, 1, PAL.hi);
   // lift: 0 before, up on "puppy", relax a touch, up again on "eyebrows"
   const eb = mo('eyebrows');
-  const lift = tq < LIFT ? 0 : clamp(E.outBack(clamp((tq - LIFT) / 0.25), 2) * (tq < eb - 0.6 ? 1 : 1 - 0.5 * inv(eb - 0.6, eb - 0.2, tq) + 0.5 * inv(eb, eb + 0.2, tq)), 0, 1.15);
+  const lift = tq < LIFT ? 0 : clamp(E.outBack(clamp((tq - LIFT) / 0.25), 2) * (tq < eb - 0.6 ? 1 : 1 - 0.5 * inv(eb - 0.6, eb - 0.2, tq) + 0.5 * inv(eb, eb + 0.2, tq)), 0, 1.6);
   const tilt = Math.sin(Math.PI * inv(LIFT, LIFT + 1.2, tq)) * 8;
   const P = pose('sit', { head: { pitch: 10 + 6 * lift, yaw: 0, roll: -tilt }, face: { eyes: 'open', mouth: 'smile', brow: 0.2, lift }, ears: { swing: -4 * lift }, tail: { a0: 188, curl: 18 } });
-  const smear = f === Math.round(LIFT * FPS); // one smear frame: the head stretched up on the lift
+  const smear = D.fn === SMEAR_LIFT && lift > 0; // one smear frame (film frame): the head stretched up as the brows lift
   c.save(); if (smear) { c.translate(540, 1100); c.scale(0.86, 1.35); c.translate(-540, -1100); }
   drawMiya(c, P, { x: 540, y: 1800, s: 4.4, view: 86, v, seed: 3600, accent: ACC, shadow: false });
   c.restore();
+  if (tq >= LIFT && tq < LIFT + 0.5) { // orange lift ticks above the inner brows
+    const u = inv(LIFT, LIFT + 0.5, tq);
+    for (const sd of [0, 1]) {
+      const e = locate(P, { x: 540, y: 1800, s: 4.4, view: 86 }, (Rg) => Rg.face.eyes[sd].c), dx = sd ? 1 : -1;
+      for (let k = 0; k < 2; k++) { const bx = e.x - dx * (10 + k * 26), by = e.y - 120 - 30 * E.out2(u);
+        inkStroke(c, [[bx, by], [bx + dx * 6, by - 34]], { seed: 1530 + sd * 2 + k + v, w: 7, t0: 4, t1: 4, min: 0.4, amp: 0.6, heavy: 0, color: PAL.orange }); }
+    }
+  }
   if (tq >= LIFT && tq < LIFT + 0.7) { // twinkle burst round her eyes
     const u = inv(LIFT, LIFT + 0.7, tq);
     for (let k = 0; k < 6; k++) { const a = -Math.PI * 0.95 + k * (Math.PI * 0.9 / 5), d = 230 + 120 * E.out2(u);
@@ -380,14 +403,14 @@ function shotHero(c, t, f, D) {
     const eye = locate(P, { x: 540, y: 1800, s: 4.4, view: 86 }, (Rg) => Rg.face.eyes[0].c);
     const u = E.out2(inv(m0, m0 + 0.3, tq)), s2 = popOut(tq, m1);
     c.save(); c.translate(eye.x, eye.y); c.scale(s2, s2); c.translate(-eye.x, -eye.y);
-    const ax = 400, ay = eye.y - 250, tip = [lerp(ax, eye.x - 8, u), lerp(ay + 40, eye.y - 36, u)];
+    const ax = 400, ay = eye.y - 250, tip = [lerp(ax, eye.x - 8, u), lerp(ay + 40, eye.y - 70, u)];
     inkStroke(c, [[ax + 20, ay + 40], [ax + 120, ay + 40 + 20 * u], tip], { seed: 1540 + v, w: 7, t0: 4, t1: 10, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
     inkStroke(c, [[tip[0] - 26, tip[1] - 14], tip, [tip[0] - 8, tip[1] - 30]], { seed: 1541 + v, w: 6, t0: 3, t1: 6, min: 0.4, amp: 0.8, heavy: 0, color: PAL.orange });
     c.font = '600 54px "Caveat"'; c.fillStyle = PAL.orangeShade; c.textAlign = 'center'; c.globalAlpha = u;
     c.fillText('the brow muscle', ax + 40, ay + 10);
     c.restore();
   }
-  if (tq >= mo('foryou')) hearts(c, 540, 600, tq, mo('foryou'), v, 3, 160);
+  if (tq >= mo('foryou')) hearts(c, 790, 900, tq, mo('foryou'), v, 2, 80); // clear of the payoff line
   c.restore();
 }
 

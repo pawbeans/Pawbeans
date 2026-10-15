@@ -53,8 +53,8 @@ harp = lambda note, at, gain=-13: S(HARP.play(note, 1.2, 0.4, release=0.6).loud(
 S(sfx.paper('rustle', 0.4, seed=1), at=0.2, gain=-15)
 SF(sfx.pop('soft', 1.0), at=MK['like'] - 0.05, gain=-13)
 # whips
-for b in (3.0, 7.5, 11.5, 16.0, 20.0, 22.0, 28.0):
-    S(sfx.whoosh(0.45, 'air', peak=0.5), at=b - 0.22, gain=-8)
+for b in (3.0, 7.5, 11.5, 16.0, 20.0, 22.0, 28.0):   # placed in film time so each whoosh peaks on its cut
+    SF(sfx.whoosh(0.45, 'air', peak=0.5), at=new(b) - 0.225, gain=-8)
 # countdown pills
 for a, _ in TL['sections'][1:5] + [TL['sections'][6]]:
     SF(sfx.pop('soft', 1.1), at=a + 0.15, gain=-12)
@@ -64,17 +64,18 @@ S(sfx.impact('soft', size=0.25), at=4.6, gain=-12)
 SF(HARP.play('A5', 1.2, 0.4, release=0.6).loud(-18), at=MK['hug'], gain=-14 + SFX_LIFT)
 # 4: the escort: a wooden creak as the door opens a crack, her ears flick
 S(sfx.click('wood'), at=10.0, gain=-11)
+S(sfx.paper('slide', 0.25, seed=8), at=10.02, gain=-15)   # the door swings open a crack
 S(sfx.whoosh(0.4, 'air', peak=0.3), at=10.0, gain=-16)
 S(sfx.paper('rustle', 0.15, seed=4), at=10.05, gain=-15)
 # 3: the gift: quick paws on the floor (on the trot), the sock flops down, a twinkle on "sock"
 for k in range(8): S(sfx.click('soft'), at=11.6 + k * 0.12, gain=-17 - (k % 2))
-S(sfx.paper('crumple', 0.25, seed=5), at=13.6, gain=-12)
+SF(sfx.paper('crumple', 0.25, seed=5), at=new(13.6) - 0.15, gain=-12)   # peaks on the drop
 SF(HARP.play('C6', 1.2, 0.4, release=0.6).loud(-18), at=MK['sock'], gain=-15 + SFX_LIFT)
 # 2: the walk: soft steps, then the look back (harp up), hearts
 for k in range(10): S(sfx.click('soft'), at=16.15 + k * 0.17, gain=-19 - (k % 2))
 for j, x in enumerate(['F5', 'A5']): harp(x, 17.65 + 0.09 * j, -13)
 # 1 (hero): one soft cinematic impact on the lift, harp run up, a second harp on "eyebrows", pop for the callout
-S(sfx.whoosh(0.25, 'swish', peak=0.75), at=22.6, gain=-8)
+SF(sfx.whoosh(0.25, 'swish', peak=0.75), at=new(22.8) - 0.19, gain=-8)
 S(sfx.impact('soft', size=0.7), at=22.8, gain=-5)
 for j, x in enumerate(['F5', 'A5', 'C6', 'F6']): harp(x, 22.88 + 0.09 * j, -12)
 SF(sfx.pop('soft', 1.0), at=MK['muscle'], gain=-12)
