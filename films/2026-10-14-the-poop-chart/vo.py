@@ -23,7 +23,7 @@ EL_KEY = os.environ.get('ELEVENLABS_API_KEY')
 EL_VOICE = os.environ.get('BEANS_VO_VOICE', 'cgSgspJ2msm6clMCkdW9')   # Jessica – Playful, Bright, Warm
 EL_MODEL = os.environ.get('BEANS_VO_MODEL', 'eleven_multilingual_v2')
 EL_SETTINGS = {'eleven_v3': {'stability': 0.5},
-               'eleven_multilingual_v2': {'stability': 0.4, 'similarity_boost': 0.8, 'style': 0.4, 'use_speaker_boost': True, 'speed': 1.0}}
+               'eleven_multilingual_v2': {'stability': 0.4, 'similarity_boost': 0.8, 'style': 0.4, 'use_speaker_boost': True, 'speed': 0.9}}   # 0.9: every card gets 1.5 s
 EL_TRIES = 4
 KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.88
 
@@ -120,7 +120,7 @@ def align(shown, heard):
     return on, off, len(known)
 
 
-def cards(words, most=44):
+def cards(words, most=48):
     """One sentence a card; a sentence over `most` characters splits at the comma nearest its middle."""
     sents, cur = [], []
     for i, w in enumerate(words):

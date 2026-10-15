@@ -3,7 +3,7 @@
 Series: Inside Your Dog (BEANS: product near the end, logo end card). Idea B6, **auto-picked ★1 at the 22:30 SGT
 cut-off** (no reply to the 2026-10-14 pitch). Accent: Digestive Probiotics sage `#BFD8AE`; brand orange for stickers,
 rings and the hook word. Hook formula: "Your dog's X is talking to you." (a "you've been reading your dog wrong" cousin).
-Length **54.25 s** in v2 (49.5 s at the boards; voice slowed for reading time, local Kokoro voice; see flags), 1080×1920, 24 fps.
+Length **56.2 s** in v3 (49.5 s at the boards; ElevenLabs Jessica at 0.9 speed so every caption gets 1.5 s), 1080×1920, 24 fps.
 
 - [x] Gate 1: routine: standing approval (owner 2026-10-13), overnight veto. Auto-picked ★1 at the cut-off.
 - [x] Gate 2: routine: standing approval (owner 2026-10-13), overnight veto. Script below.
@@ -35,11 +35,22 @@ Length **54.25 s** in v2 (49.5 s at the boards; voice slowed for reading time, l
     ≈ 52 %; the bag hand's sleeve still runs off the right edge (cuff inside); 54 s is over the 45 s series target.
     Not done (nice-to-have): tube bend spikes, a faint arc at the log residue, pellet size, sticker pop-out specks,
     foley pre-roll on the squelch and tin, the soft sage glow, the iris freezing the outgoing shot.
+  - **v3 (owner, 2026-10-15): ElevenLabs voice.** The owner supplied an ElevenLabs key for this session (not stored in
+    the repo). `vo.py` re-run with Jessica (Multilingual v2), speed 0.9 (1.0 read "Five and four look like logs…" at
+    5.1 words/s and left three cards under 1.5 s); every take checked by Whisper against the script, all 12 word for
+    word (one retake on "dry"). Cards now hold up to 48 characters (`cards(most=48)`) so a sentence isn't split
+    mid-phrase, and two-line cards break into balanced lines, preferring a comma (`caption()` in `js/cast.js`).
+    19 cards, every one ≥ 1.5 s. Independent sync check (Whisper on the final voice stem vs the caption word times):
+    every word builds within about 0.2 s of being said.
+  - v3 spec: 56.21 s (1349 frames), 1080×1920, 24 fps, −14.0 LUFS, −2.4 dBTP (master and viewing copy), VO −22.0 /
+    music −34.0 / foley −34.2 LUFS, no black frames. Hero, tin and end wipe re-checked frame by frame. Muxed without
+    `-shortest` (it trimmed the last 4 end-card frames). Files: `review/2026-10-14-the-poop-chart-v3.mp4` (23.7 MB),
+    `review/…-v3-soundtrack.wav`, `review/…-v3-voiceover.wav`.
   - Needs the owner: move the hero later (shorter inside section); "poop" vs British "poo"; the Purina chart calls 5
     "piles" (script says "Five and four look like logs"); ElevenLabs voice; more action at the tin moment.
 
 Pending / unapproved inputs in use: NEW Miya poses `squat` and `lookDown` (model sheet, awaiting the owner's OK);
-voice is the local Kokoro fallback (no `ELEVENLABS_API_KEY` in the build session); poop colour = the Venison accent
+voice: ElevenLabs Jessica from v3 (v1–v2 used the local Kokoro fallback); poop colour = the Venison accent
 used as an object colour (as in the approved Inside Your Dog poop), highlight `#8A4A3E` DERIVED.
 Sources (also in CREDITS.md): Purina faecal score chart (Ohio State VMC copy); VCA Animal Hospitals "Diarrhea in
 Dogs"; PDSA "Diarrhoea in dogs".

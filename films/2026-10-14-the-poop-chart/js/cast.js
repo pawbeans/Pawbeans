@@ -65,14 +65,20 @@ export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
   const size = 50, lh = 70, maxW = 740;
   c.save(); c.font = `600 ${size}px "Inter"`;
   const sp = c.measureText(' ').width;
-  const lines = [[]]; let lw = 0;
-  for (const wd of words) {
-    c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`;
-    const w = c.measureText(wd.w).width;
-    if (lw + w > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; }
-    lines[lines.length - 1].push({ ...wd, width: w }); lw += w + sp;
-  }
+  const ws = words.map((wd) => { c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`; return { ...wd, width: c.measureText(wd.w).width }; });
   c.restore();
+  const span = (L) => L.reduce((a, q) => a + q.width + sp, -sp);
+  let lines = [ws];
+  if (span(ws) > maxW) { // two balanced lines, preferring a break after a comma
+    let best = null;
+    for (let k = 1; k < ws.length; k++) {
+      const A = ws.slice(0, k), B = ws.slice(k), m = Math.max(span(A), span(B));
+      if (m > maxW) continue;
+      const score = m - (/,$/.test(A[A.length - 1].w) ? 120 : 0);
+      if (!best || score < best.score) best = { score, lines: [A, B] };
+    }
+    if (best) lines = best.lines;
+  }
   const boxW = Math.min(810, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
   const sIn = o.cont ? 1 : K(t, [[tIn, 0.82], [tIn + 0.1, 1.04, 'out3'], [tIn + 0.18, 1]]);
   // out: an opaque pop-out on 1s (1 → 1.06 → 0 over 3 frames), never a half-transparent ghost card
