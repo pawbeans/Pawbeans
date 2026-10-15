@@ -278,8 +278,9 @@ export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
   c.restore();
   const boxW = Math.min(940, Math.max(...lines.map((L) => L.reduce((a, q) => a + q.width + sp, -sp))) + 70), boxH = lines.length * lh + 46;
   const sIn = o.cont ? 1 : K(t, [[tIn, 0.82], [tIn + 0.1, 1.04, 'out3'], [tIn + 0.18, 1]]);
-  const outU = o.hold ? 0 : clamp((t - (tOut - 0.12)) / 0.12);
-  const sc = sIn * (1 - 0.12 * outU), fade = 1 - outU;
+  // out: an opaque pop-out on 1s (1 → 1.06 → 0 over 3 frames), never a half-transparent ghost card
+  const sOut = o.hold || t < tOut - 0.125 ? 1 : K(t, [[tOut - 0.125, 1], [tOut - 0.08, 1.06], [tOut, 0]]);
+  const sc = sIn * sOut, fade = 1;
   c.save(); c.globalAlpha = fade; c.translate(x, y); c.scale(sc, sc); c.translate(-x, -y);
   const P = G.resample(roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 28), 6, true);
   fillShape(c, P.map(([a, b]) => [a + 6, b + 8]), 'rgba(27,47,82,0.3)', { seed: 300 + v, amp: 1.2 });
@@ -291,7 +292,7 @@ export function caption(c, words, x, y, t, tIn, tOut, v, o = {}) {
     let wx = x - lwid / 2;
     const wy = y - boxH / 2 + 23 + lh * (li + 0.5) + size * 0.34;
     for (const wd of L) {
-      const tw = tIn + 0.05 + k * 0.07, u = clamp((t - tw) / 0.14);
+      const tw = o.on ? o.on[k] - 1 / 24 : tIn + 0.05 + k * 0.07, u = clamp((t - tw) / 0.14); // o.on: spoken onsets
       if (u > 0) {
         c.save(); c.globalAlpha = fade * u; c.font = `${wd.b ? 800 : 600} ${size}px "Inter"`; c.fillStyle = wd.b ? PAL.orangeShade : PAL.navy; c.textBaseline = 'alphabetic';
         c.fillText(wd.w, wx, wy + 10 * (1 - E.out3(u))); c.restore();

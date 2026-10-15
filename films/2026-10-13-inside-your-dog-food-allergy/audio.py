@@ -1,27 +1,37 @@
-"""Inside Your Dog: Food Allergy, soundtrack (58 s). Shipped as SOUND EFFECTS ONLY (owner adds their own music).
+"""Inside Your Dog: Food Allergy, v4 soundtrack: voiceover + background music + soft foley.
 
-House sound: acoustic and premium. A fingerpicked nylon guitar carries the film, with a warm pad underneath and
-a few piano notes. Foley stays soft (paper, fur, soft pops, gentle squelch). No zany cartoon SFX, no xylophone.
+Owner, 2026-10-14/15 (playbook §2.7 and §5): voice first (ElevenLabs "Jessica", see vo.py, captions = her words), a
+new instrumental for this film in the same family as Where your dog sleeps (ukulele, pizzicato, a small bell-like
+lead) but its own key, tempo, chords and lead (here G major, 88 bpm, fingerpicked ukulele, pizzicato bass and a
+kalimba motif), sitting 12 LU under the voice, never busy under the words, a short rest before the burst and a happy
+resolve on the end card. Foley as in v3, every hit on its picture event.
 
-D major, 84 bpm (eighth = 0.357 s). The music turns to B minor for the reaction, drops out for 0.15 s before the
-burst at 31.0 s, and comes home to D for the fix and the end card. Every SFX time is a picture event in js/scene.js.
+The film is re-timed around the voice (vo.py → out/timeline.json). Every SFX time below is written in animation time
+(the approved 58 s cut, as in js/scene.js) and placed through the same warp.
 
-  python audio.py   →  out/audio.wav (+ out/audio-spectrogram.png)
+  ELEVENLABS_API_KEY=… python vo.py, then python audio.py → out/audio.wav (+ spectrogram, stems in out/stems/)
 """
-import os, sys
+import json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, '..', '..', 'mg-styles-15', 'lib', 'audio'))
 import mgaudio as mg
-from mgaudio import sfx, synth, pluck, samples
-from mgaudio.theory import midi
+from mgaudio import sfx, samples, pluck
+import soundfile as sf
+from math import gcd
+from scipy.signal import resample_poly
 
-DUR, BPM = 58.0, 84
-E8 = 60 / BPM / 2
+TL = json.load(open(os.path.join(HERE, 'out', 'timeline.json')))
+DUR = TL['dur']
+def new(t):
+    """animation time → film time"""
+    A = TL['warp']
+    for (n0, o0), (n1, o1) in zip(A, A[1:]):
+        if t <= o1: return n0 + (n1 - n0) * (t - o0) / ((o1 - o0) or 1)
+    return A[-1][0]
+BPM = 88.0
+BAR = 240 / BPM
 m = mg.Mix(duration=DUR, bpm=BPM, anchor=0.0)
-m.group('music').level = -20
-m.sfx_duck = 2.0
-m.master_kw.update(tilt=1.2, air=1.5)   # lift presence for phones
-
+m.master_kw.update(tilt=0.4, air=1.0)   # a light lift for phones (the voice is already bright)
 
 
 def avail(key):
@@ -31,84 +41,11 @@ def avail(key):
     return ins
 
 
-PNO, HARP = avail('piano'), avail('harp')
-n = lambda s: midi(s) if isinstance(s, str) else s
+HARP, KAL = avail('harp'), avail('kalimba')
 
-
-def piano(note, dur, vel, release=0.4):
-    """Sampled piano (nearest shipped note and layer)."""
-    return PNO.play(note, dur=dur, vel=vel, release=release)
-
-# ---------------------------------------------------------------- music
-# (start, end, bass, upper chord tones, density 0..1)
-CH = [
-    (0.0, 4.0, 'D2', ['A3', 'D4', 'F#4'], 0.6),       # hook: guitar alone
-    (4.0, 6.86, 'D2', ['A3', 'D4', 'F#4'], 1),        # 1 the gut
-    (6.86, 9.71, 'B1', ['F#3', 'B3', 'D4'], 1),
-    (9.71, 11.0, 'G2', ['D3', 'B3', 'D4'], 1),
-    (11.0, 13.8, 'A2', ['E3', 'A3', 'C#4'], 1),       # 2 the mistake
-    (13.8, 16.4, 'B1', ['F#3', 'B3', 'D4'], 1),
-    (16.4, 19.0, 'G2', ['D3', 'B3', 'D4'], 1),
-    (19.0, 22.2, 'D2', ['A3', 'D4', 'F#4'], 0.7),     # 3 the trap is set: calm, thinner
-    (22.2, 26.0, 'G2', ['D3', 'B3', 'D4'], 0.6),
-    (26.0, 28.2, 'B1', ['F#3', 'B3', 'D4'], 0.8),     # 4 the reaction: minor, pulse
-    (28.2, 30.85, 'F#2', ['C#3', 'F#3', 'A#3'], 0.9),
-    (32.4, 35.0, 'B1', ['F#3', 'B3', 'D4'], 0.6),     # after the burst: the guitar creeps back in
-    (35.0, 37.4, 'E2', ['B2', 'E3', 'G3'], 0.8),      # 5 the itch
-    (37.4, 40.2, 'F#2', ['C#3', 'F#3', 'A#3'], 1),
-    (40.2, 43.0, 'G2', ['D3', 'B3', 'D4'], 0.8),
-    (43.0, 45.6, 'E2', ['B2', 'E3', 'G3'], 0.7),      # 6 the gut, again
-    (45.6, 48.0, 'A2', ['E3', 'A3', 'C#4'], 0.7),
-    (48.0, 50.6, 'G2', ['D3', 'B3', 'D4'], 0.9),      # 7 the fix: home to D
-    (50.6, 53.0, 'A2', ['E3', 'A3', 'C#4'], 1),
-    (53.0, 55.0, 'B1', ['F#3', 'B3', 'D4'], 1),
-]
-gtr = m.track('guitar', level=-21, sends={'hall': -14}, width=0.7)
-pad = m.track('pad', level=-29, sends={'hall': -10}, hp=160, lp=3200)
-for i, (a, b, bass, up, dens) in enumerate(CH):
-    pad.add(synth.pad([n(bass) + 12] + [n(u) for u in up], (b - a) + 0.8, 0.5, 'warm'), at=a)
-    k = 0
-    t = a
-    while t < b - 0.05:
-        pos = k % 8
-        if pos == 0: note, vel = n(bass), 0.8
-        else:
-            seq = [None, up[0], up[2], up[1], up[2], up[0], up[1], up[2]]
-            note, vel = n(seq[pos]), 0.55
-            if dens < 1 and pos in (3, 7) and (k // 8 + i) % 2 == 0: t += E8; k += 1; continue
-            if dens < 0.65 and pos in (1, 5): t += E8; k += 1; continue
-        gtr.add(pluck.guitar(note, 2.2, vel * (0.92 + 0.08 * ((k * 7) % 3) / 2), 'nylon', seed=k + 31 * i), at=t)
-        t += E8; k += 1
-
-# reaction: low piano pulse on the beat, building to the burst
-pno = m.track('piano', level=-24, sends={'hall': -12})
-t = 26.0
-while t < 30.85:
-    v = 0.35 + 0.35 * (t - 26) / 4.85
-    pno.add(piano('B2' if t < 28.2 else 'F#2', dur=0.5, vel=v, release=0.3), at=t)
-    t += E8 * 2 if t < 29.4 else E8
-# burst aftermath: held pad, then the guitar returns at 35.0
-pad.add(synth.pad([n('B2'), n('F#3'), n('D4'), n('A4')], 4.4, 0.45, 'air'), at=31.0)
-# the fix: a few piano notes over the guitar
-for tt, note in [(48.2, 'F#5'), (49.6, 'A5'), (50.6, 'E5'), (51.75, 'A5'), (53.0, 'F#5'), (53.9, 'D5')]:
-    pno.add(piano(note, dur=1.4, vel=0.42, release=0.8), at=tt)
-# end card: one strum on D, a harp roll, the final chord rings out
-end = m.track('end', level=-19, sends={'hall': -8}, width=0.8)
-end.add(pluck.strum([n(x) for x in ['D2', 'A2', 'D3', 'F#3', 'A3', 'D4']], 3.2, 0.75, kind='nylon', spread=0.03), at=55.0)
-for j, x in enumerate(['D5', 'E5', 'G5', 'B5', 'D6']):
-    end.add(HARP.play(x, 2.6, 0.45, release=0.6), at=55.05 + 0.09 * j)
-end.add(piano('A5', dur=2.4, vel=0.4, release=1.2), at=55.6)
-
-# Owner (2026-10-13): no music on this film, they add their own. The score stays here for reference; set
-# BEANS_MUSIC=1 to hear it. Without it the export is the sound effects only, mastered with headroom for their music.
-MUSIC = os.environ.get('BEANS_MUSIC') == '1'
-if not MUSIC:
-    for tr in (gtr, pad, pno, end):
-        tr.mute = True
-
-# ---------------------------------------------------------------- sound design (soft foley)
-SFX_LIFT = 5.0   # foley sat ~8 LU under the music; lift it so it reads on phone speakers
-S = lambda snd, at, gain=0.0, **kw: m.sfx(snd, at, gain=gain + SFX_LIFT, **kw)
+# ------------------------------------------------------------------ foley (animation time → film time)
+SFX_LIFT = 3.0   # foley sits under the voice
+S = lambda snd, at, gain=0.0, **kw: m.sfx(snd, new(at), gain=gain + SFX_LIFT, **kw)
 # hook: paw scratching (fur rustle on the strokes), strike-through, dinner, the dive
 for k in range(12):
     S(sfx.paper('rustle', 0.12, seed=k), at=0.25 + k * 0.17, gain=-9, pan=-0.15)
@@ -141,10 +78,9 @@ S(sfx.click('wood'), at=29.4, gain=-4)
 S(sfx.riser(1.6, 'noise', intensity=0.6), at=31.0, gain=-9)
 S(sfx.impact('cinematic', size=0.8), at=31.0, gain=4)
 S(sfx.paper('flip', 0.6), at=31.1, gain=-8)
-S(sfx.sparkle(3.2, 14, key='D', lo=78, hi=96), at=31.3, gain=-11)
+S(sfx.sparkle(3.2, 14, key='G', lo=78, hi=96), at=31.3, gain=-11)
 S(sfx.pop('soft', 1.0), at=32.3, gain=-11)
 S(sfx.pop('soft', 1.2), at=32.9, gain=-11)
-m.mute(30.85, 0.15)
 # 5 the itch: the nerve fires, the message races up, SCRATCH!, back to Miya
 S(sfx.whoosh(0.5, 'swish'), at=36.6, gain=-10)
 S(sfx.whoosh(1.1, 'air', direction=1), at=38.6, gain=-6)
@@ -170,9 +106,58 @@ for j, x in enumerate(['D5', 'G5', 'B5']):   # a soft harp lift, not a celesta (
 # end card
 S(sfx.paper('slide', 0.5), at=55.2, gain=-12)
 
+
+# ------------------------------------------------------------------ voiceover (one take per line, see vo.py)
+for ln in json.load(open(os.path.join(HERE, 'out', 'vo.json'))):
+    y, sr = sf.read(os.path.join(HERE, ln['file']), dtype='float32')
+    if sr != 48000:
+        g = gcd(48000, sr); y = resample_poly(y, 48000 // g, sr // g).astype('float32')
+    m.track('vo', group='vo', hp=90).add(mg.Sound(y), at=ln['at'])
+m.group('vo').level = -16.0
+
+# ------------------------------------------------------------------ music: G major, 88 bpm, uke + pizz + kalimba
+UKE = {'G': ['G4', 'B4', 'D5'], 'Em': ['E4', 'G4', 'B4'], 'C': ['E4', 'G4', 'C5'], 'D': ['F#4', 'A4', 'D5'],
+       'Am': ['E4', 'A4', 'C5'], 'B': ['F#4', 'B4', 'D#5']}
+BASS = {'G': ('G2', 'D3'), 'Em': ('E2', 'B2'), 'C': ('C3', 'G2'), 'D': ('D3', 'A2'), 'Am': ('A2', 'E3'), 'B': ('B2', 'F#3')}
+BURST, END = new(31.0), new(55.0)
+def prog(t):   # film time → the chord for the bar starting at t, by story section
+    sec = [(new(26.0), ['G', 'Em', 'C', 'D']),            # the gut, the mistake, the trap: easy and curious
+           (BURST, ['Em', 'C', 'Am', 'B']),               # the reaction: a little tension
+           (new(43.0), ['Em', 'C', 'G', 'D']),            # the itch
+           (new(48.0), ['C', 'G', 'Am', 'D']),            # the gut, again
+           (END, ['G', 'D', 'Em', 'C'])]                  # the fix: brighter
+    for edge, p in sec:
+        if t < edge: return p
+    return None
+uke, pz, kal = (m.track(n, gain=g, sends={'room': -14}) for n, g in (('uke', 0.0), ('pizz', -4.0), ('kalimba', 1.0)))
+PICK = [0, 1, 2, 1, 0, 1, 2, 1]                          # gentle fingerpicked eighths
+bar, i = 0.0, 0
+while bar < END - 0.01:
+    p = prog(bar); ch = p[i % 4]
+    for k, nt in enumerate(PICK):
+        at = bar + k * BAR / 8
+        if at >= END or (BURST - 0.35 <= at < BURST + 0.6): continue    # a short rest before the burst
+        uke.add(pluck.guitar(UKE[ch][nt], 1.0, 0.42 if k % 4 == 0 else 0.3, 'uke', seed=500 + i * 8 + k), at=at)
+    if i >= 1:
+        r, f = BASS[ch]
+        for k, nt in ((0, r), (2, f)):
+            at = bar + k * BAR / 4
+            if at < END and not (BURST - 0.35 <= at < BURST + 0.6):
+                pz.add(pluck.pizz(nt, 0.6, 0.7, seed=600 + i * 2 + k), at=at)
+    if i % 2 == 1 and bar < new(26.0) or (new(48.0) <= bar < END and i % 2 == 0):   # the kalimba motif, calm sections only
+        for b, nt in ([(0, 'D5'), (0.5, 'G5'), (1, 'B5'), (2, 'A5')] if i % 4 < 2 else [(0, 'B4'), (0.5, 'D5'), (1.5, 'G5')]):
+            kal.add(KAL.play(nt, 1.2, 0.4, release=0.6), at=bar + b * BAR / 4)
+    bar += BAR; i += 1
+# the burst: one low pizz under the hit; the end card: a full strum, low G, a kalimba lift to G6, ringing out
+pz.add(pluck.pizz('E2', 1.2, 0.85, seed=700), at=BURST)
+uke.add(pluck.strum(['G4', 'B4', 'D5', 'G5'], 2.8, 0.65, kind='uke', seed=701), at=END)
+pz.add(pluck.pizz('G2', 1.0, 0.85, seed=702), at=END)
+for j, nt in enumerate(['B5', 'D6', 'G6']):
+    kal.add(KAL.play(nt, 2.0, 0.45, release=1.0), at=END + 0.15 + 0.12 * j)
+m.group('music').level = -16.0 - 12.0   # a quarter of the voice's volume
+
 if __name__ == '__main__':
     os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
-    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), lufs=-14.0 if MUSIC else -16.0, tp=-2.0,  # AAC adds ~0.5 dB TP; check the mp4
-                   spectrogram=os.path.join(HERE, 'out', 'audio-spectrogram.png'))
-    print({k: v for k, v in res.items() if k != 'path'})
-    m.report()
+    res = m.export(os.path.join(HERE, 'out', 'audio.wav'), lufs=-14.0, tp=-2.5,  # AAC adds ~0.5 dB TP; check the mp4
+                   spectrogram=os.path.join(HERE, 'out', 'audio-spectrogram.png'), stems_dir=os.path.join(HERE, 'out', 'stems'))
+    print({k: v for k, v in res.items() if k not in ('path', 'onsets')})

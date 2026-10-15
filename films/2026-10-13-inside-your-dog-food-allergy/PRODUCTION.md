@@ -43,3 +43,18 @@ Character: Miya (`characters/miya`, approved v3). Logo: `assets/brand/logo/beans
 - Sources: owner waived them for this film (2026-10-13).
 - Poop character and "Hello, bad poops.": owner says keep.
 - Sound: `audio.py` (nylon guitar, warm pad, a few piano notes, soft foley; D major → B minor for the reaction → D).
+
+## v4 (owner, 2026-10-15): voiceover
+- Owner asked for a v4 with the ElevenLabs voice, reading in line with the captions.
+- `vo.py`: 22 takes by "Jessica" (eleven_multilingual_v2), one per caption line plus the end-card line ("Suspect a
+  food allergy? Talk to your vet.", voice only). Every take checked by speech recognition against the script (all
+  matched, two needed a second take). Captions are exactly the spoken words and build word by word on her onsets.
+- Script changes for speaking: "...and builds" → "And builds", "...and the brain says one thing: scratch." →
+  "And the brain says one thing. Scratch.", the callout "This is why allergies seem to come out of nowhere." is now
+  a spoken caption (the callout card is gone: one text block at a time).
+- The picture is re-timed around the voice (`js/timeline.js`, generated): 58 s → 68 s. Key moments land on their
+  words (strike-through on "fleas", lock on "locks", burst on "burst", poop on "poops", bounce on "never"); the dive
+  into the mouth, the impact frames and the crossfades keep real speed.
+- Sound: voice −22 LUFS, new instrumental (G major, 88 bpm, fingerpicked ukulele, pizzicato, kalimba; a rest before
+  the burst, a resolve on the end card) 12 LU under it, foley as v3. Master −14 LUFS.
+- Check: the final mix transcribed again; all 156 caption words found within 0.4 s of the spoken word.
