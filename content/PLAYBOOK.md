@@ -11,7 +11,7 @@ when they disagree, the bible wins on craft and brand, this file wins on content
 | Job | Reach. Hook anyone with a dog, earn follows, shares and saves. | Teach something real about the body, food or wellbeing that makes BEANS the obvious answer, without selling. |
 | BEANS mention | **None.** No logo, no product, no beans.sg, no "novel protein" talk. Miya is the only brand signal. | Subtle. The insight leads; a product appears as a hero object only near the end; logo end card. |
 | Topics | Behaviour, body language, senses, dog science, myths, "what it means when…" | Allergies, itch, gut, poops, skin and coat, joints, calm, nutrition, label reading, novel proteins |
-| Length | **20–35 s** | **30–45 s** (up to 60 s for a deep explainer) |
+| Length | **20–35 s** | **30–45 s** (up to about 70 s for a deep explainer, owner 2026-10-16) |
 | Series tag (top pill) | `DOG DECODED` | `INSIDE YOUR DOG` |
 | Ending | Question card that invites comments ("Where does yours sleep? Tell us below."), then a 0.5 s visual loop back to the opening pose | Payoff line, product moment, logo end card held about 1 s |
 | Palette | ink + navy + cream + orange callouts; one accent from the supplement pastels used as a mood colour (no product meaning) | ink + navy + cream + **the product's accent** + sparing orange |
@@ -46,9 +46,22 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
 8. **Make it personal:** "your dog", "you", never "dogs in general" in the hook.
 9. **Shareable truth:** one line a viewer would send to a friend ("They literally evolved eyebrows for you.").
 10. **No bait we can't pay off.** If the hook promises a meaning, the film delivers it.
+11. **Tell a story, explain every item (owner, 2026-10-16, on the poop chart).** A list of labels ("Number 1. Too
+    dry.") reads as monotonous and teaches nothing. Every film needs:
+    - **A promise in the hook**, not a statement: "Here's what your dog's poop actually means." beats "Your dog's poop
+      is talking to you."
+    - **One through-line** that explains every item, so it plays as a story with a reveal (the poop chart: it is all
+      about water and time in the gut; too fast is soft, too slow is dry, just right is the goal).
+    - **For every item: what it looks like, what it means, why it happens and what usually causes it**, in plain
+      words. If two items are grouped, say how they differ ("A four is a soggy log. A five comes out in piles.").
+    - Answer the questions a viewer would ask next ("Is it bad? Why? What causes it?"). If a script line only names
+      or labels something, it is not finished.
+    Depth beats brevity here: an Inside Your Dog explainer may run up to about 70 s when the extra time is real
+    information, not padding.
 
 ## 3. Hook formulas (pick one per film, rotate them)
 
+- **"Here's what your dog's X actually means."** (owner's preferred style of promise, 2026-10-16)
 - **"If your dog does X, this is what it means."**
 - **"Your dog isn't X. It's Y."** (the approved Inside Your Dog opener: "Your dog isn't itchy because of fleas.")
 - **"Stop doing X."** / **"Never give your dog X."** (safety topics)

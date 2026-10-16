@@ -55,6 +55,52 @@ used as an object colour (as in the approved Inside Your Dog poop), highlight `#
 Sources (also in CREDITS.md): Purina faecal score chart (Ohio State VMC copy); VCA Animal Hospitals "Diarrhea in
 Dogs"; PDSA "Diarrhoea in dogs".
 
+## Script v2 (PROPOSED 2026-10-16, after the owner's notes on v3; awaiting approval, then Gate 3 key frames)
+
+Owner's notes on v3: the hook is weak (use "here's what your dog's poop actually means"); 6/7 and 1 say "too soft" /
+"too dry" without saying whether it's bad, why, or what causes it; 4 and 5 are lumped together with no difference
+given; it reads as a list of labels, not a story. Rewrite: one through-line (water and time in the gut) that explains
+every score, and for each score what it looks like, what it means, why, and the usual causes.
+
+| # | Voiceover (= captions) | Picture |
+|---|---|---|
+| 1 | Here's what your dog's poop *actually* means. | COVER: Miya mid-squat behind the bush (as now), new headline |
+| 2 | Vets score it from one to seven. And it's all about **water.** | Ruler slides up, numbers stamp; a water drop pops on "water" |
+| 3 | As food moves through the gut, the gut soaks the water back up. | Iris into the body: the gut river, sponge-like walls drinking the water, food bits drying as they flow |
+| 4 | Too fast, and the water stays in. A seven is a puddle. A six is a pile with no shape. | The river rushes (white water); puddle and shapeless pile land on 7 and 6 |
+| 5 | Usually it's a sudden food change, something they scavenged, or stress. | Three cause stickers, each with a small cel icon: two bowls swapped, a tipped bin, a storm cloud over Miya |
+| 6 | Four and five are a little soft. A four is a soggy log. A five comes out in piles. | Soggy log on 4, piles on 5, side by side so the difference reads; the bag hand: both fall apart |
+| 7 | Often a rich new food, or a treat they're not used to. | A rich bowl and a treat slide in |
+| 8 | Too slow, and the gut keeps soaking. A one is hard, dry pellets. | The river slows to a trickle, cracks; Miya strains behind the bush, pellets pop out on 1 |
+| 9 | Think not enough water, too many bones or chews, or too few walks. | Cause stickers + icons: an empty water bowl, a bone, a lead on its hook |
+| 10 | A three holds its shape, but leaves a little mess. **Close.** | Log lands on 3, star outline |
+| 11 | And a two is the goal. **Firm, in segments,** and easy to pick up. | HERO (≈70 %): the 2 drops, impact frames, starburst, Miya's wag, THE GOAL |
+| 12 | Runny for over two days, any blood, or straining with nothing? **Call your vet.** | Cream card with the three signs, CALL YOUR VET sticker |
+| 13 | Our Digestive Probiotics support a happy gut. **Firmer poops, happier walks.** | The tin lands, Miya wags |
+| 14 | So, what number was this morning's? | Question card, then the logo end card |
+
+About 170 words; with Jessica at 0.9 speed, an estimated 65–70 s. The hero moves from 52 % to about 70 % of the runtime.
+New drawings: cause icons (two bowls, bin, cloud, rich bowl, treat, empty water bowl, bone, lead), the slow, cracked
+river, the gut walls soaking. No new Miya poses.
+
+Sources for the new lines (read 2026-10-16):
+- The gut soaks water back up; too fast = less water absorbed (soft); too slow = hard, dry: VCA "Diarrhea in Dogs"
+  ("faster movement of fecal material through the intestines" with "decreased absorption of water"); VCA
+  "Constipation in Dogs" ("One of the major functions of the colon is water absorption, so sometimes the retained
+  stool becomes hard and dry"); Merck Veterinary Manual, colitis and constipation chapters.
+- Soft-stool causes (food change, scavenging, stress): VCA "Diarrhea in Dogs" ("Changes in diet or food
+  intolerances", "Dietary indiscretion (eating garbage…)", "Stress, especially following travel, boarding…").
+- 4 vs 5: Purina faecal score chart (4 "very moist (soggy); distinct log shape"; 5 "very moist but has distinct shape;
+  present in piles rather than as distinct logs"; both lose form when picked up). 3: "log-like… holds form when picked
+  up", leaves residue.
+- Rich new food / unfamiliar treat: PDSA "Diarrhoea in dogs" (eating "something that they aren't used to"); VCA
+  ("Changes in diet").
+- Hard-stool causes (not enough water, bones and chews, too little exercise): VCA "Constipation in Dogs" ("bones",
+  "Inadequate exercise and physical activity", dehydration); AKC "Dog Constipation" (dehydration, low activity, bones).
+  Protein is not named as a cause by any of these, so the script doesn't blame it.
+- Call your vet: VCA (liquid stools for more than two days; blood; no bowel movement within 48–72 h); AKC (straining
+  with nothing, sooner than 48 h).
+
 ## Why it should travel
 Every owner looks at it every day and nobody explains it; the comment question ("what number was this morning's?") is
 easy and a little funny.
