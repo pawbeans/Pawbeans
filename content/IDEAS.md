@@ -294,3 +294,11 @@ length · for Inside Your Dog: product tie-in + accent.
 - Hook: "Our dog was allergic to almost everything." The origin story as an Inside Your Dog episode (owner to
   confirm the facts first: send the script, don't render without them).
 - Tie-in: the whole range. Accent: navy + orange. 35–45 s.
+
+**B22 · Why your dog's paws smell like corn chips** (added 2026-10-16, offered as an alternative after the cut-off)
+- Hook: "Here's why your dog's paws smell like corn chips." Warm, damp paws + sweat glands in the pads → normal
+  bacteria and yeast make the smell (normal) → when it gets strong or sour, with licking, redness or itch, it can be
+  an overgrowth (often riding on an allergy) → keep paws dry after walks and rain.
+- Ending: "Go and smell your dog's paws. We'll wait." Tie-in: Allergy & Itch. Accent: sky.
+- Sources: *verify* at build (quick check found vet quotes on Proteus, Pseudomonas and Malassezia via Reader's Digest,
+  Chewy/Cornell; needs a vet-grade source such as Merck Vet Manual on Malassezia pododermatitis). Miya: ★ paw sniff. 35–45 s.
