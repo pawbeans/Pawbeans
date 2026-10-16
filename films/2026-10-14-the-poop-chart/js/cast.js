@@ -253,7 +253,8 @@ export function bin(c, x, y, s, seed, v) {
 export function cloud(c, x, y, s, seed, v) {
   const prims = [circ(x - 50 * s, y, 42 * s, 14 * s), circ(x + 10 * s, y - 24 * s, 52 * s, 14 * s), circ(x + 64 * s, y + 2 * s, 38 * s, 14 * s), cone(x - 80 * s, y + 24 * s, x + 90 * s, y + 24 * s, 18 * s, 18 * s, 14 * s)];
   const L = outline(prims, 2.5);
-  if (L) celMass(c, L, PAL.hi, '#E3DCCF', seed, v, { w: 4.5, sh: 9 * s });
+  if (L) celMass(c, L, PAL.navyLight, PAL.navy, seed, v, { w: 4.5, sh: 9 * s });
+  for (let k = 0; k < 3; k++) inkStroke(c, [[x - 60 * s + k * 50 * s, y + 40 * s], [x - 70 * s + k * 50 * s, y + 64 * s]], { seed: seed + 20 + k + v, w: 4, t0: 2, t1: 2, min: 0.4, amp: 0.6, heavy: 0, color: PAL.navy });
   inkStroke(c, [[x + 6 * s, y + 44 * s], [x - 10 * s, y + 68 * s], [x + 10 * s, y + 68 * s], [x - 4 * s, y + 92 * s]], { seed: seed + 10 + v, w: 6, t0: 3, t1: 3, min: 0.5, amp: 0.8, heavy: 0, color: PAL.orange });
 }
 // a round biscuit treat
@@ -267,14 +268,17 @@ export function bone(c, x, y, s, seed, v) {
   const L = outline(prims, 2.5);
   if (L) celMass(c, L, PAL.hi, '#E6D8BE', seed, v, { w: 4.5, sh: 7 * s });
 }
-// a lead hanging on its hook (unused: too few walks)
+// a dog lead hanging on its hook: a handle loop over the hook, a long strap, a clip at the bottom (too few walks)
 export function lead(c, x, y, s, seed, v) {
-  celMass(c, G.resample([[x - 50 * s, y - 70 * s], [x + 50 * s, y - 70 * s], [x + 50 * s, y - 52 * s], [x - 50 * s, y - 52 * s]], 4, true), PAL.navy, null, seed, v, { w: 4 });
-  inkStroke(c, [[x, y - 52 * s], [x, y - 34 * s], [x + 12 * s, y - 26 * s]], { seed: seed + 1 + v, w: 6, t0: 4, t1: 4, min: 0.5, amp: 0.6, heavy: 0, color: PAL.navy });
-  const loop = G.resample(G.spline([[x, y - 30 * s], [x - 40 * s, y + 10 * s], [x - 30 * s, y + 70 * s], [x, y + 86 * s], [x + 30 * s, y + 70 * s], [x + 40 * s, y + 10 * s]], true, 4), 4, true);
-  inkLoop(c, loop, { seed: seed + 2 + v, w: 11, amp: 0.8, color: PAL.orange });
-  inkLoop(c, loop, { seed: seed + 3 + v, w: 3, amp: 0.8, color: PAL.orangeShade });
-  celMass(c, G.resample(circlePts(x, y + 92 * s, 12 * s, 12), 4, true), PAL.navyLight, null, seed + 4, v, { w: 3 });
+  celMass(c, G.resample([[x - 60 * s, y - 110 * s], [x + 60 * s, y - 110 * s], [x + 60 * s, y - 92 * s], [x - 60 * s, y - 92 * s]], 4, true), PAL.navy, null, seed, v, { w: 4 }); // the rail
+  inkStroke(c, [[x, y - 92 * s], [x, y - 76 * s], [x + 14 * s, y - 70 * s]], { seed: seed + 1 + v, w: 6, t0: 4, t1: 4, min: 0.5, amp: 0.6, heavy: 0, color: PAL.navy }); // the hook
+  const handle = G.resample(G.spline([[x, y - 76 * s], [x - 34 * s, y - 50 * s], [x - 20 * s, y - 14 * s], [x + 20 * s, y - 14 * s], [x + 34 * s, y - 50 * s]], true, 4), 4, true);
+  inkLoop(c, handle, { seed: seed + 2 + v, w: 12, amp: 0.8, color: PAL.orange });
+  const strap = [[x, y - 14 * s], [x + 22 * s, y + 30 * s], [x - 18 * s, y + 70 * s], [x + 10 * s, y + 110 * s]];
+  inkStroke(c, strap, { seed: seed + 3 + v, w: 12, t0: 2, t1: 2, min: 1, amp: 0.8, heavy: 0, color: PAL.orange });
+  inkStroke(c, strap, { seed: seed + 4 + v, w: 3, t0: 2, t1: 2, min: 0.5, amp: 0.8, heavy: 0, color: PAL.orangeShade });
+  celMass(c, G.resample([[x - 9 * s, y + 108 * s], [x + 29 * s, y + 108 * s], [x + 25 * s, y + 140 * s], [x - 5 * s, y + 140 * s]], 4, true), PAL.navyLight, PAL.navy, seed + 5, v, { w: 3.5, sh: 4 * s }); // the clip
+  celMass(c, G.resample(circlePts(x + 10 * s, y + 152 * s, 11 * s, 12), 4, true), PAL.navyLight, null, seed + 6, v, { w: 3 });
 }
 // a water drop (navy light, a cream glint)
 export function drop(c, x, y, s, seed, v) {

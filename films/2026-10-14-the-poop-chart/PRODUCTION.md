@@ -46,6 +46,23 @@ Length **56.2 s** in v3 (49.5 s at the boards; ElevenLabs Jessica at 0.9 speed s
     music −34.0 / foley −34.2 LUFS, no black frames. Hero, tin and end wipe re-checked frame by frame. Muxed without
     `-shortest` (it trimmed the last 4 end-card frames). Files: `review/2026-10-14-the-poop-chart-v3.mp4` (23.7 MB),
     `review/…-v3-soundtrack.wav`, `review/…-v3-voiceover.wav`.
+  - **v4 (script v2, 2026-10-16).** Rebuilt around the water-and-time story: gut scenes (soaking, rushing, slowing),
+    three "why" scenes with drawn cause icons (bowls and swap arrow, bin, storm cloud; rich bowl, treat; empty water
+    bowl, bone, lead), 4 vs 5 side by side, a vet card, hero at 70 %. Voice: Jessica, all 17 lines word for word.
+    82.2 s, −14.0 LUFS, −2.6 dBTP. Review (separate subagent, rubric): style 7, concept 6, motion 5, design 6, finish 7,
+    sound sync 7, technical 8, story/clarity 6. Critical: samples hung 4 frames in the air before landing (the warp
+    stretched `landScale`). High: the starburst covered the 2; hard navy/cream flips at three whips; the water idea didn't
+    read (cream dots, nothing on "soaks", the rush didn't show water staying in); 3 s+ holds (hero aftermath, tin, gut,
+    3); 1.5 s of dead air after every line; tin thud 2 frames early and Miya popping sit → stand; "why" stacks crowding
+    the section label; lead / empty bowl / white cloud unreadable at phone size.
+  - **v5 changes (one revision):** landings keyed to film frames (one stretch frame, 2-frame squash); burst drawn behind
+    the 2; irises in and out of the gut (13.5, 29.0, 31.5) instead of whips; blue water drops that ride the river,
+    soak out through the walls from "soaks", stay in and multiply while it rushes, and drain away while it's slow (more
+    cracks); a bag hand picks the 2 up clean on "easy to pick up" (film-time, on 1s); a little residue beside the 3 on
+    "mess"; voice lead/tail 0.3/0.95 → 0.2/0.6 s with each section's last card held ≥ 1.6 s (82.2 → 77.5 s); tin thud on
+    the frame, Miya stands before she wags; "why" rows moved down; clearer icons (crossed-out drop over the empty bowl,
+    a real lead with handle and clip, a grey rain cloud); labels match the voice ("SUDDEN FOOD CHANGE",
+    "STRAINING WITH NOTHING").
   - Needs the owner: move the hero later (shorter inside section); "poop" vs British "poo"; the Purina chart calls 5
     "piles" (script says "Five and four look like logs"); ElevenLabs voice; more action at the tin moment.
 
@@ -55,7 +72,7 @@ used as an object colour (as in the approved Inside Your Dog poop), highlight `#
 Sources (also in CREDITS.md): Purina faecal score chart (Ohio State VMC copy); VCA Animal Hospitals "Diarrhea in
 Dogs"; PDSA "Diarrhoea in dogs".
 
-## Script v2 (PROPOSED 2026-10-16, after the owner's notes on v3; awaiting approval, then Gate 3 key frames)
+## Script v2 (APPROVED by the owner 2026-10-16: "proceed to render"; length guide raised to 90 s, "the seconds are just guides")
 
 Owner's notes on v3: the hook is weak (use "here's what your dog's poop actually means"); 6/7 and 1 say "too soft" /
 "too dry" without saying whether it's bad, why, or what causes it; 4 and 5 are lumped together with no difference

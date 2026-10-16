@@ -34,9 +34,11 @@ const GROUND = 1050;
 const SECT = ['', 'SCORE 1 TO 7', 'INSIDE THE GUT', 'TOO FAST', 'SCORE 7 · 6', 'WHY SO SOFT?', 'SCORE 4 · 5', 'WHY A LITTLE SOFT?',
   'TOO SLOW', 'SCORE 1', 'WHY SO DRY?', 'SCORE 3', 'SCORE 2', 'WHEN TO CALL THE VET', '', ''];
 const SEND = [3.0, 6.5, 11.0, 13.5, 18.0, 21.5, 26.0, 29.0, 31.5, 35.0, 38.5, 41.5, 46.5, 50.0, 53.5, 57.5];
-const CUTS = [0, 0.125, 0.25, 0, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125];
-const WHIPS = [3.0, 13.5, 18.0, 21.5, 26.0, 29.0, 31.5, 35.0, 38.5, 41.5, 46.5, 50.0, 53.5], WH = 0.125;
+const CUTS = [0, 0.125, 0.25, 0, 0.25, 0.125, 0.125, 0.125, 0.25, 0.25, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125];
+const WHIPS = [3.0, 18.0, 21.5, 26.0, 35.0, 38.5, 41.5, 46.5, 50.0, 53.5], WH = 0.125;
 const IRIS = 6.5, IW = 0.25;    // into the body: a navy iris from Miya's belly
+// irises in and out of the gut (no hard navy/cream flips): [time, centre x, centre y]; the incoming shot grows from there
+const IRISES = [[IRIS, 400, 900], [13.5, 640, 1010], [29.0, 300, 920], [31.5, 600, 880]];
 const XEND = 55.5, XD = 0.2;    // a hard-edged paper wipe from the question card to the end card
 const HERO = 42.35;             // the 2 lands (contact); impact frames follow
 const TIN = 50.15;              // the tin lands
@@ -48,11 +50,12 @@ const setStep = (a, b, s) => { for (let f = Math.max(0, Math.round(a * FPS)); f 
 setStep(3.1, MK('seven') + 0.4, 1);     // the ruler slides in, numbers stamp
 setStep(MK('water') - 0.05, MK('water') + 0.3, 1);
 for (const b of WHIPS) setStep(b - WH, b + WH, 1);
-setStep(IRIS - IW, IRIS + IW, 1);
+for (const [b] of IRISES) setStep(b - IW, b + IW, 1);
 setStep(11.0, 11.6, 1);                 // the river starts to rush
 for (const w of ['seven2', 'six', 'four', 'five', 'three']) setStep(MK(w) - 0.1, MK(w) + 0.3, 1); // samples land
 setStep(32.2, 33.5, 1);                 // pellets
 setStep(HERO - 0.25, HERO + 0.75, 1);   // the 2 lands (hero)
+setStep(MK('easy') - 0.5, MK('easy') + 1.0, 1); // the bag hand picks up the 2
 setStep(TIN - 0.25, TIN + 0.35, 1);     // the tin lands
 setStep(XEND, XEND + XD, 1);            // the wipe
 setStep(XEND + XD, OLD_DUR, 3);         // the end card holds
@@ -160,10 +163,11 @@ function splat(c, x, y, tq, t0, seed, v) {
     inkStroke(c, [[x + Math.cos(a) * r0, y - 40 + Math.sin(a) * r0 * 0.7], [x + Math.cos(a) * r1, y - 40 + Math.sin(a) * r1 * 0.7]], { seed: seed + k + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.ink }); }
   c.restore();
 }
-function landScale(tq, t0) { // samples drop in: hidden, a stretched fall frame, a squash, settle
-  if (tq < t0 - 0.09) return null;
-  if (tq < t0) return { sx: 0.7, sy: 1.8, dy: -60 };
-  if (tq < t0 + 0.09) return { sx: 1.25, sy: 0.75, dy: 0 };
+function landScale(D, t0) { // samples drop in, keyed to film frames: hidden, one stretched fall frame, a 2-frame squash, settle
+  const k = D.fn - FF(t0);
+  if (k < -1) return null;
+  if (k === -1) return { sx: 0.7, sy: 1.8, dy: -60 };
+  if (k <= 1) return { sx: 1.25, sy: 0.75, dy: 0 };
   return { sx: 1, sy: 1, dy: 0 };
 }
 function withLand(c, x, y, L, fn) { if (!L) return; c.save(); c.translate(x, y + L.dy); c.scale(L.sx, L.sy); c.translate(-x, -y); fn(); c.restore(); }
@@ -235,17 +239,23 @@ function shotInside(c, t, f, D) {
     else { const L = 40 + 84 * rush; inkStroke(c, [[x - P.tx * L, y - P.ty * L], [x, y]], { seed: 810 + k + f, w: 6, t0: 30, t1: 4, min: 0.1, amp: 0.8, heavy: 0, color: k % 2 ? PAL.hi : SAGES }); }
     if (k % 3 === 0) CA.celMass(c, circlePts(x, y, 20, 14), MIYA.apricotShade, null, 830 + k, v, { w: 3 }); // bits of food
   }
-  // the walls soak the water out: drops leave the river, cross the wall and shrink into the body (not while it rushes)
-  const soak = slow ? 1 : 1 - rush, nd = slow ? 12 : 10;
-  if (soak > 0.05) for (let k = 0; k < nd; k++) {
-    const p = ((tq - IRIS) * (slow ? 0.9 : 0.6) + k / 10 + hs(k, 7) * 0.3) % 1, side = k % 2 ? 1 : -1;
-    const P = tubeAt(((k + 0.5) / nd) * TTOT * 0.95), d = side * lerp(10, wall * 0.5 + 90, E.out2(p));
-    const r = 22 * (1 - 0.7 * p) * soak;
-    if (r > 2) { const D2 = G.resample(circlePts(P.x + P.nx * d, P.y + P.ny * d, r, 12), 3, true); fillShape(c, D2, PAL.hi, { seed: 850 + k, amp: 0.6 }); inkLoop(c, D2, { seed: 851 + k + v, w: 2.4, amp: 0.6, color: PAL.navyDeep }); }
+  // the water: blue drops ride the river. From "soaks" the walls pull them out: each drop crosses the wall and shrinks
+  // into the body, and new water arrives. While it rushes nothing gets out (the water stays in, more and faster);
+  // when it's slow the walls keep pulling until the river is nearly dry.
+  const soakFrom = slow ? 29.0 : MK('soaks'), nd = slow ? 7 : rush > 0.5 ? 16 : 11;
+  for (let k = 0; k < nd; k++) {
+    const sk = ((k + 0.37) / nd * TTOT + flow * (slow ? 1 : 0.9)) % TTOT, P = tubeAt(sk), side = k % 2 ? 1 : -1, off = side * ((k * 37) % 50 - 25) * 0.6;
+    let d = off, sc = 0.3;
+    if (rush < 0.5 && tq >= soakFrom) {
+      const u = ((tq - soakFrom) * (slow ? 0.9 : 0.55) + hs(k, 7)) % 1;
+      d = lerp(off, side * (wall * 0.5 + 100), E.out2(u)); sc = 0.3 * (1 - 0.75 * u);
+      if (slow && tq - soakFrom > 1.4 && k % 2) continue; // drying up: fewer drops left
+    }
+    CA.drop(c, P.x + P.nx * d, P.y + P.ny * d + 10, sc, 850 + k, v);
   }
   if (slow) { // cracks appear as it dries
-    const nc = Math.floor(clamp((tq - 29.2) / 1.6) * 9);
-    for (let k = 0; k < nc; k++) { const P = tubeAt((k + 0.3) / 9 * TTOT * 0.9), a = (hs(k, 3) - 0.5) * 30;
+    const nc = Math.floor(clamp((tq - 29.1) / 1.0) * 12);
+    for (let k = 0; k < nc; k++) { const P = tubeAt((k + 0.3) / 12 * TTOT * 0.95), a = (hs(k, 3) - 0.5) * 30;
       inkStroke(c, [[P.x + P.nx * (-30 + a), P.y + P.ny * (-30 + a)], [P.x + P.nx * (-6 + a) + P.tx * 12, P.y + P.ny * (-6 + a) + P.ty * 12], [P.x + P.nx * (22 + a), P.y + P.ny * (22 + a)]], { seed: 870 + k + v, w: 3.5, t0: 3, t1: 3, min: 0.3, amp: 0.8, heavy: 0, color: PAL.ink }); }
   }
   c.restore();
@@ -258,8 +268,8 @@ function shotSoft(c, t, f, D) {
   const drop = E.io2(inv(ts - 0.2, ts + 0.2, tq));
   drawMiya(c, pose('lookDown', { ears: { swing: -8 - 16 * drop }, face: { eyes: 'open', mouth: 'closed', brow: -0.3 - 0.5 * drop }, tail: { a0: 150 + 40 * drop, curl: -14 + 20 * drop } }),
     { x: 330, y: GROUND, s: 1.5, view: 15, v, seed: 3200, accent: ACC });
-  withLand(c, 640, GROUND, landScale(tq, s7), () => CA.puddle(c, 640, GROUND - 2, 1.0, 3250, v));
-  withLand(c, 850, GROUND, landScale(tq, s6), () => CA.pile(c, 850, GROUND, 0.95, 3260, v));
+  withLand(c, 640, GROUND, landScale(D, s7), () => CA.puddle(c, 640, GROUND - 2, 1.0, 3250, v));
+  withLand(c, 850, GROUND, landScale(D, s6), () => CA.pile(c, 850, GROUND, 0.95, 3260, v));
   splat(c, 640, GROUND, tq, s7, 3270, v); splat(c, 850, GROUND, tq, s6, 3280, v);
   c.restore();
   sticker(c, 'TOO SOFT', 740, 790, tq, ts, endOf(4), v);
@@ -268,16 +278,16 @@ function shotSoft(c, t, f, D) {
 // why: Miya on the left, the causes pop in on the right, each on its word: a small drawing and its sticker
 const WHY = {
   5: { a: 18.0, pose: (tq) => { const st = E.io2(inv(MK('stress') - 0.2, MK('stress') + 0.2, tq)); return pose('sit', { head: { pitch: -10, yaw: 30, roll: 6 * st }, face: { eyes: st > 0.5 ? 'squint' : 'open', mouth: 'closed', brow: -0.6 * st } }); },
-    items: [['food', 'FOOD SWITCHED FAST', (c, x, y, v) => { CA.bowl(c, x - 115, y + 24, 0.85, 4000, v); CA.bowl(c, x + 115, y + 24, 0.85, 4010, v, 'rich'); CA.swapArrow(c, x - 100, x + 100, y - 50, 4020, v); }],
+    items: [['food', 'SUDDEN FOOD CHANGE', (c, x, y, v) => { CA.bowl(c, x - 115, y + 24, 0.85, 4000, v); CA.bowl(c, x + 115, y + 24, 0.85, 4010, v, 'rich'); CA.swapArrow(c, x - 100, x + 100, y - 50, 4020, v); }],
       ['scav', 'SCAVENGED', (c, x, y, v) => CA.bin(c, x - 60, y + 6, 1.15, 4030, v)],
       ['stress', 'STRESS', (c, x, y, v) => CA.cloud(c, x, y - 20, 0.95, 4040, v)]] },
   7: { a: 26.0, pose: (tq, D) => pose('wag', { head: { pitch: -6, yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: 0.4 }, tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 } }),
     items: [['rich', 'RICH NEW FOOD', (c, x, y, v) => CA.bowl(c, x, y + 30, 1.3, 4100, v, 'rich')],
       ['treat', 'AN UNFAMILIAR TREAT', (c, x, y, v) => CA.treat(c, x, y, 1.5, 4110, v)]] },
   10: { a: 35.0, pose: () => pose('lie', { face: { eyes: 'open', mouth: 'closed', brow: -0.2 } }), lie: true,
-    items: [['water2', 'NOT ENOUGH WATER', (c, x, y, v) => CA.bowl(c, x, y + 30, 1.2, 4200, v, 'empty')],
+    items: [['water2', 'NOT ENOUGH WATER', (c, x, y, v) => { CA.bowl(c, x, y + 40, 1.2, 4200, v, 'empty'); CA.drop(c, x, y - 50, 0.5, 4205, v); inkStroke(c, [[x - 40, y - 10], [x + 40, y - 90]], { seed: 4206 + v, w: 8, t0: 4, t1: 4, min: 0.5, amp: 0.8, heavy: 0, color: PAL.orange }); }],
       ['bones', 'BONES AND CHEWS', (c, x, y, v) => CA.bone(c, x, y, 1.25, 4210, v)],
-      ['walks', 'TOO FEW WALKS', (c, x, y, v) => CA.lead(c, x, y - 20, 0.9, 4220, v)]] },
+      ['walks', 'TOO FEW WALKS', (c, x, y, v) => CA.lead(c, x, y - 10, 0.85, 4220, v)]] },
 };
 function shotWhy(i) {
   return function (c, t, f, D) {
@@ -286,7 +296,7 @@ function shotWhy(i) {
     const p = S.pose(tq, D);
     drawMiya(c, p, { x: S.lie ? 300 : 270, y: GROUND, s: S.lie ? 1.2 : 1.3, view: 30, v, seed: 3900 + i * 10, accent: ACC });
     c.restore();
-    const ys = S.items.length === 3 ? [425, 665, 905] : [520, 820];
+    const ys = S.items.length === 3 ? [490, 725, 960] : [560, 860];
     S.items.forEach(([mk, label, draw], k) => {
       const t0 = MK(mk), y = ys[k];
       popAt(c, 720, y, popK(tq, t0, 0.3), () => draw(c, 720, y, v));
@@ -301,8 +311,8 @@ function shotLogs(c, t, f, D) {
   const s4 = MK('four'), s5 = MK('five'), tilt = E.io2(inv(MK('soft45') - 0.2, MK('soft45') + 0.2, tq));
   drawMiya(c, pose('sit', { head: { pitch: -18, yaw: 24, roll: 8 * tilt }, face: { eyes: 'open', mouth: 'closed', brow: -0.3 * tilt } }),
     { x: 260, y: GROUND, s: 1.4, view: 25, v, seed: 3300, accent: ACC });
-  withLand(c, 600, GROUND, landScale(tq, s4), () => CA.log(c, 600, GROUND, 1, 3350, v, { sag: 0.75, len: 210 }));
-  withLand(c, 850, GROUND, landScale(tq, s5), () => { CA.log(c, 820, GROUND, 0.42, 3360, v, { sag: 0.6, len: 190 }); CA.log(c, 890, GROUND, 0.38, 3365, v, { sag: 0.6, len: 180 }); CA.log(c, 852, GROUND - 26, 0.36, 3368, v, { sag: 0.5, len: 170 }); });
+  withLand(c, 600, GROUND, landScale(D, s4), () => CA.log(c, 600, GROUND, 1, 3350, v, { sag: 0.75, len: 210 }));
+  withLand(c, 850, GROUND, landScale(D, s5), () => { CA.log(c, 820, GROUND, 0.42, 3360, v, { sag: 0.6, len: 190 }); CA.log(c, 890, GROUND, 0.38, 3365, v, { sag: 0.6, len: 180 }); CA.log(c, 852, GROUND - 26, 0.36, 3368, v, { sag: 0.5, len: 170 }); });
   splat(c, 600, GROUND, tq, s4, 3370, v); splat(c, 850, GROUND, tq, s5, 3375, v);
   c.restore();
   sticker(c, 'A SOGGY LOG', 600, 880, tq, s4 + 0.15, endOf(6), v, { size: 32, rot: -0.04 });
@@ -340,8 +350,9 @@ function shotClose(c, t, f, D) {
   stage(c, v, tq, 38.5, 41.5);
   const s3 = MK('three'), cl = MK('close');
   drawMiya(c, pose('stand', { head: { pitch: -16, yaw: 10, roll: 0 }, face: { eyes: 'open', mouth: 'closed', brow: 0.3 } }), { x: 330, y: GROUND, s: 1.5, view: 15, v, seed: 3500, accent: ACC });
-  withLand(c, 740, GROUND, landScale(tq, s3), () => CA.log(c, 740, GROUND, 1, 3550, v, { len: 220 }));
+  withLand(c, 740, GROUND, landScale(D, s3), () => CA.log(c, 740, GROUND, 1, 3550, v, { len: 220 }));
   splat(c, 740, GROUND, tq, s3, 3560, v);
+  const ms = MK('mess'); if (tq >= ms) popAt(c, 905, GROUND, popK(tq, ms, 0.25), () => CA.puddle(c, 905, GROUND - 2, 0.5, 3565, v)); // "a little mess": residue beside it
   if (tq >= cl) { const sc = popK(tq, cl, 0.3), S = FX.starPts(5, 70, 30, 3570, -Math.PI / 2, 0.05).map(([a, b]) => [740 + a * sc, 860 + b * sc]);
     inkLoop(c, S, { seed: 3571 + v, w: 7, amp: 1.2, color: PAL.orange }); }
   c.restore();
@@ -359,18 +370,29 @@ function shotGoal(c, t, f, D) {
   if (after) CA.glow(c, 760, GROUND - 60, 260 * E.out2(clamp((tq - hit) / 0.6)), SAGE, 3600, v, 0.35);
   if (!after) drawMiya(c, pose('lookDown', { face: { eyes: 'open', mouth: 'closed', brow: 0.3 } }), { x: 330, y: GROUND, s: 1.5, view: 15, v, seed: 3610, accent: ACC });
   else drawMiya(c, pose('wag', { tail: { a0: 92 + (D.id % 2 ? 24 : -24), curl: -32 } }), { x: 330, y: GROUND, s: 1.5, view: 20, v, seed: 3620, accent: ACC });
+  if (tq >= hit + 2 / FPS && tq < hit + 0.55) { const u = inv(hit + 2 / FPS, hit + 0.55, tq); FX.drawStarburst(c, 760, GROUND - 60, 230 * (0.6 + 0.4 * u), 3670 + f, 0.3, [SAGE, PAL.hi, PAL.orange], { n: 12, w: 6 }); }
+  // "easy to pick up": a bag hand swishes in (one smear frame), grips, lifts the 2 clean away, nothing left behind
+  const te = TL.marks.easy, tf = D.fn / FPS; // film time: real speed, on 1s (the warp would slow it down)
+  const grip = clamp((tf - te) / 0.12), lift = E.io2(inv(te + 0.2, te + 0.8, tf)), kin = D.fn - Math.round((te - 0.4) * FPS);
+  let hx = null, hy = GROUND - 60, hsx = 1;
+  if (tf >= te - 0.4) { hx = lerp(1320, 800, E.out2(inv(te - 0.4, te, tf))) + 60 * lift; hy = GROUND - 60 - 460 * lift; if (kin === 2) hsx = 2.4; }
+  const picked = tf >= te + 0.2;
   // the drop: hidden, three falling frames (one smear 2.6× long), contact squash, settle
-  const k = D.fn - FF(HERO);
+  const k = picked ? -99 : D.fn - FF(HERO);
   if (k >= -3) {
     const LX = 760;
     if (k < 0) { const y = lerp(380, GROUND, (k + 3) / 3); c.save(); c.translate(LX, y); c.scale(0.6, k === -2 ? 2.6 : 1.6); c.translate(-LX, -GROUND); CA.log(c, LX, GROUND, 1, 3650, v, { segs: 3, len: 230 }); c.restore();
       for (let i = 0; i < 4; i++) inkStroke(c, [[LX - 90 + i * 60, y - 260], [LX - 90 + i * 60, y - 80]], { seed: 3660 + i + D.fn, w: 4, t0: 20, t1: 4, min: 0.1, amp: 0.8, heavy: 0 });
     } else withLand(c, LX, GROUND, k <= 2 ? { sx: 1.3, sy: 0.7, dy: 0 } : { sx: 1, sy: 1, dy: 0 }, () => CA.log(c, LX, GROUND, 1, 3650, v, { segs: 3, len: 230 }));
   }
-  if (tq >= hit + 2 / FPS && tq < hit + 0.55) { const u = inv(hit + 2 / FPS, hit + 0.55, tq); FX.drawStarburst(c, 760, GROUND - 60, 230 * (0.6 + 0.4 * u), 3670 + f, 0.3, [SAGE, PAL.hi, PAL.orange], { n: 12, w: 6 }); }
   if (after) for (let i = 0; i < 4; i++) { const a = -2.6 + i * 0.55, r = 210 + 10 * Math.sin(tq * 5 + i);
     FX.drawTwinkle(c, 760 + Math.cos(a) * r, GROUND - 70 + Math.sin(a) * r * 0.8, (i % 2 ? 14 : 20) + 4 * Math.sin(tq * 4 + i), 3680 + i + v, { fill: i === 1 ? PAL.orange : PAL.hi }); }
-  if (tq >= hit + 0.55) CA.log(c, 760, GROUND, 1, 3650, v, { segs: 3, len: 230 }); // the 2 on top of the burst once it settles
+  if (hx !== null) {
+    c.save(); c.translate(hx, hy); c.scale(hsx, 1 / Math.sqrt(hsx)); c.translate(-hx, -hy);
+    if (picked) { c.save(); c.beginPath(); c.rect(hx - 130, hy - 90, 220, 180); c.clip(); CA.log(c, hx - 30, hy + 40, 0.55, 3650, v, { segs: 3, len: 230 }); c.restore(); }
+    CA.bagHand(c, hx, hy, 1, 3690, v, grip); c.restore();
+    if (D.fn === Math.round(te * FPS)) FX.drawTwinkle(c, 780, GROUND - 100, 30, 3695 + v, { fill: PAL.hi });
+  }
   c.restore();
   sticker(c, 'THE GOAL', 760, 720, tq, hit + 0.3, endOf(12), v, { size: 48 });
   rulerAt(c, v, { 2: after ? 'goal' : null });
@@ -385,7 +407,7 @@ function shotVet(c, t, f, D) {
   c.restore();
   sticker(c, 'RUNNY FOR 2+ DAYS', 700, 480, tq, MK('runny'), end, v, { size: 34, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4400 });
   sticker(c, 'ANY BLOOD', 720, 620, tq, MK('blood'), end, v, { size: 34, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4401 });
-  sticker(c, 'STRAINING, NOTHING', 700, 760, tq, MK('straining'), end, v, { size: 34, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4402 });
+  sticker(c, 'STRAINING WITH NOTHING', 700, 760, tq, MK('straining'), end, v, { size: 34, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4402 });
   sticker(c, 'CALL YOUR VET', 710, 920, tq, MK('callvet'), end, v, { size: 48, rot: -0.03, seed: 4403 });
 }
 // the product moment: the Digestive Probiotics tin lands; Miya, happy
@@ -403,7 +425,7 @@ function shotTin(c, t, f, D) {
       c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 920 + j, amp: 1 }); inkLoop(c, P2, { seed: 923 + j + v, w: 3, amp: 1 }); c.restore(); } }
   }
   const happy = tq >= TIN + 0.15;
-  drawMiya(c, pose(happy ? 'wag' : 'sit', happy ? { tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 }, head: { pitch: 4, yaw: 30, roll: 0 } } : {}), { x: 270, y: GROUND, s: 1.35, view: 30, v, seed: 3700, accent: ACC });
+  drawMiya(c, pose(happy ? 'wag' : 'stand', happy ? { tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 }, head: { pitch: 4, yaw: 30, roll: 0 } } : { head: { pitch: 4, yaw: 30, roll: 0 } }), { x: 270, y: GROUND, s: 1.35, view: 30, v, seed: 3700, accent: ACC });
   if (tq >= MK('firmer')) for (let i = 0; i < 3; i++) FX.drawTwinkle(c, [520, 860, 900][i], [620, 600, 780][i], 14 + 4 * Math.sin(tq * 4 + i), 930 + i + v, { fill: i === 1 ? PAL.orange : PAL.hi });
   c.restore();
 }
@@ -475,10 +497,10 @@ export function render(t) {
     const dx = first ? -W * 0.55 * E.in2(k / 0.5) : W * 0.55 * (1 - E.out2((k - 0.5) / 0.5)), sx = 1 + 1.3 * Math.sin(Math.PI * k);
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.translate((W / 2 + dx) * DPR, 0); c.scale(sx, 1); c.drawImage(L.canvas, -W / 2 * DPR, 0); c.restore();
     for (let i = 0; i < 9; i++) { const y = 360 + i * 120 + hs(i, fn) * 40, x0 = hs(i, fn, 2) * 500; inkStroke(c, [[x0, y], [x0 + 420 + 200 * hs(i, 3), y + 6]], { seed: 900 + i + fn, w: 5, t0: 30, t1: 30, min: 0.1, amp: 0.6, heavy: 0 }); }
-  } else if (t1 >= IRIS - IW && t1 < IRIS + IW) { // iris: navy grows from Miya's belly into the gut
-    const u = (t1 - (IRIS - IW)) / (2 * IW), cx = 400, cy = 900, R = 40 + 2200 * E.in2(u);
-    shotScale(c, t1, f, { ...D, fq: Math.round((IRIS - IW) * FPS), fn: FF(IRIS - IW) });
-    const L = layer(); shotInside(L, t1, f, { ...D, fq: Math.round((IRIS + 0.01) * FPS) });
+  } else if (IRISES.some(([b]) => t1 >= b - IW && t1 < b + IW)) { // iris: the next shot grows from where the eye is
+    const [b, cx, cy] = IRISES.find(([b]) => t1 >= b - IW && t1 < b + IW), u = (t1 - (b - IW)) / (2 * IW), R = 40 + 2200 * E.in2(u);
+    shotAt(b - 0.01)(c, t1, f, { ...D, fq: Math.round((b - IW) * FPS), fn: FF(b - IW) });
+    const L = layer(); shotAt(b + 0.01)(L, t1, f, { ...D, fq: Math.round((b + 0.01) * FPS), fn: FF(b + 0.01) });
     c.save(); c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.clip(); c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(L.canvas, 0, 0); c.restore();
     inkLoop(c, circlePts(cx, cy, R, 60), { seed: 950 + fn, w: 10, amp: 2 });
   } else if (t1 >= XEND && t1 < XEND + XD) { // a fresh sheet slides over from the right on 1s: hard edge, no ghosts

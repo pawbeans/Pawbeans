@@ -53,7 +53,7 @@ S(sfx.paper('rustle', 0.5, seed=1), at=0.1, gain=-14)
 S(sfx.paper('rustle', 0.3, seed=2), at=1.0, gain=-15)          # her glance
 S(sfx.pop('soft', 1.0), at=2.62, gain=-14)
 # whips
-for b in (3.0, 13.5, 18.0, 21.5, 26.0, 29.0, 31.5, 35.0, 38.5, 41.5, 46.5, 50.0, 53.5):
+for b in (3.0, 18.0, 21.5, 26.0, 35.0, 38.5, 41.5, 46.5, 50.0, 53.5):
     S(sfx.whoosh(0.45, 'air', peak=0.5), at=b - 0.22, gain=-8)
 # section pills
 for i, (a, _) in enumerate(TL['sections']):
@@ -68,6 +68,7 @@ S(sfx.whoosh(0.6, 'air', peak=0.5), at=6.3, gain=-8)
 S(sfx.gloop(0.7, dur=0.5), at=6.9, gain=-17)
 for k in range(4): SF(sfx.drip(0.9 + 0.1 * k), at=MK['soaks'] + 0.25 * k, gain=-18)
 S(sfx.whoosh(0.9, 'air', peak=0.4), at=11.1, gain=-11)
+for b in (13.5, 29.0, 31.5): S(sfx.whoosh(0.6, 'air', peak=0.5), at=b - 0.2, gain=-9)   # irises out of / into / out of the gut
 # 7 and 6: two soft landings, her ears drop, the sticker
 SF(sfx.squelch(0.35, seed=4), at=MK['seven2'] - 0.05, gain=-15)
 SF(sfx.gloop(0.9), at=MK['six'], gain=-15)
@@ -95,12 +96,17 @@ S(sfx.impact('soft', size=0.8), at=42.35, gain=-4)
 for j, x in enumerate(['G5', 'B5', 'D6', 'G6']): harp(x, 42.45 + 0.09 * j, -12)
 S(sfx.pop('soft', 1.1), at=42.65, gain=-10)
 for k in range(4): S(sfx.paper('rustle', 0.12, seed=10 + k), at=42.5 + k * 0.17, gain=-16)
+# "easy to pick up": the bag hand swishes in, grips, lifts
+SF(sfx.whoosh(0.3, 'swish', peak=0.7), at=TL['marks']['easy'] - 0.3, gain=-10)
+SF(sfx.paper('crumple', 0.3, seed=40), at=TL['marks']['easy'], gain=-10)
+# "a little mess"
+SF(sfx.squelch(0.25, seed=41), at=MK['mess'], gain=-17)
 # when to call the vet
 for w in ('runny', 'blood', 'straining'): SF(sfx.pop('soft', 1.0), at=MK[w], gain=-12)
 SF(sfx.pop('soft', 0.9), at=MK['callvet'], gain=-9)
 # the tin lands, Miya wags, twinkles on "Firmer"
 S(sfx.whoosh(0.25, 'swish', peak=0.7), at=50.05, gain=-9)
-S(sfx.impact('soft', size=0.35), at=50.13, gain=-10)
+S(sfx.impact('soft', size=0.35), at=50.15, gain=-10)
 S(sfx.paper('rustle', 0.3, seed=20), at=50.3, gain=-15)
 for j, x in enumerate(['D6', 'G6']): SF(HARP.play(x, 1.2, 0.4, release=0.6).loud(-18), at=MK['firmer'] + 0.1 * j, gain=-15 + SFX_LIFT)
 # question card, end card

@@ -59,20 +59,20 @@ MARKS = {
     'slow': ('slow', 'slow', 0), 'soaking': ('slow', 'soaking', 0),
     'one2': ('dry', 'one', 0),
     'water2': ('why3', 'water', 0), 'bones': ('why3', 'bones', 0), 'walks': ('why3', 'walks', 0),
-    'three': ('close', 'three', 0), 'close': ('close', 'close', 0),
+    'three': ('close', 'three', 0), 'mess': ('close', 'mess', 0), 'close': ('close', 'close', 0),
     'two': ('goal', 'two', 0), 'firm': ('goal', 'firm', 0), 'easy': ('goal', 'easy', 0),
     'runny': ('vet', 'runny', 0), 'blood': ('vet', 'blood', 0), 'straining': ('vet', 'straining', 0), 'callvet': ('vet', 'call', 0),
     'firmer': ('tin', 'firmer', 0), 'tell': ('q', 'number', 0),
 }
 NO_CAPTION = {'hook', 'q'}   # the hook headline and the question card are the text
 # the picture as it was built (animation seconds): section bounds; half-width of the cut into each section (real speed)
-# 0 hook · 1 scale · 2 gut (iris in) · 3 too fast (same shot, no cut) · 4 seven/six · 5 why soft · 6 four/five ·
+# 0 hook · 1 scale · 2 gut (iris in) · 3 too fast (same shot, no cut) · 4 seven/six (iris out) · 5 why soft · 6 four/five ·
 # 7 why a little soft · 8 too slow (inside) · 9 one · 10 why dry · 11 three · 12 two (hero) · 13 vet · 14 tin · 15 question + end
 OLD = [(0.0, 3.0), (3.0, 6.5), (6.5, 11.0), (11.0, 13.5), (13.5, 18.0), (18.0, 21.5), (21.5, 26.0), (26.0, 29.0), (29.0, 31.5),
        (31.5, 35.0), (35.0, 38.5), (38.5, 41.5), (41.5, 46.5), (46.5, 50.0), (50.0, 53.5), (53.5, 57.5)]
-CUT = [0, 0.125, 0.25, 0, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125]
+CUT = [0, 0.125, 0.25, 0, 0.25, 0.125, 0.125, 0.125, 0.25, 0.25, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125]   # 0.25: irises in and out of the gut
 LOGO_OLD, LOGO_HOLD = 55.5, 2.0   # the end card: the logo comes in after the question, held 2 s
-LEAD, TAIL, GAP = 0.3, 0.95, 0.4
+LEAD, TAIL, GAP = 0.2, 0.6, 0.4
 
 
 def norm(w):
@@ -200,6 +200,10 @@ def main():
             anchors.append((B, b))
         else:
             need = max(need, vend + TAIL + wh_out - A)
+            if lines:                                                          # the section's last card stays up ≥ 1.6 s
+                lid_l, t_l, _ = lines[-1]
+                lc = starts[lid_l] + t_l['on'][cards(t_l['words'])[-1][0]] - 0.04
+                need = max(need, lc + 1.6 + wh_out + 0.02 - A)
             B = A + max(b - a, need)
             anchors.append((B - wh_out, b - wh_out))
         secs.append([round(A, 3), round(B, 3)])
