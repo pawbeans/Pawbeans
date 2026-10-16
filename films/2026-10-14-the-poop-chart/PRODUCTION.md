@@ -3,7 +3,7 @@
 Series: Inside Your Dog (BEANS: product near the end, logo end card). Idea B6, **auto-picked ★1 at the 22:30 SGT
 cut-off** (no reply to the 2026-10-14 pitch). Accent: Digestive Probiotics sage `#BFD8AE`; brand orange for stickers,
 rings and the hook word. Hook formula: "Your dog's X is talking to you." (a "you've been reading your dog wrong" cousin).
-Length **56.2 s** in v3 (49.5 s at the boards; ElevenLabs Jessica at 0.9 speed so every caption gets 1.5 s), 1080×1920, 24 fps.
+Length **77.5 s** in v5 (script v2; owner: lengths are guides, cap 90 s). ElevenLabs Jessica at 0.9 speed, 1080×1920, 24 fps.
 
 - [x] Gate 1: routine: standing approval (owner 2026-10-13), overnight veto. Auto-picked ★1 at the cut-off.
 - [x] Gate 2: routine: standing approval (owner 2026-10-13), overnight veto. Script below.
@@ -63,6 +63,12 @@ Length **56.2 s** in v3 (49.5 s at the boards; ElevenLabs Jessica at 0.9 speed s
     the frame, Miya stands before she wags; "why" rows moved down; clearer icons (crossed-out drop over the empty bowl,
     a real lead with handle and clip, a grey rain cloud); labels match the voice ("SUDDEN FOOD CHANGE",
     "STRAINING WITH NOTHING").
+  - v5 spec: 77.54 s (1861 frames), 1080×1920, 24 fps, −14.0 LUFS, −2.7 dBTP (master and viewing copy), VO −22.0 / music
+    −34.0 / foley −34.7 LUFS, no black frames. Irises, landings, the hero drop and the hand pick-up checked frame by frame.
+    Files (not committed): `review/2026-10-14-the-poop-chart-v5.mp4` (29.1 MB), `review/…-v5-soundtrack.wav`,
+    `review/…-v5-voiceover.wav`. Still weak (nice-to-have, not done): empty caption box for 2–3 frames before each
+    section's first word; one-frame specks as labels pop out; the soggy log reads a bit like a brick; the vet shot is text
+    heavy; nothing moves in the hook's first second.
   - Needs the owner: move the hero later (shorter inside section); "poop" vs British "poo"; the Purina chart calls 5
     "piles" (script says "Five and four look like logs"); ElevenLabs voice; more action at the tin moment.
 
