@@ -1,0 +1,91 @@
+{
+ "title": "INSIDE YOUR DOG \u00b7 WHAT THE HAZE DOES TO YOUR DOG",
+ "duration": 70.5417,
+ "sections": [
+  [
+   "HOOK",
+   0.0,
+   3.0
+  ],
+  [
+   "PSI 200+",
+   3.0,
+   7.514
+  ],
+  [
+   "INSIDE THE AIRWAY",
+   7.514,
+   17.626
+  ],
+  [
+   "SIGNS TO WATCH FOR",
+   17.626,
+   28.518
+  ],
+  [
+   "WHO FEELS IT MOST",
+   28.518,
+   35.162
+  ],
+  [
+   "WHAT HELPS",
+   35.162,
+   41.051
+  ],
+  [
+   "THE BIG ONE (HERO)",
+   41.051,
+   47.553
+  ],
+  [
+   "CALL THE VET",
+   47.553,
+   51.406
+  ],
+  [
+   "STUCK INSIDE",
+   51.406,
+   59.124
+  ],
+  [
+   "PRODUCT \u00b7 RABBIT TREATS",
+   59.124,
+   65.829
+  ],
+  [
+   "QUESTION + END CARD",
+   65.829,
+   70.529
+  ]
+ ],
+ "hero": [
+  0.0,
+  12.421,
+  43.786,
+  44.036,
+  49.558,
+  59.724,
+  70.042
+ ],
+ "boards": [
+  [
+   0,
+   1,
+   2
+  ],
+  [
+   3,
+   4,
+   5
+  ],
+  [
+   6,
+   7
+  ],
+  [
+   8,
+   9,
+   10
+  ]
+ ]
+}

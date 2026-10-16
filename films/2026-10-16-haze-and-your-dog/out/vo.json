@@ -1,0 +1,98 @@
+[
+ {
+  "id": "hook",
+  "at": 0.05,
+  "file": "out/vo/hook.wav",
+  "dur": 1.548
+ },
+ {
+  "id": "news",
+  "at": 3.2,
+  "file": "out/vo/news.wav",
+  "dur": 3.464
+ },
+ {
+  "id": "tiny",
+  "at": 7.964,
+  "file": "out/vo/tiny.wav",
+  "dur": 1.377
+ },
+ {
+  "id": "deep",
+  "at": 9.741,
+  "file": "out/vo/deep.wav",
+  "dur": 3.039
+ },
+ {
+  "id": "why",
+  "at": 13.18,
+  "file": "out/vo/why.wav",
+  "dur": 3.596
+ },
+ {
+  "id": "sign1",
+  "at": 18.076,
+  "file": "out/vo/sign1.wav",
+  "dur": 3.375
+ },
+ {
+  "id": "sign2",
+  "at": 21.851,
+  "file": "out/vo/sign2.wav",
+  "dur": 1.145
+ },
+ {
+  "id": "sign3",
+  "at": 23.395,
+  "file": "out/vo/sign3.wav",
+  "dur": 4.397
+ },
+ {
+  "id": "risk",
+  "at": 28.843,
+  "file": "out/vo/risk.wav",
+  "dur": 5.594
+ },
+ {
+  "id": "walks",
+  "at": 35.487,
+  "file": "out/vo/walks.wav",
+  "dur": 2.908
+ },
+ {
+  "id": "water",
+  "at": 38.795,
+  "file": "out/vo/water.wav",
+  "dur": 1.531
+ },
+ {
+  "id": "big",
+  "at": 41.376,
+  "file": "out/vo/big.wav",
+  "dur": 5.452
+ },
+ {
+  "id": "vet",
+  "at": 47.878,
+  "file": "out/vo/vet.wav",
+  "dur": 2.803
+ },
+ {
+  "id": "game",
+  "at": 51.731,
+  "file": "out/vo/game.wav",
+  "dur": 6.669
+ },
+ {
+  "id": "pouch",
+  "at": 59.449,
+  "file": "out/vo/pouch.wav",
+  "dur": 5.654
+ },
+ {
+  "id": "q",
+  "at": 66.154,
+  "file": "out/vo/q.wav",
+  "dur": 1.875
+ }
+]
