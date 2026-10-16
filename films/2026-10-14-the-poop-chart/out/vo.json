@@ -3,71 +3,101 @@
   "id": "hook",
   "at": 0.05,
   "file": "out/vo/hook.wav",
-  "dur": 1.656
+  "dur": 1.992
  },
  {
   "id": "scale",
-  "at": 3.425,
+  "at": 3.542,
   "file": "out/vo/scale.wav",
-  "dur": 3.577
+  "dur": 3.813
+ },
+ {
+  "id": "gut",
+  "at": 9.105,
+  "file": "out/vo/gut.wav",
+  "dur": 3.293
+ },
+ {
+  "id": "fast",
+  "at": 13.648,
+  "file": "out/vo/fast.wav",
+  "dur": 1.768
  },
  {
   "id": "soft",
-  "at": 8.352,
+  "at": 16.916,
   "file": "out/vo/soft.wav",
   "dur": 1.046
  },
  {
   "id": "soft2",
-  "at": 9.797,
+  "at": 18.361,
   "file": "out/vo/soft2.wav",
-  "dur": 3.051
+  "dur": 1.854
+ },
+ {
+  "id": "why1",
+  "at": 21.715,
+  "file": "out/vo/why1.wav",
+  "dur": 3.932
  },
  {
   "id": "logs",
-  "at": 14.199,
+  "at": 27.147,
   "file": "out/vo/logs.wav",
-  "dur": 3.146
+  "dur": 6.228
+ },
+ {
+  "id": "why2",
+  "at": 34.876,
+  "file": "out/vo/why2.wav",
+  "dur": 3.202
+ },
+ {
+  "id": "slow",
+  "at": 39.578,
+  "file": "out/vo/slow.wav",
+  "dur": 1.903
  },
  {
   "id": "dry",
-  "at": 18.699,
+  "at": 42.98,
   "file": "out/vo/dry.wav",
-  "dur": 3.185
+  "dur": 1.798
+ },
+ {
+  "id": "why3",
+  "at": 46.48,
+  "file": "out/vo/why3.wav",
+  "dur": 4.477
  },
  {
   "id": "close",
-  "at": 23.234,
+  "at": 52.457,
   "file": "out/vo/close.wav",
-  "dur": 3.192
+  "dur": 3.503
  },
  {
   "id": "goal",
-  "at": 27.776,
+  "at": 57.461,
   "file": "out/vo/goal.wav",
-  "dur": 5.056
- },
- {
-  "id": "moves",
-  "at": 34.432,
-  "file": "out/vo/moves.wav",
-  "dur": 5.465
+  "dur": 4.996
  },
  {
   "id": "vet",
-  "at": 40.297,
+  "at": 63.957,
   "file": "out/vo/vet.wav",
-  "dur": 3.483
+  "dur": 5.543
  },
  {
   "id": "tin",
-  "at": 45.131,
+  "at": 71.0,
   "file": "out/vo/tin.wav",
   "dur": 5.492
  },
  {
   "id": "q",
-  "at": 51.972,
+  "at": 77.992,
   "file": "out/vo/q.wav",
   "dur": 1.724
  }

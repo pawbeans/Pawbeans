@@ -1,7 +1,7 @@
 // "Inside Your Dog: the poop chart": overlay helpers copied from the Inside Your Dog cast (pill, caption card, cel mass,
 // glow), plus this film's props: the 1–7 samples (restrained), the score ruler, the bag hand and the chews tin.
 import * as G from '../../../cel/engine.js';
-import { PAL, ACCENTS } from '../../../cel/palette.js';
+import { PAL, ACCENTS, MIYA } from '../../../cel/palette.js';
 import { field, primBounds, contours } from '../../../cel/shape.js';
 import * as FX from '../../../cel/fx.js';
 
@@ -214,4 +214,71 @@ export function bush(c, x, y, s, seed, v) {
   if (!L) return;
   celMass(c, L.map(([a, b]) => [a, Math.min(b, y + 2)]), SAGE.c, SAGE.shade, seed, v, { w: 5, sh: 14 * s });
   for (let k = 0; k < 5; k++) { const a = -2.6 + k * 0.5, px = x + Math.cos(a) * 90 * s, py = y - 90 * s + Math.sin(a) * 60 * s; inkStroke(c, [[px, py], [px + 14 * s, py - 12 * s]], { seed: seed + 30 + k + v, w: 3, t0: 2, t1: 3, min: 0.3, amp: 0.6, heavy: 0, color: SAGE.shade }); }
+}
+
+// ------------------------------------------------------------------ cause icons (script v2): small cel props, drawn at (x, y) = their centre
+const ellipse = (x, y, rx, ry, n = 32) => Array.from({ length: n }, (_, i) => [x + rx * Math.cos(2 * Math.PI * i / n), y + ry * Math.sin(2 * Math.PI * i / n)]);
+// a dog bowl (navy); fill: 'kibble' | 'rich' | 'empty' | 'water'
+export function bowl(c, x, y, s, seed, v, fill = 'kibble') {
+  const w = 120 * s, h = 54 * s, top = y - h / 2;
+  if (fill === 'kibble' || fill === 'rich') { // the food heaped above the rim
+    const heap = fill === 'rich' ? 46 : 26, col = fill === 'rich' ? BROWN_HI : MIYA.apricotShade;
+    celMass(c, G.resample(G.spline([[x - w * 0.8, top + 4], [x - w * 0.5, top - heap * 0.6 * s], [x, top - heap * s], [x + w * 0.5, top - heap * 0.6 * s], [x + w * 0.8, top + 4]], true, 4), 5, true), col, fill === 'rich' ? BROWN_SH : MIYA.patch, seed + 40, v, { w: 4, sh: 6 * s });
+    if (fill === 'rich') for (let k = 0; k < 3; k++) inkStroke(c, [[x - 30 * s + k * 30 * s, top - heap * s - 14 * s], [x - 26 * s + k * 30 * s + 6 * s, top - heap * s - 40 * s], [x - 30 * s + k * 30 * s, top - heap * s - 62 * s]], { seed: seed + 50 + k + v, w: 3, t0: 4, t1: 4, min: 0.3, amp: 1, heavy: 0, color: PAL.navyLight }); // steam: rich and new
+  }
+  const body = G.resample([[x - w, top], [x + w, top], [x + w * 0.78, y + h / 2], [x - w * 0.78, y + h / 2]], 5, true);
+  celMass(c, body, PAL.navy, PAL.navyDeep, seed, v, { w: 5, sh: 8 * s });
+  const rim = G.resample(ellipse(x, top, w, 14 * s), 5, true);
+  celMass(c, rim, fill === 'water' ? PAL.navyLight : PAL.navyDeep, null, seed + 10, v, { w: 4 });
+  if (fill === 'empty') for (let k = 0; k < 3; k++) inkStroke(c, [[x - 40 * s + k * 34 * s, top - 2], [x - 30 * s + k * 34 * s, top + 4]], { seed: seed + 60 + k + v, w: 2.6, t0: 2, t1: 2, min: 0.3, amp: 0.6, heavy: 0, color: PAL.navyLight });
+}
+// a curved swap arrow (orange) between two bowls
+export function swapArrow(c, x0, x1, y, seed, v) {
+  const mid = (x0 + x1) / 2;
+  inkStroke(c, [[x0, y], [mid, y - 60], [x1, y]], { seed: seed + v, w: 6, t0: 4, t1: 6, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
+  inkStroke(c, [[x1 - 26, y - 22], [x1, y], [x1 - 30, y + 6]], { seed: seed + 1 + v, w: 6, t0: 3, t1: 3, min: 0.3, amp: 1, heavy: 0, color: PAL.orange });
+}
+// a tipped-over bin with a little rubbish spilling out
+export function bin(c, x, y, s, seed, v) {
+  c.save(); c.translate(x, y); c.rotate(-1.2); c.translate(-x, -y);
+  const w = 70 * s, h = 120 * s;
+  celMass(c, G.resample([[x - w, y - h / 2], [x + w, y - h / 2], [x + w * 0.82, y + h / 2], [x - w * 0.82, y + h / 2]], 5, true), PAL.navyLight, PAL.navy, seed, v, { w: 5, sh: 8 * s });
+  for (let k = 0; k < 3; k++) inkStroke(c, [[x - w * 0.5 + k * w * 0.5, y - h * 0.35], [x - w * 0.42 + k * w * 0.42, y + h * 0.38]], { seed: seed + 10 + k + v, w: 3, t0: 2, t1: 2, min: 0.4, amp: 0.6, heavy: 0, color: PAL.navy });
+  celMass(c, G.resample(ellipse(x, y - h / 2 - 8 * s, w * 1.08, 12 * s), 5, true), PAL.navy, null, seed + 20, v, { w: 4 });
+  c.restore();
+  celMass(c, G.resample(circlePts(x + 92 * s, y + 30 * s, 20 * s, 14), 4, true), MIYA.apricotShade, null, seed + 30, v, { w: 3.5 });
+  celMass(c, G.resample([[x + 120 * s, y + 46 * s], [x + 168 * s, y + 36 * s], [x + 160 * s, y + 52 * s]], 4, true), PAL.hi, null, seed + 31, v, { w: 3.5 });
+}
+// a small storm cloud with an orange zigzag
+export function cloud(c, x, y, s, seed, v) {
+  const prims = [circ(x - 50 * s, y, 42 * s, 14 * s), circ(x + 10 * s, y - 24 * s, 52 * s, 14 * s), circ(x + 64 * s, y + 2 * s, 38 * s, 14 * s), cone(x - 80 * s, y + 24 * s, x + 90 * s, y + 24 * s, 18 * s, 18 * s, 14 * s)];
+  const L = outline(prims, 2.5);
+  if (L) celMass(c, L, PAL.hi, '#E3DCCF', seed, v, { w: 4.5, sh: 9 * s });
+  inkStroke(c, [[x + 6 * s, y + 44 * s], [x - 10 * s, y + 68 * s], [x + 10 * s, y + 68 * s], [x - 4 * s, y + 92 * s]], { seed: seed + 10 + v, w: 6, t0: 3, t1: 3, min: 0.5, amp: 0.8, heavy: 0, color: PAL.orange });
+}
+// a round biscuit treat
+export function treat(c, x, y, s, seed, v) {
+  celMass(c, G.resample(circlePts(x, y, 46 * s, 22), 4, true), MIYA.apricot, MIYA.apricotShade, seed, v, { w: 4.5, sh: 7 * s });
+  for (let k = 0; k < 5; k++) { const a = k * 1.26 + 0.3, r = 24 * s; celMass(c, circlePts(x + Math.cos(a) * r, y + Math.sin(a) * r, 5 * s, 10), MIYA.patch, null, seed + 10 + k, v, { w: 2.4 }); }
+}
+// a chew bone (cream)
+export function bone(c, x, y, s, seed, v) {
+  const prims = [cone(x - 70 * s, y, x + 70 * s, y, 20 * s, 20 * s, 8 * s), circ(x - 78 * s, y - 20 * s, 24 * s, 8 * s), circ(x - 78 * s, y + 20 * s, 24 * s, 8 * s), circ(x + 78 * s, y - 20 * s, 24 * s, 8 * s), circ(x + 78 * s, y + 20 * s, 24 * s, 8 * s)];
+  const L = outline(prims, 2.5);
+  if (L) celMass(c, L, PAL.hi, '#E6D8BE', seed, v, { w: 4.5, sh: 7 * s });
+}
+// a lead hanging on its hook (unused: too few walks)
+export function lead(c, x, y, s, seed, v) {
+  celMass(c, G.resample([[x - 50 * s, y - 70 * s], [x + 50 * s, y - 70 * s], [x + 50 * s, y - 52 * s], [x - 50 * s, y - 52 * s]], 4, true), PAL.navy, null, seed, v, { w: 4 });
+  inkStroke(c, [[x, y - 52 * s], [x, y - 34 * s], [x + 12 * s, y - 26 * s]], { seed: seed + 1 + v, w: 6, t0: 4, t1: 4, min: 0.5, amp: 0.6, heavy: 0, color: PAL.navy });
+  const loop = G.resample(G.spline([[x, y - 30 * s], [x - 40 * s, y + 10 * s], [x - 30 * s, y + 70 * s], [x, y + 86 * s], [x + 30 * s, y + 70 * s], [x + 40 * s, y + 10 * s]], true, 4), 4, true);
+  inkLoop(c, loop, { seed: seed + 2 + v, w: 11, amp: 0.8, color: PAL.orange });
+  inkLoop(c, loop, { seed: seed + 3 + v, w: 3, amp: 0.8, color: PAL.orangeShade });
+  celMass(c, G.resample(circlePts(x, y + 92 * s, 12 * s, 12), 4, true), PAL.navyLight, null, seed + 4, v, { w: 3 });
+}
+// a water drop (navy light, a cream glint)
+export function drop(c, x, y, s, seed, v) {
+  const P = G.resample(G.spline([[x, y - 80 * s], [x + 30 * s, y - 30 * s], [x + 48 * s, y + 10 * s], [x + 36 * s, y + 42 * s], [x, y + 56 * s], [x - 36 * s, y + 42 * s], [x - 48 * s, y + 10 * s], [x - 30 * s, y - 30 * s]], true, 4), 4, true);
+  celMass(c, P, PAL.navyLight, PAL.navy, seed, v, { w: 5, sh: 9 * s });
+  inkStroke(c, [[x - 24 * s, y + 4 * s], [x - 20 * s, y + 26 * s]], { seed: seed + 5 + v, w: 6, t0: 3, t1: 3, min: 0.4, amp: 0.5, heavy: 0, color: PAL.hi });
 }

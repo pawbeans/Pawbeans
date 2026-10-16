@@ -253,7 +253,7 @@ Files in `assets/brand/logo/` (owner-supplied 2026-10-13; this is the full set t
 
 ## 8. Output spec (default)
 
-- **1080×1920 vertical, 24 fps, 15–45 s**, H.264 MP4 with stereo AAC audio (48 kHz), voiceover + background music + foley at −14 LUFS,
+- **1080×1920 vertical, 24 fps, 15–45 s as a guide (up to 90 s when the extra time is real information; owner 2026-10-16)**, H.264 MP4 with stereo AAC audio (48 kHz), voiceover + background music + foley at −14 LUFS,
   TP ≤ −2 dBTP on the muxed file (§5). Daily series lengths in §14. A brief may set a longer runtime (Inside Your Dog
   ran 58 s and was approved).
 - Hook in the first 0.5 s: never open on more than 0.3 s of empty paper. One unmistakable hero moment at about

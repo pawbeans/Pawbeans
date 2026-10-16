@@ -30,37 +30,49 @@ KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.88
 # ------------------------------------------------------------------ the script (spoken = shown; ** = emphasised word)
 # id, section, text, picture moment to land on a word: (old time, keep-speed duration, word, offset from its onset)
 SCRIPT = [
-    ('hook', 0, "Your dog's poop is **talking** to you.", None),
-    ('scale', 1, 'Vets score it from one to seven. Only one is **the goal.**', None),
-    ('soft', 2, 'A seven is a puddle.', None),   # own take: the puddle card needs its 1.5 s
-    ('soft2', 2, 'A six is a pile with no shape. **Too soft.**', None),
-    ('logs', 3, 'Five and four look like logs, but they **fall apart** when you pick them up.', (13.2, 0.7, 'fall', -0.05)),
-    ('dry', 4, 'A one is hard, dry little pellets. **Too dry.**', (16.3, 0.9, 'hard', -0.1)),
-    ('close', 5, 'A three holds its shape when you pick it up. That\'s **close.**', None),
-    ('goal', 6, 'And a two is the one. **Firm, in segments,** and easy to pick up.', (22.725, 0.875, 'two', -0.245)),
-    ('moves', 7, 'What moves the number? Switching food too fast, a new treat, or **stress.**', (29.0, 0.0, 'switching', -0.1)),
-    ('vet', 7, 'Soft for more than a day, or any blood? **Call your vet.**', None),
-    ('tin', 8, 'Our Digestive Probiotics support a happy gut. **Firmer poops, happier walks.**', (34.15, 0.3, 'our', -0.2)),
-    ('q', 9, "So, what number was this morning's?", None),
+    ('hook', 0, "Here's what your dog's poop **actually** means.", None),
+    ('scale', 1, "Vets score it from one to seven. And it's all about **water.**", None),
+    ('gut', 2, 'As food moves through the gut, the gut soaks the water back up.', None),
+    ('fast', 3, 'Too fast, and the water stays in.', None),
+    ('soft', 4, 'A seven is a puddle.', None),
+    ('soft2', 4, 'A six is a pile with no shape.', None),
+    ('why1', 5, "Usually it's a sudden food change, something they scavenged, or **stress.**", None),
+    ('logs', 6, 'Four and five are a little soft. A four is a soggy log. A five comes out in piles.', None),
+    ('why2', 7, "Often a rich new food, or a treat they're not used to.", None),
+    ('slow', 8, 'Too slow, and the gut keeps soaking.', None),
+    ('dry', 9, 'A one is hard, dry pellets.', (32.3, 0.9, 'hard', -0.1)),
+    ('why3', 10, 'Think not enough water, too many bones or chews, or too few walks.', None),
+    ('close', 11, 'A three holds its shape, but leaves a little mess. **Close.**', None),
+    ('goal', 12, 'And a two is the goal. **Firm, in segments,** and easy to pick up.', (42.225, 0.875, 'two', -0.245)),
+    ('vet', 13, 'Runny for over two days, any blood, or straining with nothing? **Call your vet.**', None),
+    ('tin', 14, 'Our Digestive Probiotics support a happy gut. **Firmer poops, happier walks.**', (50.15, 0.3, 'our', -0.2)),
+    ('q', 15, "So, what number was this morning's?", None),
 ]
 # named word onsets (film seconds) for the picture: name → (line id, word, nth occurrence)
 MARKS = {
-    'one': ('scale', 'one', 0), 'seven': ('scale', 'seven', 0), 'goal': ('scale', 'goal.**', 0),
-    'seven2': ('soft', 'seven', 0), 'six': ('soft2', 'six', 0), 'toosoft': ('soft2', '**too', 0),
-    'five': ('logs', 'five', 0), 'four': ('logs', 'four', 0), 'pick': ('logs', 'pick', 0),
-    'one2': ('dry', 'one', 0), 'toodry': ('dry', '**too', 0),
-    'three': ('close', 'three', 0), 'close': ('close', 'close.**', 0),
-    'two': ('goal', 'two', 0), 'firm': ('goal', '**firm,', 0), 'easy': ('goal', 'easy', 0),
-    'food': ('moves', 'food', 0), 'treat': ('moves', 'treat,', 0), 'stress': ('moves', 'stress.**', 0),
-    'day': ('vet', 'day,', 0), 'blood': ('vet', 'blood?', 0), 'callvet': ('vet', '**call', 0),
-    'firmer': ('tin', '**firmer', 0), 'tell': ('q', 'number', 0),
+    'one': ('scale', 'one', 0), 'seven': ('scale', 'seven', 0), 'water': ('scale', 'water', 0),
+    'soaks': ('gut', 'soaks', 0), 'fast': ('fast', 'fast', 0),
+    'seven2': ('soft', 'seven', 0), 'six': ('soft2', 'six', 0),
+    'food': ('why1', 'food', 0), 'scav': ('why1', 'scavenged', 0), 'stress': ('why1', 'stress', 0),
+    'soft45': ('logs', 'soft', 0), 'four': ('logs', 'four', 1), 'five': ('logs', 'five', 1),
+    'rich': ('why2', 'rich', 0), 'treat': ('why2', 'treat', 0),
+    'slow': ('slow', 'slow', 0), 'soaking': ('slow', 'soaking', 0),
+    'one2': ('dry', 'one', 0),
+    'water2': ('why3', 'water', 0), 'bones': ('why3', 'bones', 0), 'walks': ('why3', 'walks', 0),
+    'three': ('close', 'three', 0), 'close': ('close', 'close', 0),
+    'two': ('goal', 'two', 0), 'firm': ('goal', 'firm', 0), 'easy': ('goal', 'easy', 0),
+    'runny': ('vet', 'runny', 0), 'blood': ('vet', 'blood', 0), 'straining': ('vet', 'straining', 0), 'callvet': ('vet', 'call', 0),
+    'firmer': ('tin', 'firmer', 0), 'tell': ('q', 'number', 0),
 }
 NO_CAPTION = {'hook', 'q'}   # the hook headline and the question card are the text
-# the picture as it was built (old seconds): section bounds; half-width of the cut into each section (real speed)
-OLD = [(0.0, 3.0), (3.0, 6.5), (6.5, 11.0), (11.0, 15.5), (15.5, 19.0), (19.0, 22.0), (22.0, 27.0), (27.0, 34.0), (34.0, 37.5), (37.5, 41.5)]
-CUT = [0, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.25, 0.125, 0.125]
-LOGO_OLD, LOGO_HOLD = 39.5, 2.0   # the end card: the logo comes in after the question, held 2 s
-LEAD, TAIL, GAP = 0.3, 0.8, 0.4
+# the picture as it was built (animation seconds): section bounds; half-width of the cut into each section (real speed)
+# 0 hook · 1 scale · 2 gut (iris in) · 3 too fast (same shot, no cut) · 4 seven/six · 5 why soft · 6 four/five ·
+# 7 why a little soft · 8 too slow (inside) · 9 one · 10 why dry · 11 three · 12 two (hero) · 13 vet · 14 tin · 15 question + end
+OLD = [(0.0, 3.0), (3.0, 6.5), (6.5, 11.0), (11.0, 13.5), (13.5, 18.0), (18.0, 21.5), (21.5, 26.0), (26.0, 29.0), (29.0, 31.5),
+       (31.5, 35.0), (35.0, 38.5), (38.5, 41.5), (41.5, 46.5), (46.5, 50.0), (50.0, 53.5), (53.5, 57.5)]
+CUT = [0, 0.125, 0.25, 0, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125]
+LOGO_OLD, LOGO_HOLD = 55.5, 2.0   # the end card: the logo comes in after the question, held 2 s
+LEAD, TAIL, GAP = 0.3, 0.95, 0.4
 
 
 def norm(w):
@@ -120,7 +132,7 @@ def align(shown, heard):
     return on, off, len(known)
 
 
-def cards(words, most=48):
+def cards(words, most=52):
     """One sentence a card; a sentence over `most` characters splits at the comma nearest its middle."""
     sents, cur = [], []
     for i, w in enumerate(words):
