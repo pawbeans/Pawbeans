@@ -100,3 +100,14 @@ brain); logged as tonight's pick (IDEAS D36, pinned 17 Oct). The question card b
 - Still weak: two cards slightly under 1.5 s ("…in their eyes," 1.44 s; "…feel it most," 1.38 s: she says them fast);
   the pouch-section animation holds still under the food line (only boil, pose and stickers move); the mixer flags
   2–5 kHz presence on the brighter voice (7.5 % of energy); glow discs behind the pouch and end card.
+
+## v4 (2026-10-17, owner: after a vet clinic's haze post; length cap raised to 120 s, no trims)
+- Added: "So do puppies, older dogs…" (PUPPIES card); "Back home, wipe their paws and coat with a damp cloth, so they
+  don't lick the dust off." (Miya stands, a damp cloth rubs her back then her paws, dust drops off; WIPE PAWS AND COAT);
+  the vet line now names the emergency signs: "But if their belly heaves with every breath, or their gums look pale or
+  blue, that's an emergency. Call your vet straight away." (BELLY HEAVING, PALE OR BLUE GUMS, EMERGENCY, CALL YOUR VET).
+  Sources in CREDITS.md. Not taken from the post: "lower to the ground" and "early morning walks" (weakly sourced).
+- Voice: the new lines re-voiced with Jessica, all matched word for word on the first take; other lines from cache.
+- Files (local, gitignored): `review/…-v4.mp4` (24.7 MB at 1950k video), `review/…-v4-soundtrack.wav`, `review/…-v4-voiceover.wav`.
+- Spec v4: 98.67 s (2368 frames), 1080×1920, 24 fps, −14.0 LUFS, TP −2.5 dBTP (master and viewing copy), stems voice
+  −22.0 / music −34.0 / foley −35.6 LUFS, no black frames; slam impact on frame 1313, pouch thud on frame 2024.

@@ -34,7 +34,7 @@ ffmpeg -i out/picture.mp4 -i out/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac 
 ffmpeg -i out/<slug>-vN.mp4 -af ebur128=peak=true -f null -          # loudness + true peak on the MUXED file, not the WAV
 ffmpeg -i out/<slug>-vN.mp4 -c:v libx264 -preset slow -b:v 3300k -maxrate 4000k -bufsize 8000k -pix_fmt yuv420p \
        -c:a aac -b:a 192k -movflags +faststart review/<slug>-vN.mp4   # viewing copy under the 30 MB upload limit
-# films over ~70 s: -b:v 2150k -maxrate 2800k -bufsize 5600k (88 s → 24.8 MB); always copy the master's audio (-c:a copy) so TP stays ≤ −2
+# films over ~70 s: -b:v 2150k -maxrate 2800k -bufsize 5600k (88 s → 24.8 MB); ~100 s: -b:v 1950k (98.7 s → 24.7 MB); 120 s: -b:v 1550k; always copy the master's audio (-c:a copy) so TP stays ≤ −2
 ```
 Full-size stills are gitignored (`films/*/out/stills/`); commit the boards and the hero stills only (`git add -f`).
 The master mp4 (~90 MB) stays local; the viewing copy and the SFX WAV go in `review/`.
