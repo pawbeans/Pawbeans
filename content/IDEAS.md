@@ -11,6 +11,7 @@ length · for Inside Your Dog: product tie-in + accent.
 
 | Date (2026–27) | Series | Idea | Why |
 |---|---|---|---|
+| **17 Oct** | Dog Decoded | **D36 Tire your dog out without leaving the flat** | **Owner's choice (2026-10-17): the haze film ends on "Stay tuned" for this episode. Build it tonight; pitch it as the pick, no list needed unless the owner asks.** |
 | 29 Oct | Dog Decoded | D7 Chocolate, grapes and the Halloween bowl | Halloween sweets in the house |
 | 5 Nov | Inside Your Dog | B9 Why fireworks feel like the end of the world (Calming) | Deepavali fireworks (8 Nov 2026, *verify*) |
 | 22 Dec | Dog Decoded | D8 The Christmas table: what's safe | Christmas leftovers |
@@ -190,6 +191,17 @@ length · for Inside Your Dog: product tie-in + accent.
 **D35 · What your dog's sleeping position says about them** (sequel to D1) · 25 s
 - Hook: "Your dog's sleeping position says a lot." Side sleeper (relaxed, secure) → donut curl (cosy, a little guarded) →
   superman flat (ready to spring into play) → belly up (total trust, and cooling off). Ending: "Which one is yours?"
+
+**D36 · Tire your dog out without leaving the flat** (owner's choice for 2026-10-17; teased at the end of the haze film) · 30–45 s
+- Hook: "Stuck inside? Here's how to tire your dog out." A dog needs a workout for the body and the brain, and on haze
+  (or rain) days you can do both at home. Story, voice first (playbook §2.12): why a bored dog gets restless → body:
+  stairs or hallway fetch, tug, a short game of chase → brain: find-it / sniffing games, a three-cup memory game,
+  a new trick in five-minute sessions → why brain work tires them out as much as a walk → the payoff: a happily
+  tired Miya asleep. Ending: "What's your dog's favourite indoor game?" then a loop back to the first frame.
+- Dog Decoded rules: no BEANS, no product, no "single-ingredient" talk. Light sourcing for games; anything physical
+  stays safe (no stairs for puppies or dogs with joint problems; keep it short in heat). Sources: *verify* AKC
+  "Indoor games with your dog", AKC "Play the memory game", AKC trick training / short sessions.
+- Miya: sniff (lookDown), play bow ★ if missing, sit, sleep, curl.
 
 ## Inside Your Dog (BEANS: educational, subtle)
 

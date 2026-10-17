@@ -77,3 +77,5 @@ Owner note (2026-10-17): with eyes shut the v1 voice is points after points; mak
 the haze affects the dog before listing signs, end on keeping a dog busy indoors (sniffing, short training), fewer
 calories, no new foods this week, and a subtle single-ingredient mention. Re-voice with ElevenLabs Jessica once approved.
 See the playbook §2.12. Text is in the owner message of that session; built into vo.py `SCRIPT` on approval.
+Owner note (2026-10-17, later): end on "Stay tuned" for the next episode (indoor ways to tire your dog out, body and
+brain); logged as tonight's pick (IDEAS D36, pinned 17 Oct). The question card becomes a NEXT EPISODE card.
