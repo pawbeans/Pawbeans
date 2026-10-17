@@ -197,7 +197,9 @@ export function wisp(c, x, y, r, seed, v, stage = 0) { FX.smokePuff(c, x, y, r, 
 
 // inside: the airway, from the nose (upper left) down the windpipe into two lungs (Rabbit accent as the tissue colour)
 export function airway(c, v, glowLung = 0) {
-  const tube = G.spline([[60, 560], [250, 570], [420, 610], [520, 690], [540, 780], [540, 860]], false, 6);
+  // the nose tip on the left (ink, a cream nostril) so the airway reads as starting at her nose
+  fillShape(c, circlePts(112, 560, 62, 18), PAL.ink, { seed: 690 + v, amp: 1.4 });
+  const tube = G.spline([[150, 560], [250, 570], [420, 610], [520, 690], [540, 780], [540, 860]], false, 6);
   inkStroke(c, tube, { seed: 700 + v, w: 118, t0: 1, t1: 1, min: 1, amp: 0.3, heavy: 0, color: PAL.ink, dense: true });
   inkStroke(c, tube, { seed: 701 + v, w: 100, t0: 1, t1: 1, min: 1, amp: 0.3, heavy: 0, color: PAL.hi, dense: true });
   // nose filter hairs near the entrance
@@ -217,7 +219,7 @@ export function airway(c, v, glowLung = 0) {
 // a speck of haze: big ones are smoke puffs, tiny ones are ink dots
 export function speck(c, x, y, r, seed, v) {
   if (r > 12) { FX.smokePuff(c, x, y, r, seed + v, { fill: HAZE, ink: PAL.ink, w: 3 }); return; }
-  fillShape(c, circlePts(x, y, r, 10), PAL.ink, { seed: seed + v, amp: 0.4 });
+  const P = circlePts(x, y, r, 10); fillShape(c, P, HAZE_SH, { seed: seed + v, amp: 0.6 }); inkLoop(c, P, { seed: seed + 1 + v, w: 3, amp: 0.6 }); // a tiny haze speck, not a pin
 }
 // the aircon unit high on the wall, blowing clean air (cel lines) when on
 export function aircon(c, x, y, s, seed, v, on = 0, tq = 0) {

@@ -42,7 +42,7 @@ const IW = 0.25;
 const IRISES = [[6.5, 360, 930], [14.0, 540, 1040]];
 const XEND = 50.0, XD = 0.2;    // a hard-edged paper wipe from the question card to the end card
 const HERO = MK('shut');        // the window slams shut (contact); impact frames follow
-const POUCH = 44.65;            // the pouch lands
+const POUCH = 44.80;            // the pouch lands (3 falling frames after the whip, so the drop is seen)
 const endOf = (i) => SEND[i] - (CUTS[i + 1] ?? 0) - 0.02; // last moment of a section before its cut
 
 // ------------------------------------------------------------------ exposure sheet: on 2s, fast action on 1s, holds on 3s
@@ -83,7 +83,7 @@ function sticker(c, txt, x, y, tq, t0, t1, v, o = {}) {
 }
 
 // the hook headline: frame 0 is the cover. "What the haze does to your dog."
-const HEAD = [[['What the ', 0], ['haze', 1]], [['does to', 0]], [['your dog.', 0]]];
+const HEAD = [[['What the ', 0], ['haze', 1]], [['does to your dog.', 0]]];
 function headline(c, sc, v) {
   if (sc <= 0) return;
   c.save(); c.translate(540, 470); c.scale(sc, sc); c.translate(-540, -470); c.textBaseline = 'alphabetic';
@@ -92,7 +92,7 @@ function headline(c, sc, v) {
   const widthOf = (L) => L.reduce((a, [s, it]) => { c.font = fontOf(it); return a + c.measureText(s).width; }, 0);
   const wmax = Math.max(...HEAD.map(widthOf)); if (wmax > 840) size = Math.floor(size * 840 / wmax);
   HEAD.forEach((L, li) => {
-    const y = 375 + li * size * 1.08, wl = widthOf(L); let x = 540 - wl / 2; c.textAlign = 'left';
+    const y = 400 + li * size * 1.08, wl = widthOf(L); let x = 540 - wl / 2; c.textAlign = 'left';
     for (const [s, it] of L) {
       c.font = fontOf(it); c.fillStyle = it ? PAL.orange : PAL.navy; const w = c.measureText(s).width;
       c.fillText(s, x + (li === 1 ? (v % 2 ? 1 : -1) : 0), y + (it ? (v % 2 ? 1 : 0) : 0));
@@ -121,9 +121,8 @@ function overlays(c, tn, tq, v) {
   if (tq < XEND) CA.pill(c, 'INSIDE YOUR DOG', 540, 252, { size: 28, fill: onNavy ? PAL.hi : PAL.navy, color: onNavy ? PAL.navy : PAL.hi, edge: PAL.navyDeep, alpha: 0.92, seed: 11, shadow: false }, v);
   TL.sections.forEach(([a, b], i) => {
     const txt = SECT[i]; if (!txt) return;
-    const t0 = a + 0.15, t1 = b - (CUTS[i + 1] ?? 0) - 0.02, navy = i === 2;
+    const t0 = a + 0.15, t1 = i === 6 ? warp(HERO - 0.3, 1, 0) : b - (CUTS[i + 1] ?? 0) - 0.02, navy = i === 2; // the slam owns the frame from there
     if (tn < t0 || tn >= t1) return;
-    if (i === 6 && toOld(tn) >= HERO - 0.3 && toOld(tn) < HERO + 0.6) return; // the slam owns the frame
     CA.pill(c, txt, 540, 330, { size: 40, fill: navy ? RAB : PAL.orange, color: navy ? PAL.navy : PAL.hi, scale: popK(tn, t0) * popOut(tn, t1), seed: 21, rot: -0.02 }, v);
   });
   headline(c, headlineScale(tq), v);
@@ -152,7 +151,7 @@ function popAt(c, x, y, sc, fn) { if (sc <= 0) return; c.save(); c.translate(x, 
 function shotWindow(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS;
   stage(c, v, tq, 0, 6.5, { dz: 0.07, cx: 560, cy: 960 });
-  const fog = 0.55 + 0.45 * E.io2(inv(0.5, 5.5, tq));
+  const fog = 0.8 + 0.2 * E.io2(inv(0.5, 5.5, tq));
   CA.windowOut(c, tq, v, fog);
   CA.windowFrame(c, v, 0);
   const turn = E.io2(inv(MK('very') - 0.3, MK('very') + 0.1, tq)); // she looks back at you on "very unhealthy"
@@ -184,22 +183,22 @@ function shotInside(c, t, f, D) {
       const u = Math.min(ph * 2.2, 1), x = lerp(-60, 180 + (k % 4) * 22, E.out2(u)), y = 570 + S.off * 0.8;
       CA.speck(c, x, y, 26, 900 + k, v); return;
     }
-    if (tq < t0) { const x = lerp(-60, 140, ph), y = 570 + S.off * 0.6; CA.speck(c, x, y, 7, 900 + k, v); return; }
+    if (tq < t0) { const x = lerp(-60, 200, ph), y = 565 + S.off * 0.4; CA.speck(c, x, y, 11, 900 + k, v); return; }
     // tiny ones rush down the airway on 1s, a smeared streak behind each, then scatter into a lung
     const u = (tq - t0) * 0.55 + ph * 0.6, along = u % 1.3;
     if (along < 1) {
-      const P = at(along * TT), x = P.x + P.nx * S.off * 0.6, y = P.y + P.ny * S.off * 0.6, L = 50;
+      const P = at(along * TT), x = P.x + P.nx * S.off * 0.6, y = P.y + P.ny * S.off * 0.6, L = 70;
       inkStroke(c, [[x - P.tx * L, y - P.ty * L], [x, y]], { seed: 940 + k + f, w: 6, t0: 20, t1: 4, min: 0.1, amp: 0.6, heavy: 0, color: PAL.ink });
-      CA.speck(c, x, y, 7, 900 + k, v);
+      CA.speck(c, x, y, 11, 900 + k, v);
     } else {
       const w = (along - 1) / 0.3, lx = 540 + S.side * (120 + 90 * hs(k, 2)), ly = 1000 + 140 * hs(k, 3);
-      CA.speck(c, lerp(540, lx, E.out2(w)), lerp(880, ly, E.out2(w)), 7, 900 + k, v);
+      CA.speck(c, lerp(540, lx, E.out2(w)), lerp(880, ly, E.out2(w)), 11, 900 + k, v);
     }
   });
   c.restore();
   // labels: clear of the airway, above y 1250
-  sticker(c, 'BIG BITS: STUCK IN THE NOSE', 740, 430, tq, MK('nose') - 0.05, MK('eyes') - 0.15, v, { size: 26, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4101 });
-  sticker(c, 'TINY BITS: DEEP IN THE LUNGS', 740, 520, tq, MK('lungs'), MK('eyes') - 0.15, v, { size: 26, rot: 0.03, seed: 4102 });
+  sticker(c, 'BIG BITS: STUCK IN THE NOSE', 640, 400, tq, MK('nose') - 0.05, MK('eyes') - 0.15, v, { size: 32, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4101 });
+  sticker(c, 'TINY BITS: DEEP IN THE LUNGS', 640, 470, tq, MK('lungs'), MK('eyes') - 0.15, v, { size: 32, rot: 0.03, seed: 4102 });
   if (tq >= MK('tiny') && tq < MK('nose') - 0.05) sticker(c, 'PM2.5', 760, 470, tq, MK('tiny'), MK('nose') - 0.05, v, { size: 46, rot: -0.04, seed: 4103 });
   sticker(c, 'EYES', 800, 440, tq, MK('eyes'), endOf(2), v, { size: 40, rot: -0.04, seed: 4104 });
   sticker(c, 'NOSE', 830, 540, tq, MK('nose2'), endOf(2), v, { size: 40, rot: 0.04, seed: 4105 });
@@ -234,7 +233,9 @@ function shotSigns(c, t, f, D) {
 function shotRisk(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(4);
   stage(c, v, tq, 22.0, end, { dz: 0.06 });
-  drawMiya(c, pose('sit', { head: { pitch: -8, yaw: 30, roll: -6 }, face: { eyes: 'open', mouth: 'closed', brow: 0.2 } }), { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3300, accent: ACC });
+  const look = ['flat', 'older', 'heart', 'most'].filter((m) => tq >= MK(m) - 0.05).length; // she turns to each card as it lands
+  const HP = [[-8, 30, -6], [-14, 50, 4], [-4, 60, -8], [-16, 45, 6], [-6, 70, 0]][look];
+  drawMiya(c, pose('sit', { head: { pitch: HP[0], yaw: HP[1], roll: HP[2] }, face: { eyes: 'open', mouth: 'closed', brow: look >= 4 ? -0.4 : 0.2 }, ears: { swing: D.id % 2 ? 4 : -4 } }), { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3300, accent: ACC });
   c.restore();
   sticker(c, 'FLAT-FACED BREEDS', 700, 520, tq, MK('flat'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4301 });
   sticker(c, 'OLDER DOGS', 740, 640, tq, MK('older'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4302 });
@@ -262,9 +263,9 @@ function shotBig(c, t, f, D) {
   const after = D.fn >= FF(HERO), k0 = D.fn - FF(HERO);
   const shake = tq >= HERO && tq < HERO + 0.4 ? 9 * Math.exp(-(tq - HERO) / 0.12) : 0;
   drawPaper(c, W, H);
-  c.save(); cam(c, 540 + (hs(f, 1) - 0.5) * 2 * shake, 960 + (hs(f, 2) - 0.5) * 2 * shake, 1.0 + 0.05 * inv(31.0, end, tq) + (after ? 0.06 * E.out3(clamp((tq - HERO) / 0.3)) : 0));
+  c.save(); cam(c, 620 + (hs(f, 1) - 0.5) * 2 * shake, 960 + (hs(f, 2) - 0.5) * 2 * shake, 1.0 + 0.05 * inv(31.0, end, tq) + (after ? 0.06 * E.out3(clamp((tq - HERO) / 0.3)) : 0));
   floor(c, v);
-  CA.windowOut(c, tq + 20, v, after ? 1 - 0.3 * clamp((tq - HERO) / 1.5) : 1);
+  CA.windowOut(c, tq + 20, v, 1); // the haze outside doesn't change; the room clears
   // the slide: open until just before the word, then 2 frames on 1s, the middle one smeared
   let open = 1, smear = 1;
   if (k0 >= -2 && k0 < 0) { open = k0 === -2 ? 0.55 : 0.12; smear = k0 === -2 ? 2.4 : 1.4; } else if (after) open = 0;
@@ -272,25 +273,29 @@ function shotBig(c, t, f, D) {
   if (k0 >= 0 && k0 < 6) FX.speedLinesRadial(c, CA.WIN.x1 - 10, 915, 40, 160, 8, 3500 + D.fn, 6, 1, PAL.ink); // contact ticks at the frame edge
   // haze wisps drift in through the gap; after the slam they break up and are gone
   WISPS.forEach((S, k) => {
-    const ph = ((tq - 31) * 0.25 + S.d) % 1, x = lerp(860, 480, ph), y = S.y - 60 * ph;
+    const ph = ((tq - 31) * 0.25 + S.d) % 1, x = lerp(900, 120, ph), y = 800 + k * 70 + 40 * ph; // in through the gap, over Miya
     if (!after) CA.wisp(c, x, y, S.r * (0.7 + 0.3 * ph), 3510 + k * 7, v, 0);
     else { const st = 1 + Math.floor((tq - HERO) / 0.18); if (st < 4) CA.wisp(c, x, y, S.r, 3510 + k * 7, v, st); }
   });
+  // a flat hatched haze veil over the room: there while the window is open, stepping away on 3s after the slam
+  const veil = !after ? 0.34 : [0.34, 0.18, 0.07, 0][Math.min(3, Math.floor((tq - HERO) / 0.17))];
+  if (veil > 0) { c.save(); c.globalAlpha = veil; c.fillStyle = CA.HAZE; c.fillRect(-200, 0, W + 400, GROUND); G.hatch(c, [[-200, 0], [W + 200, 0], [W + 200, GROUND], [-200, GROUND]], { seed: 3540 + v, gap: 26, ang: -0.5, w: 2, amp: 1.2, color: CA.HAZE_SH, cx: 540, cy: 700 }); c.restore(); }
   const on = E.io2(inv(MK('aircon') - 0.1, MK('aircon') + 0.3, tq));
-  CA.aircon(c, 230, 520, 0.9, 3550, v, on, tq);
-  if (!after) drawMiya(c, pose('lie', { head: { pitch: -10, yaw: 30, roll: 0 }, face: { eyes: 'squint', mouth: 'closed', brow: -0.5 } }), { x: 240, y: GROUND, s: 1.3, view: 25, v, seed: 3560, accent: ACC });
-  else drawMiya(c, pose('wag', { tail: { a0: 92 + (D.id % 2 ? 24 : -24), curl: -32 } }), { x: 230, y: GROUND, s: 1.3, view: 25, v, seed: 3570, accent: ACC });
-  if (after && tq < HERO + 0.55) { const u = inv(HERO, HERO + 0.55, tq); FX.drawStarburst(c, CA.WIN.x1 - 30, 915, 200 * (0.6 + 0.4 * u), 3580 + f, 0.3, [RAB, PAL.hi, PAL.orange], { n: 12, w: 6 }); }
-  if (after && tq >= MK('purifier')) for (let i = 0; i < 3; i++) FX.drawTwinkle(c, [420, 520, 380][i], [600, 700, 820][i], 14 + 4 * Math.sin(tq * 4 + i), 3590 + i + v, { fill: i === 1 ? PAL.orange : PAL.hi });
+  CA.aircon(c, 300, 520, 0.9, 3550, v, on, tq);
+  if (!after) drawMiya(c, pose('lie', { head: { pitch: -10, yaw: 30, roll: 0 }, face: { eyes: 'squint', mouth: 'closed', brow: -0.5 } }), { x: 300, y: GROUND, s: 1.3, view: 25, v, seed: 3560, accent: ACC });
+  else drawMiya(c, pose('wag', { tail: { a0: 92 + (D.id % 2 ? 24 : -24), curl: -32 } }), { x: 300, y: GROUND, s: 1.3, view: 25, v, seed: 3570, accent: ACC });
+  if (after && tq < HERO + 0.55) { const u = inv(HERO, HERO + 0.55, tq); FX.drawStarburst(c, CA.WIN.x1 - 60, 915, 150 * (0.6 + 0.4 * u), 3580 + f, 0.3, [RAB, PAL.hi, PAL.orange], { n: 12, w: 6 }); }
+  if (after && tq >= MK('purifier')) for (let i = 0; i < 3; i++) FX.drawTwinkle(c, [480, 580, 440][i], [600, 700, 820][i], 14 + 4 * Math.sin(tq * 4 + i), 3590 + i + v, { fill: i === 1 ? PAL.orange : PAL.hi });
   c.restore();
-  sticker(c, 'KEEP THE HAZE OUT', 640, 560, tq, HERO + 0.4, end, v, { size: 46, rot: -0.04, seed: 4501 });
-  sticker(c, 'AIRCON OR PURIFIER ON', 640, 470, tq, MK('aircon'), end, v, { size: 32, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4502 });
+  sticker(c, 'KEEP THE HAZE OUT', 600, 440, tq, HERO + 0.4, end, v, { size: 46, rot: -0.04, seed: 4501 });
+  sticker(c, 'AIRCON OR PURIFIER ON', 620, 540, tq, MK('aircon'), end, v, { size: 32, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4502 });
 }
 // when to call the vet
 function shotVet(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(7);
   stage(c, v, tq, 37.0, end, { dz: 0.06 });
-  drawMiya(c, pose('lie', { head: { pitch: -10, yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.6 } }), { x: 250, y: GROUND, s: 1.3, view: 30, v, seed: 3600, accent: ACC });
+  drawMiya(c, pose('lie', { head: { pitch: -10 + (D.id % 2 ? 3 : 0), yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.6 } }), { x: 250, y: GROUND, s: 1.3 * (1 + 0.012 * (D.id % 2)), view: 30, v, seed: 3600, accent: ACC });
+  for (let k = 0; k < 2; k++) { const u = ((tq - 37) * 3 + k * 0.5) % 1; c.save(); c.globalAlpha = 1 - u; inkStroke(c, [[440 + 40 * u, 1110 + k * 26], [480 + 60 * u, 1106 + k * 26]], { seed: 3610 + k + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.navyLight }); c.restore(); } // fast breaths
   c.restore();
   sticker(c, 'STRUGGLING TO BREATHE?', 620, 560, tq, MK('struggling'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4601 });
   sticker(c, 'CALL YOUR VET', 640, 720, tq, MK('callvet'), end, v, { size: 56, rot: -0.03, seed: 4602 });
@@ -316,12 +321,12 @@ function shotGame(c, t, f, D) {
 function shotPouch(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS;
   stage(c, v, tq, 44.5, 48.0, { dz: 0.1 });
-  CA.glow(c, 740, 1040, 280, RAB, 900, v, 0.3);
   const k = D.fn - FF(POUCH), TX = 740;
-  if (k >= -2) {
-    const y = k < 0 ? lerp(500, GROUND, (k + 2) / 2) : GROUND;
+  if (k >= 0) CA.glow(c, 740, 1040, 280, RAB, 900, v, 0.3);
+  if (k >= -3) { // falls in from off the top on 1s: two stretched in-betweens, then a squash on contact
+    const y = k < 0 ? [-260, 420, 980][k + 3] : GROUND;
     c.save(); c.translate(TX, y);
-    if (k === -1) c.scale(0.7, 2.2); else if (k >= 0 && k <= 1) c.scale(1.18, 0.84);
+    if (k === -2) c.scale(0.7, 2.4); else if (k === -1) c.scale(0.8, 1.6); else if (k >= 0 && k <= 1) c.scale(1.18, 0.84);
     c.translate(-TX, -y); CA.pouch(c, TX, y, 1, 910, v); c.restore();
     if (k >= 0 && k < 12) { const u = k / 12; for (const sd of [-1, 1]) for (let j = 0; j < 3; j++) { const P2 = circlePts(TX + sd * (170 + j * 30 + 70 * u), GROUND - 10 - j * 14 - 30 * u, (18 - 4 * j) * (1 - 0.6 * u), 14);
       c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 920 + j, amp: 1 }); inkLoop(c, P2, { seed: 923 + j + v, w: 3, amp: 1 }); c.restore(); } }
@@ -411,7 +416,7 @@ export function render(t) {
   } else shotAt(t1)(c, t1, f, D);
   const hk = fn - FF(HERO);
   if (hk === 1 || hk === 2) { // impact: flat Rabbit + a cream star, on 1s; nothing else on it
-    FX.impactFrame(c, W, H, CA.WIN.x1 - 30, 915, hk === 1 ? RAB : PAL.navy, hk === 1 ? PAL.hi : RAB, 600 + hk, { lines: hk === 1, R: 560 });
+    FX.impactFrame(c, W, H, 840, 915, hk === 1 ? RAB : PAL.navy, hk === 1 ? PAL.hi : RAB, 600 + hk, { lines: hk === 1, R: 560 });
     drawTooth(c, W, H, v, DPR, 0.13); return;
   }
   overlays(c, tn, t1, v);

@@ -5,7 +5,33 @@ Series: Inside Your Dog · accent Rabbit (`#9BA88D`, treats) · 70.5 s (voice-fi
       related that's trending right now"; replaces the cut-off auto-pick of ★1 "Where your dog scratches")
 - [x] Gate 2: script: routine, standing approval (owner 2026-10-13), overnight veto
 - [x] Gate 3: key frames: routine, standing approval (owner 2026-10-13), overnight veto. Boards `review/…-keyframes-{a,b,c,d}.png` sent 2026-10-16 night.
-- [ ] Gate 4: rendered → reviewed (rubric) → revised once → shown (08:28 run)
+- [x] Gate 4: rendered → reviewed (rubric) → revised once → shown (2026-10-17 08:28 run, standing approval; no owner notes overnight)
+  - Files (local, gitignored): `review/2026-10-16-haze-and-your-dog-v2.mp4` (viewing copy, 28.3 MB),
+    `review/…-v2-soundtrack.wav`, `review/…-v2-voiceover.wav`; master `out/…-v2.mp4`.
+  - Spec v2: 70.54 s (1693 frames), 1080×1920, 24 fps, AAC 48 kHz stereo, −14.0 LUFS, TP −2.7 dBTP (master and viewing
+    copy), stems: voice −22.0 / music −34.0 (12 LU under) / foley −34.5 LUFS, no black frames, fonts loaded.
+  - Review v1 (independent subagent, rubric step 1): style 7, concept 5, motion 6, design 6, finish 7, sound 4,
+    technical 7, story 6.
+  - Revision (critical + high, nothing the owner saw on the boards changed in content, order or copy):
+    - C1 hero sync: audio.py keyed the slam to the old 33.1 s; now `HERO = FR(MK['shut'])`, the contact frame 1050.
+      Impact, click, harp run and music resolve land on it (were 6 frames early).
+    - C2 whooshes: mgaudio already puts a whoosh's peak on `at`; removed the extra −half-duration offset (were 5–7
+      frames early and silent on the cut).
+    - H1 pouch: lands at 44.80 (anim) so its 3-frame fall from off the top (two stretched in-betweens, squash) shows
+      after the whip; the glow appears only on contact; thud moved with it.
+    - H2 hero before/after: haze wisps now drift into the room over Miya and a hatched haze veil fills the room while
+      the window is open, stepping away on 3s after the slam.
+    - H3 safe zone: hero camera shifted left (centre x 620), burst radius 150 at the pane edge, impact frame centre 840.
+    - H4 THE BIG ONE pill pops out once before the slam (no vanish / re-pop); KEEP THE HAZE OUT / AIRCON stickers re-stacked.
+    - H5 caption: "The haze in Singapore just hit very unhealthy levels." is one two-line card (vo.py `cards(most=56)`,
+      timeline merged by hand: the voice was not re-generated).
+    - H6 airway: a nose tip at the tube entrance, tiny bits drawn as haze specks (r 11, outlined, 70 px streaks), labels 32 px.
+    - H7 Miya never frozen: she turns to each WHO FEELS IT MOST card; breathes hard (breath dashes, chest on 2s) at the vet beat.
+    - H8 cover: headline on two lines ("What the haze / does to your dog."), the city reads as haze from frame 0.
+  - Still weak / not done (nice-to-have or needs the owner): no "why" for the at-risk groups, short walks or water (new
+    VO lines); hero at 62 % of the runtime (playbook asks 70–85 %); "busy brain, tired dog" callout shares the frame
+    with the caption; glow discs (bible says no glow); one card at 3.64 words/s (13.1 s); Whisper wasn't available, so
+    captions = voice wasn't machine-checked this morning; Kokoro voice (no ElevenLabs key).
 
 Hook formula: "Here's what X does to your dog." (as "What the haze does to your dog.", 7 words)
 Why it should travel: it's the news this week in Singapore, every dog owner here is wondering the same thing, and the

@@ -27,7 +27,8 @@ def new(t):
     for (n0, o0), (n1, o1) in zip(A, A[1:]):
         if t <= o1: return n0 + (n1 - n0) * (t - o0) / ((o1 - o0) or 1)
     return A[-1][0]
-HERO = new(33.1)                        # the window slams shut: the music lands home here
+FR = lambda t: round(t * 24) / 24      # snap to the film frame the picture keys on
+HERO = FR(MK['shut'])                   # the window slams shut (scene.js HERO = MK('shut'), contact frame): the music lands home here
 RESOLVE = HERO
 NB = max(4, round(RESOLVE / 2.6))       # whole bars of 4/4 up to the resolve, kept near 92 bpm
 BAR = RESOLVE / NB
@@ -50,15 +51,15 @@ harp = lambda note, at, gain=-13: S(HARP.play(note, 1.2, 0.4, release=0.6).loud(
 
 # whips and irises (film time, each whoosh peaks on its cut)
 for b in (22.0, 26.0, 31.0, 37.0, 40.0, 44.5, 48.0):
-    SF(sfx.whoosh(0.45, 'air', peak=0.5), at=new(b) - 0.225, gain=-8)
+    SF(sfx.whoosh(0.45, 'air', peak=0.5), at=new(b), gain=-8)    # mgaudio puts the peak (sync point) on `at`
 for b in (6.5, 14.0):
-    SF(sfx.whoosh(0.6, 'swoosh', peak=0.5), at=new(b) - 0.3, gain=-9)
+    SF(sfx.whoosh(0.6, 'swoosh', peak=0.5), at=new(b), gain=-9)
 # hook + news: a soft paper rustle (her tail), stickers on "very"
 S(sfx.paper('rustle', 0.4, seed=1), at=0.2, gain=-15)
 SF(sfx.pop('soft', 1.0), at=MK['very'] - 0.05, gain=-11)
 SF(sfx.pop('soft', 1.1), at=MK['very'] + 0.2, gain=-13)
 # inside: an airy rush as the tiny specks pour down the airway, a harp on "lungs", pops for the labels
-SF(sfx.whoosh(1.4, 'air', peak=0.6), at=MK['tiny'] - 0.2, gain=-14)
+SF(sfx.whoosh(1.4, 'air', peak=0.6), at=MK['tiny'] + 0.3, gain=-14)
 for w in ('nose', 'lungs', 'eyes', 'nose2', 'breathing'): SF(sfx.pop('soft', 1.0), at=MK[w] - 0.03, gain=-13)
 SF(HARP.play('D6', 1.2, 0.4, release=0.6).loud(-18), at=MK['lungs'], gain=-15 + SFX_LIFT)
 # signs, risk, tips: a pop on each sticker; a soft breath-puff on "sneezing"
@@ -68,17 +69,17 @@ SF(sfx.whoosh(0.25, 'air', peak=0.3), at=MK['sneezing'], gain=-15)
 SF(sfx.pop('soft', 0.85), at=MK['most'] - 0.03, gain=-10)
 SF(sfx.drip(1.0), at=MK['water'] + 0.05, gain=-14)
 # the big one (hero): the pane slides, one soft cinematic impact on the slam, harp up; the aircon starts (an air hum)
-SF(sfx.whoosh(0.3, 'swish', peak=0.8), at=HERO - 0.24, gain=-8)
-S(sfx.impact('soft', size=0.7), at=33.1, gain=-5)
-S(sfx.click('wood'), at=33.1, gain=-10)
-for j, x in enumerate(['G5', 'B5', 'D6', 'G6']): S(HARP.play(x, 1.2, 0.4, release=0.6).loud(-18), at=33.18 + 0.09 * j, gain=-12 + SFX_LIFT)
+SF(sfx.whoosh(0.3, 'swish', peak=0.8), at=HERO - 1 / 24, gain=-8)
+SF(sfx.impact('soft', size=0.7), at=HERO, gain=-5)
+SF(sfx.click('wood'), at=HERO, gain=-10)
+for j, x in enumerate(['G5', 'B5', 'D6', 'G6']): SF(HARP.play(x, 1.2, 0.4, release=0.6).loud(-18), at=HERO + 0.08 + 0.09 * j, gain=-12 + SFX_LIFT)
 SF(sfx.whoosh(2.2, 'air', peak=0.2), at=MK['aircon'] - 0.1, gain=-19)
 SF(sfx.pop('soft', 1.0), at=MK['aircon'] - 0.03, gain=-13)
 SF(sfx.pop('soft', 0.9), at=MK['callvet'] - 0.03, gain=-10)
 # stuck inside: paws on the floor as she sniffs from bit to bit
 for k in range(8): SF(sfx.click('soft'), at=MK['sniffing'] - 0.3 + k * 0.2, gain=-18 - (k % 2))
 # the pouch lands: a soft thud, then a twinkle on "Nothing"
-S(sfx.impact('soft', size=0.3), at=44.65, gain=-10)
+SF(sfx.impact('soft', size=0.3), at=FR(new(44.80)), gain=-10)   # scene.js POUCH = 44.80 (contact frame)
 SF(HARP.play('B5', 1.2, 0.4, release=0.6).loud(-18), at=MK['nothing'], gain=-15 + SFX_LIFT)
 # question card, then the wipe to the end card
 S(sfx.paper('slide', 0.4), at=48.05, gain=-11)

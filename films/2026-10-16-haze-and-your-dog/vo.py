@@ -131,7 +131,7 @@ def align(shown, heard):
     return on, off, len(known)
 
 
-def cards(words, most=52):
+def cards(words, most=56):
     """One sentence a card; a sentence over `most` characters splits at the comma nearest its middle."""
     sents, cur = [], []
     for i, w in enumerate(words):
