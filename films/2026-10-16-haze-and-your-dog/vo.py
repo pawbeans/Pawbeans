@@ -29,38 +29,45 @@ KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.88
 
 # ------------------------------------------------------------------ the script (spoken = shown; ** = emphasised word)
 # id, section, text, picture moment to land on a word: (old time, keep-speed duration, word, offset from its onset)
-SCRIPT = [
+SCRIPT = [   # v2 (owner, 2026-10-17): one continuous story that works with your eyes shut (playbook §2.12)
     ('hook', 0, "What the **haze** does to your dog.", None),
-    ('news', 1, "The haze in Singapore just hit **very unhealthy** levels.", None),
+    ('news', 1, "The haze in Singapore just hit **very unhealthy** levels. And your dog breathes the same air you do.", None),
     ('tiny', 2, "The worst of it is tiny.", None),
-    ('deep', 2, "They slip right past the nose, deep into the **lungs.**", None),
-    ('why', 2, "So the haze shows up in their eyes, their nose and their breathing.", None),
-    ('sign1', 3, "Watch for watery eyes, sneezing, or a runny nose.", None),
-    ('sign2', 3, "Coughing or gagging.", None),
-    ('sign3', 3, "Fast or noisy breathing. Or a dog who's tired and off their food.", None),
-    ('risk', 4, "Flat-faced breeds, older dogs, and dogs with heart or lung problems feel it **most.**", None),
-    ('walks', 5, "So keep walks short. Just a quick toilet trip.", None),
-    ('water', 5, "And keep the water bowl full.", None),
-    ('big', 6, "Most of all, keep the haze out. Shut the windows, and run the aircon or a purifier.", (33.2, 0.6, 'shut', -0.1)),
-    ('vet', 7, "Struggling to breathe? **Call your vet** straight away.", None),
-    ('game', 8, "Stuck inside all day? Hide tiny bits of treat around the flat. Sniffing games keep their brain busy.", None),
-    ('pouch', 9, "Our single-ingredient treats break into tiny pieces. **Nothing added, nothing hidden.**", (44.65, 0.3, 'our', -0.2)),
-    ('q', 10, "What's your dog's favourite indoor game?", None),
+    ('deep', 2, "Big bits get stuck in the nose. The tiny ones slip past, deep into the **lungs.**", None),
+    ('why', 2, "That's why it shows up in their eyes, their nose and their breathing.", None),
+    ('sign1', 3, "So watch for watery eyes, sneezing or a runny nose.", None),
+    ('sign2', 3, "Coughing, fast or noisy breathing.", None),
+    ('sign3', 3, "Or a dog who's tired and off their food.", None),
+    ('risk1', 4, "Flat-faced breeds feel it **most,** because their airways are already narrow.", None),
+    ('risk2', 4, "So do older dogs, and dogs with heart or lung problems.", None),
+    ('walks', 5, "So outside, keep walks to a quick toilet trip.", None),
+    ('run', 5, "Running makes them breathe harder, and pull in more haze.", None),
+    ('big', 6, "And at home, the big one: keep the haze out. Shut the windows, and run the aircon or a purifier.", (33.2, 0.6, 'shut', -0.1)),
+    ('vet', 7, "If they're ever struggling to breathe, **call your vet** straight away.", None),
+    ('game', 8, "Stuck inside, their brain still needs a workout.", None),
+    ('game2', 8, "Hide tiny treats around the flat, or try a few short training sessions.", None),
+    ('food', 9, "With less exercise, they need fewer calories, so keep treats small.", None),
+    ('food2', 9, "And it's not the week to try a new food. Stick with what suits them.", None),
+    ('pouch', 9, "Single-ingredient treats keep it simple. **Nothing added, nothing hidden.**", (44.65, 0.3, 'singleingredient', -0.05)),
+    ('q', 10, "That's just the start. Next time: easy ways to tire your dog out at home. **Stay tuned.**", None),
 ]
 # named word onsets (film seconds) for the picture: name → (line id, word, nth occurrence)
 MARKS = {
-    'very': ('news', 'very', 0), 'tiny': ('tiny', 'tiny', 0), 'nose': ('deep', 'nose', 0), 'lungs': ('deep', 'lungs', 0),
-    'eyes': ('why', 'eyes', 0), 'nose2': ('why', 'nose', 0), 'breathing': ('why', 'breathing', 0),
+    'very': ('news', 'very', 0), 'air': ('news', 'air', 0), 'tiny': ('tiny', 'tiny', 0), 'nose': ('deep', 'nose', 0),
+    'lungs': ('deep', 'lungs', 0), 'eyes': ('why', 'eyes', 0), 'nose2': ('why', 'nose', 0), 'breathing': ('why', 'breathing', 0),
     'watery': ('sign1', 'watery', 0), 'sneezing': ('sign1', 'sneezing', 0), 'runny': ('sign1', 'runny', 0),
-    'coughing': ('sign2', 'coughing', 0), 'fast': ('sign3', 'fast', 0), 'tired': ('sign3', 'tired', 0),
-    'flat': ('risk', 'flatfaced', 0), 'older': ('risk', 'older', 0), 'heart': ('risk', 'heart', 0), 'most': ('risk', 'most', 0),
-    'walks': ('walks', 'short', 0), 'toilet': ('walks', 'toilet', 0), 'water': ('water', 'water', 0),
+    'coughing': ('sign2', 'coughing', 0), 'fast': ('sign2', 'fast', 0), 'tired': ('sign3', 'tired', 0),
+    'flat': ('risk1', 'flatfaced', 0), 'most': ('risk1', 'most', 0), 'narrow': ('risk1', 'narrow', 0),
+    'older': ('risk2', 'older', 0), 'heart': ('risk2', 'heart', 0),
+    'walks': ('walks', 'walks', 0), 'toilet': ('walks', 'toilet', 0), 'harder': ('run', 'harder', 0), 'morehaze': ('run', 'haze', 0),
     'shut': ('big', 'shut', 0), 'aircon': ('big', 'aircon', 0), 'purifier': ('big', 'purifier', 0),
     'struggling': ('vet', 'struggling', 0), 'callvet': ('vet', 'call', 0),
-    'hide': ('game', 'hide', 0), 'sniffing': ('game', 'sniffing', 0), 'brain': ('game', 'brain', 0),
-    'pieces': ('pouch', 'pieces', 0), 'nothing': ('pouch', 'nothing', 0), 'tell': ('q', 'indoor', 0),
+    'workout': ('game', 'workout', 0), 'hide': ('game2', 'hide', 0), 'training': ('game2', 'training', 0),
+    'fewer': ('food', 'fewer', 0), 'small': ('food', 'small', 0), 'newfood': ('food2', 'new', 0), 'suits': ('food2', 'suits', 0),
+    'single': ('pouch', 'singleingredient', 0), 'nothing': ('pouch', 'nothing', 0),
+    'start': ('q', 'start', 0), 'next': ('q', 'next', 0), 'tuned': ('q', 'tuned', 0),
 }
-NO_CAPTION = {'hook', 'q'}   # the hook headline and the question card are the text
+NO_CAPTION = {'hook'}   # the hook headline is the text; every other line is captioned word for word
 # the picture as it was built (animation seconds): section bounds; half-width of the cut into each section (real speed)
 # 0 hook (window) · 1 news (same shot) · 2 inside (iris in from her nose) · 3 signs (iris out) · 4 who's at risk ·
 # 5 tips · 6 the big one: the window slams (hero) · 7 vet · 8 sniffing game · 9 pouch · 10 question + end
@@ -131,7 +138,7 @@ def align(shown, heard):
     return on, off, len(known)
 
 
-def cards(words, most=56):
+def cards(words, most=58):
     """One sentence a card; a sentence over `most` characters splits at the comma nearest its middle."""
     sents, cur = [], []
     for i, w in enumerate(words):
@@ -193,7 +200,8 @@ def main():
             vs = vs + t['dur'] + GAP
         vend = vs - GAP
         if k == len(OLD) - 1:                                                  # the question, then the logo end card
-            L = max(vend + 0.5, anchors[-1][0] + 0.8)
+            L = max(vend + 1.2, anchors[-1][0] + 0.8)                     # the last card stays up ≥ 1.5 s before the wipe
+            LOGO_AT = L
             anchors.append((L, LOGO_OLD))
             B = L + LOGO_HOLD
             anchors.append((B, b))
@@ -220,6 +228,7 @@ def main():
         nxt = caps[i + 1][0] if i + 1 < len(caps) else 1e9
         cut = min(x for x in cuts if x > c[0])
         c[1] = round(min(cut, nxt), 3)                                         # a card stays up to the next card or the cut
+    caps[-1][1] = round(min(caps[-1][1], LOGO_AT), 3)                          # the last card ends at the wipe to the end card
     for p, c in zip(caps, caps[1:]):                                           # back to back: swap just before the first word
         if p[1] == c[0]: c[0] = p[1] = round(max(c[0], c[3][0] - 0.04), 3)
     anchors = sorted(set((round(n, 4), round(o, 4)) for n, o in anchors))

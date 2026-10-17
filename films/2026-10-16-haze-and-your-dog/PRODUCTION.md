@@ -79,3 +79,24 @@ calories, no new foods this week, and a subtle single-ingredient mention. Re-voi
 See the playbook §2.12. Text is in the owner message of that session; built into vo.py `SCRIPT` on approval.
 Owner note (2026-10-17, later): end on "Stay tuned" for the next episode (indoor ways to tire your dog out, body and
 brain); logged as tonight's pick (IDEAS D36, pinned 17 Oct). The question card becomes a NEXT EPISODE card.
+
+## v3 (2026-10-17, owner notes applied: script v2 + ElevenLabs voice)
+- Script v2 approved by the owner ("go") with the stay-tuned ending: one continuous story (playbook §2.12), the reason
+  with every piece of advice, indoor brain work (hide treats, short training), fewer calories, no new foods this week,
+  single-ingredient treats as the natural answer, then a NEXT EPISODE teaser (IDEAS D36) instead of the question.
+- Voice: ElevenLabs Jessica, every take checked by Whisper word for word against the captions (all lines matched; two
+  hyphenated words split by Whisper, spoken correctly). Captions = voice, cut by sentence; cards ≤ 58 characters.
+- Picture: risk cards in voice order (+ NARROW AIRWAYS), walks + RUNNING PULLS IN MORE HAZE (haze drawn in towards her
+  nose, she pants; the water bowl is gone), the game section ends with Miya sitting for a cue (SHORT TRAINING
+  SESSIONS; the shelf moved up the wall), the pouch section runs the food line first on film time (FEWER CALORIES,
+  KEEP TREATS SMALL, NO NEW FOODS THIS WEEK, small bits on the floor) and the pouch drops on "Single-ingredient",
+  a teaser (NEXT EPISODE, TIRE YOUR DOG OUT AT HOME, STAY TUNED) replaces the question card. Foley re-keyed.
+- Files (local, gitignored): `review/2026-10-16-haze-and-your-dog-v3.mp4` (viewing copy, 24.8 MB at 2150k video: the
+  3300k recipe gives 36.8 MB at this length), `review/…-v3-soundtrack.wav`, `review/…-v3-voiceover.wav`.
+- Spec v3: 88.58 s (2124 frames), 1080×1920, 24 fps, −14.0 LUFS, TP −2.7 dBTP (master and viewing copy), stems voice
+  −22.0 / music −34.0 / foley −35.1 LUFS, no black frames. Hero impact on the contact frame (1180), pouch thud on its
+  contact frame. Frame-checked: the slam, the pouch drop, the teaser into the end-card wipe.
+- No new reviewer pass (owner-directed version; Gate 4's one revision was v2).
+- Still weak: two cards slightly under 1.5 s ("…in their eyes," 1.44 s; "…feel it most," 1.38 s: she says them fast);
+  the pouch-section animation holds still under the food line (only boil, pose and stickers move); the mixer flags
+  2–5 kHz presence on the brighter voice (7.5 % of energy); glow discs behind the pouch and end card.

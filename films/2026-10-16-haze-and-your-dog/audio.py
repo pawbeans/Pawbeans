@@ -3,7 +3,7 @@
 Voice first (playbook §2.7): run vo.py first (it writes out/vo/, out/vo.json and out/timeline.json).
 Music: a new instrumental for this film, same family as the 2026-10-14 ukulele piece but its own tune: nylon guitar
 fingerpicking, pizzicato bass, a harp motif, G major, about 88 bpm, a little hushed under the haze, landing a warm
-resolve when the window slams shut (hero). It sits 12 LU under the voice; the question and end card ring out.
+resolve when the window slams shut (hero). It sits 12 LU under the voice; thin bars run under the teaser and the last chord rings out under the end card.
 Foley: whooshes for the whips and irises, soft pops for the stickers, a quiet airy rush for the specks, a sliding
 window and one soft cinematic impact on the slam, a gentle air hum for the aircon, paws for the sniffing, a soft
 thud for the pouch, a paper slide for the question card. No zany cartoon SFX.
@@ -63,11 +63,12 @@ SF(sfx.whoosh(1.4, 'air', peak=0.6), at=MK['tiny'] + 0.3, gain=-14)
 for w in ('nose', 'lungs', 'eyes', 'nose2', 'breathing'): SF(sfx.pop('soft', 1.0), at=MK[w] - 0.03, gain=-13)
 SF(HARP.play('D6', 1.2, 0.4, release=0.6).loud(-18), at=MK['lungs'], gain=-15 + SFX_LIFT)
 # signs, risk, tips: a pop on each sticker; a soft breath-puff on "sneezing"
-for w in ('watery', 'sneezing', 'runny', 'coughing', 'fast', 'tired', 'flat', 'older', 'heart', 'walks', 'toilet', 'water', 'struggling', 'sniffing', 'pieces'):
+for w in ('watery', 'sneezing', 'runny', 'coughing', 'fast', 'tired', 'flat', 'narrow', 'older', 'heart', 'walks', 'toilet', 'harder', 'struggling',
+          'workout', 'hide', 'training', 'fewer', 'small', 'newfood', 'next', 'tuned'):
     SF(sfx.pop('soft', 1.0), at=MK[w] - 0.03, gain=-13)
 SF(sfx.whoosh(0.25, 'air', peak=0.3), at=MK['sneezing'], gain=-15)
 SF(sfx.pop('soft', 0.85), at=MK['most'] - 0.03, gain=-10)
-SF(sfx.drip(1.0), at=MK['water'] + 0.05, gain=-14)
+SF(sfx.whoosh(1.2, 'air', peak=0.6), at=MK['morehaze'] + 0.4, gain=-18)   # haze drawn in towards her nose
 # the big one (hero): the pane slides, one soft cinematic impact on the slam, harp up; the aircon starts (an air hum)
 SF(sfx.whoosh(0.3, 'swish', peak=0.8), at=HERO - 1 / 24, gain=-8)
 SF(sfx.impact('soft', size=0.7), at=HERO, gain=-5)
@@ -77,7 +78,7 @@ SF(sfx.whoosh(2.2, 'air', peak=0.2), at=MK['aircon'] - 0.1, gain=-19)
 SF(sfx.pop('soft', 1.0), at=MK['aircon'] - 0.03, gain=-13)
 SF(sfx.pop('soft', 0.9), at=MK['callvet'] - 0.03, gain=-10)
 # stuck inside: paws on the floor as she sniffs from bit to bit
-for k in range(8): SF(sfx.click('soft'), at=MK['sniffing'] - 0.3 + k * 0.2, gain=-18 - (k % 2))
+for k in range(8): SF(sfx.click('soft'), at=MK['hide'] + 0.3 + k * 0.2, gain=-18 - (k % 2))
 # the pouch lands: a soft thud, then a twinkle on "Nothing"
 SF(sfx.impact('soft', size=0.3), at=FR(new(44.80)), gain=-10)   # scene.js POUCH = 44.80 (contact frame)
 SF(HARP.play('B5', 1.2, 0.4, release=0.6).loud(-18), at=MK['nothing'], gain=-15 + SFX_LIFT)
@@ -124,7 +125,7 @@ pz.add(pluck.pizz('G2', 0.9, 0.8, seed=401), at=RESOLVE)
 for j, nt in enumerate(['D6', 'G6']): hp.add(HARP.play(nt, 2.0, 0.4, release=1.0), at=RESOLVE + 0.12 * j)
 # after the resolve: thin bars under the vet, the game and the pouch; rest under the question; a last chord rings out
 k = NB + 1
-q0 = MK['tell'] - 1.6
+q0 = MK['tuned'] - 0.4   # thin bars run under the teaser; the last chord rings out under the logo
 while beat(k, 0) < q0 - BAR * 0.25:
     bar_of(k, TAILP[k % 4], 0.4, thin=True)
     r, _ = BASS[TAILP[k % 4]]; pz.add(pluck.pizz(r, 0.6, 0.5, seed=900 + k), at=beat(k, 0))

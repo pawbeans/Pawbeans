@@ -5,7 +5,7 @@
 // The story (owner's request, 2026-10-16, the haze at PSI 200+): the worst of the haze is tiny, it slips past the nose
 // deep into the lungs, so it shows up in the eyes, the nose and the breathing. The signs, who feels it most, what
 // helps, and the big one, saved for last: keep the haze out (the window slams shut, hero). When to call the vet, a
-// sniffing game for indoor days, the Rabbit treats pouch, a question, the logo end card.
+// sniffing and short training sessions for indoor days, fewer calories and no new foods, the Rabbit treats pouch, a teaser for the next episode, the logo end card.
 import * as G from '../../../cel/engine.js';
 import { PAL, MIYA } from '../../../cel/palette.js';
 import { loadPaper, drawPaper, drawTooth } from '../../../cel/paper.js';
@@ -26,6 +26,7 @@ function warp(t, from, to) {
 const toOld = (t) => warp(t, 0, 1);
 const MK = (name) => toOld(TL.marks[name]); // the animation second at which she says the word
 const FF = (old) => Math.round(warp(old, 1, 0) * FPS); // the film frame of an animation second: one-frame events key on it (D.fn)
+const MF = (name) => TL.marks[name]; // a word onset in film seconds
 let ctx, DPR = 1, LOGO;
 
 const RAB = CA.RABBIT.c, RABS = CA.RABBIT.shade, ACC = RAB; // the one product accent: Rabbit treats
@@ -60,6 +61,7 @@ const STEP = Array.from({ length: NF }, (_, f) => STEPO[oldFrame(f / FPS)]);
 const FQ = new Int32Array(NF), ID = new Int32Array(NF);
 { let last = 0, id = 0; for (let f = 0; f < NF; f++) { if (f > 0 && (STEP[f] !== STEP[f - 1] || f - last >= STEP[f])) { last = f; id++; } FQ[f] = last; ID[f] = id; } }
 function drawing(f) { return { fq: oldFrame(FQ[f] / FPS), id: ID[f], step: STEP[f] }; }
+const FT = (D) => FQ[Math.min(NF - 1, Math.max(0, D.fn))] / FPS; // film time of this drawing (on 2s / 3s like the rest)
 const bv = (D) => (D.step === 3 ? D.id % 3 : D.id % 4);
 
 export async function init(canvas, dpr) {
@@ -103,17 +105,11 @@ function headline(c, sc, v) {
   c.restore();
 }
 const headlineScale = (tq) => (tq < 2.55 ? 1 : G.K(tq, [[2.55, 1], [2.62, 1.05], [2.75, 0]]));
-function questionCard(c, tn, tq, v) {
-  if (tq < 48.0 + WH || tq >= XEND) return;
-  const sIn = G.K(tq, [[48.12, 0.82], [48.24, 1.05, 'out3'], [48.34, 1]]) * popOut(tq, XEND), QX = 500;
-  c.save(); c.translate(QX, 520); c.scale(sIn, sIn); c.translate(-QX, -520);
-  const P = G.resample(CA.roundRect(90, 380, 820, 290, 36), 6, true);
-  fillShape(c, P.map(([a, b]) => [a + 8, b + 10]), 'rgba(27,47,82,0.3)', { seed: 40 + v, amp: 1.4 });
-  fillShape(c, P, PAL.hi, { seed: 41 + v, amp: 1.6 }); inkLoop(c, P, { seed: 42 + v, w: 4, amp: 1.6 });
-  c.textBaseline = 'alphabetic'; c.textAlign = 'center';
-  c.font = '600 64px "Fraunces"'; c.fillStyle = PAL.navy; c.fillText("What's your dog's", QX, 505);
-  c.font = 'italic 600 64px "Fraunces"'; c.fillStyle = PAL.orange; c.fillText('favourite indoor game?', QX, 590 + (v % 2 ? 1 : 0));
-  c.restore();
+function teaser(c, tn, v) { // the next episode: NEXT EPISODE, TIRE YOUR DOG OUT AT HOME, STAY TUNED (film time; ends at the wipe)
+  const xe = warp(XEND, 1, 0);
+  sticker(c, 'NEXT EPISODE', 540, 470, tn, MF('next'), xe, v, { size: 50, rot: -0.04, seed: 4901 });
+  sticker(c, 'TIRE YOUR DOG OUT AT HOME', 540, 580, tn, MF('next') + 0.5, xe, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4902 });
+  sticker(c, 'STAY TUNED', 540, 690, tn, MF('tuned'), xe, v, { size: 44, fill: RAB, color: PAL.navy, rot: -0.03, seed: 4903 });
 }
 const isInside = (tq) => tq >= 6.5 && tq < 14.0;
 function overlays(c, tn, tq, v) {
@@ -126,7 +122,7 @@ function overlays(c, tn, tq, v) {
     CA.pill(c, txt, 540, 330, { size: 40, fill: navy ? RAB : PAL.orange, color: navy ? PAL.navy : PAL.hi, scale: popK(tn, t0) * popOut(tn, t1), seed: 21, rot: -0.02 }, v);
   });
   headline(c, headlineScale(tq), v);
-  questionCard(c, tn, tq, v);
+  teaser(c, tn, v);
   CAPS.forEach(([a, b, words, on], i) => CA.caption(c, words, CAP_X, CAP_Y, tn, a, b, v, { cont: i > 0 && CAPS[i - 1][1] === a, hold: i < CAPS.length - 1 && CAPS[i + 1][0] === b, on }));
 }
 
@@ -233,27 +229,29 @@ function shotSigns(c, t, f, D) {
 function shotRisk(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(4);
   stage(c, v, tq, 22.0, end, { dz: 0.06 });
-  const look = ['flat', 'older', 'heart', 'most'].filter((m) => tq >= MK(m) - 0.05).length; // she turns to each card as it lands
-  const HP = [[-8, 30, -6], [-14, 50, 4], [-4, 60, -8], [-16, 45, 6], [-6, 70, 0]][look];
-  drawMiya(c, pose('sit', { head: { pitch: HP[0], yaw: HP[1], roll: HP[2] }, face: { eyes: 'open', mouth: 'closed', brow: look >= 4 ? -0.4 : 0.2 }, ears: { swing: D.id % 2 ? 4 : -4 } }), { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3300, accent: ACC });
+  const look = ['flat', 'most', 'narrow', 'older', 'heart'].filter((m) => tq >= MK(m) - 0.05).length; // she turns to each card as it lands
+  const HP = [[-8, 30, -6], [-14, 50, 4], [-6, 65, 0], [-4, 60, -8], [-16, 45, 6], [-6, 70, 0]][look];
+  drawMiya(c, pose('sit', { head: { pitch: HP[0], yaw: HP[1], roll: HP[2] }, face: { eyes: 'open', mouth: 'closed', brow: look >= 2 ? -0.4 : 0.2 }, ears: { swing: D.id % 2 ? 4 : -4 } }), { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3300, accent: ACC });
   c.restore();
-  sticker(c, 'FLAT-FACED BREEDS', 700, 520, tq, MK('flat'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4301 });
-  sticker(c, 'OLDER DOGS', 740, 640, tq, MK('older'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4302 });
-  sticker(c, 'HEART OR LUNG PROBLEMS', 650, 760, tq, MK('heart'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4303 });
-  sticker(c, 'FEEL IT MOST', 700, 900, tq, MK('most'), end, v, { size: 50, rot: -0.03, seed: 4304 });
+  sticker(c, 'FLAT-FACED BREEDS', 700, 480, tq, MK('flat'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4301 });
+  sticker(c, 'FEEL IT MOST', 700, 590, tq, MK('most'), end, v, { size: 50, rot: -0.03, seed: 4304 });
+  sticker(c, 'NARROW AIRWAYS', 720, 700, tq, MK('narrow'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4305 });
+  sticker(c, 'OLDER DOGS', 740, 810, tq, MK('older'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4302 });
+  sticker(c, 'HEART OR LUNG PROBLEMS', 650, 920, tq, MK('heart'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4303 });
 }
 // what helps: short toilet walks (the lead), a full water bowl
 function shotTips(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(5);
   stage(c, v, tq, 26.0, end, { dz: 0.06 });
-  const happy = tq >= MK('water');
-  drawMiya(c, pose(happy ? 'wag' : 'sit', happy ? { tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 }, head: { pitch: 0, yaw: 30, roll: 0 } } : { head: { pitch: -6, yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.3 } }),
-    { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3400, accent: ACC });
+  const hard = tq >= MK('harder');
+  drawMiya(c, pose(hard ? 'stand' : 'sit', hard ? { head: { pitch: 4 + (D.id % 2 ? 3 : 0), yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.4 } } : { head: { pitch: -6, yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.3 } }),
+    { x: 260, y: GROUND, s: 1.35 * (hard ? 1 + 0.012 * (D.id % 2) : 1), view: 30, v, seed: 3400, accent: ACC });
+  if (hard) for (let k = 0; k < 2; k++) { const u = ((tq - MK('harder')) * 3 + k * 0.5) % 1; c.save(); c.globalAlpha = 1 - u; inkStroke(c, [[470 + 40 * u, 900 + k * 26], [510 + 60 * u, 896 + k * 26]], { seed: 3480 + k + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.navyLight }); c.restore(); } // fast breaths
+  if (tq >= MK('morehaze') - 0.2) for (let k = 0; k < 3; k++) { const u = clamp((tq - MK('morehaze') + 0.2) * 0.6 - k * 0.15); if (u > 0) CA.wisp(c, lerp(760, 470, E.out2(u)), 860 + k * 40 - 30 * u, 34 - 12 * u, 3490 + k * 7, v, u > 0.85 ? 2 : 0); } // haze drawn in towards her nose
   c.restore();
   popAt(c, 740, 560, popK(tq, MK('walks')), () => CA.lead(c, 740, 560, 1.0, 3450, v));
   sticker(c, 'SHORT TOILET TRIPS', 740, 760, tq, MK('toilet'), end, v, { size: 34, rot: -0.04, seed: 4401 });
-  popAt(c, 740, 960, popK(tq, MK('water')), () => { CA.bowl(c, 740, 980, 1.1, 3460, v, 'water'); CA.drop(c, 740, 870, 0.45, 3465, v); });
-  sticker(c, 'WATER BOWL FULL', 740, 1110, tq, MK('water') + 0.1, end, v, { size: 34, rot: 0.04, seed: 4402 });
+  sticker(c, 'RUNNING PULLS IN MORE HAZE', 620, 1110, tq, MK('harder'), end, v, { size: 32, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4402 });
 }
 // the big one (hero): the window is open, haze drifts in; on "Shut" the pane slams (1-frame smear, impact frames), the
 // wisps inside break up, the aircon starts, Miya gets up and wags
@@ -301,21 +299,24 @@ function shotVet(c, t, f, D) {
   sticker(c, 'CALL YOUR VET', 640, 720, tq, MK('callvet'), end, v, { size: 56, rot: -0.03, seed: 4602 });
 }
 // stuck inside: tiny treat bits hidden round the flat, Miya sniffs from one to the next
-const BITS = [[560, GROUND - 6], [700, GROUND - 4], [860, GROUND - 6], [640, 1010], [900, 960]];
+const BITS = [[560, GROUND - 6], [700, GROUND - 4], [860, GROUND - 6], [660, 740], [900, 690]];
 function shotGame(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(8);
   stage(c, v, tq, 40.0, end, { dz: 0.06 });
   // a low shelf and a cushion to hide bits on
-  CA.celMass(c, G.resample([[580, 1030], [960, 1030], [960, 1060], [580, 1060]], 5, true), PAL.navyLight, PAL.navy, 3700, v, { w: 4, sh: 6 });
-  CA.celMass(c, G.resample(G.spline([[820, 990], [980, 980], [1000, 1010], [820, 1020]], true, 4), 4, true), RAB, RABS, 3705, v, { w: 4, sh: 6 });
-  const th = MK('hide'), ts = MK('sniffing');
+  CA.celMass(c, G.resample([[580, 760], [960, 760], [960, 790], [580, 790]], 5, true), PAL.navyLight, PAL.navy, 3700, v, { w: 4, sh: 6 }); // a wall shelf, clear of her head
+  for (const bx of [640, 900]) inkStroke(c, [[bx, 790], [bx, 830], [bx + 30, 790]], { seed: 3702 + bx + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.navy }); // brackets
+  CA.celMass(c, G.resample(G.spline([[820, 720], [980, 710], [1000, 740], [820, 750]], true, 4), 4, true), RAB, RABS, 3705, v, { w: 4, sh: 6 });
+  const th = MK('hide'), ts = MK('hide') + 0.6, tr = MK('training');
   BITS.forEach(([x, y], k) => { const t0 = th + 0.25 * k, eaten = tq > ts + 0.4 + k * 0.5 && k < 3; if (tq >= t0 && !eaten) popAt(c, x, y, popK(tq, t0, 0.25), () => CA.bit(c, x, y, 1.3, 3710 + k, v)); });
-  const walk = E.io2(inv(ts - 0.4, ts + 1.6, tq)), mx = lerp(300, 560, walk);
-  drawMiya(c, pose('lookDown', { face: { eyes: 'open', mouth: 'closed', brow: 0.3 }, tail: { a0: 104 + (D.id % 2 ? 14 : -14), curl: -26 } }), { x: mx, y: GROUND, s: 1.35, view: 15, v, seed: 3750, accent: ACC });
-  if (tq >= ts - 0.4) for (let k = 0; k < 3; k++) { const a = -0.3 + k * 0.35, r0 = 40 + 8 * (D.id % 2); inkStroke(c, [[mx + 200 + Math.cos(a) * r0, GROUND - 40 + Math.sin(a) * r0], [mx + 200 + Math.cos(a) * (r0 + 22), GROUND - 40 + Math.sin(a) * (r0 + 22)]], { seed: 3760 + k + v, w: 4, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.ink }); }
+  const walk = E.io2(inv(ts - 0.4, ts + 1.6, tq)), mx = lerp(300, 560, walk), sitc = tq >= tr - 0.1;
+  if (!sitc) drawMiya(c, pose('lookDown', { face: { eyes: 'open', mouth: 'closed', brow: 0.3 }, tail: { a0: 104 + (D.id % 2 ? 14 : -14), curl: -26 } }), { x: mx, y: GROUND, s: 1.35, view: 15, v, seed: 3750, accent: ACC });
+  else drawMiya(c, pose('sit', { head: { pitch: 10, yaw: 40, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.6 }, tail: { a0: 188 + (D.id % 2 ? 8 : -8), curl: 18 } }), { x: mx, y: GROUND, s: 1.35, view: 30, v, seed: 3755, accent: ACC }); // sits for a cue
+  if (!sitc && tq >= ts - 0.4) for (let k = 0; k < 3; k++) { const a = -0.3 + k * 0.35, r0 = 40 + 8 * (D.id % 2); inkStroke(c, [[mx + 200 + Math.cos(a) * r0, GROUND - 40 + Math.sin(a) * r0], [mx + 200 + Math.cos(a) * (r0 + 22), GROUND - 40 + Math.sin(a) * (r0 + 22)]], { seed: 3760 + k + v, w: 4, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.ink }); }
   c.restore();
-  sticker(c, 'SNIFFING GAMES', 600, 600, tq, ts, end, v, { size: 46, rot: -0.04, seed: 4701 });
-  if (tq >= MK('brain')) { c.save(); c.font = '700 64px "Caveat"'; c.fillStyle = PAL.orange; c.rotate(-0.05); c.fillText('busy brain, tired dog', 260, 760 + (v % 2)); c.restore(); }
+  sticker(c, 'BRAIN WORKOUT', 600, 470, tq, MK('workout'), end, v, { size: 40, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4702 });
+  sticker(c, 'HIDE TINY TREATS', 600, 580, tq, th, end, v, { size: 44, rot: -0.04, seed: 4701 });
+  sticker(c, 'SHORT TRAINING SESSIONS', 600, 690, tq, tr, end, v, { size: 36, fill: RAB, color: PAL.navy, rot: 0.03, seed: 4703 });
 }
 // the product moment: the Rabbit pouch lands; tiny pieces break off; Miya, happy
 function shotPouch(c, t, f, D) {
@@ -331,13 +332,17 @@ function shotPouch(c, t, f, D) {
     if (k >= 0 && k < 12) { const u = k / 12; for (const sd of [-1, 1]) for (let j = 0; j < 3; j++) { const P2 = circlePts(TX + sd * (170 + j * 30 + 70 * u), GROUND - 10 - j * 14 - 30 * u, (18 - 4 * j) * (1 - 0.6 * u), 14);
       c.save(); c.globalAlpha = 1 - u; fillShape(c, P2, PAL.hi, { seed: 920 + j, amp: 1 }); inkLoop(c, P2, { seed: 923 + j + v, w: 3, amp: 1 }); c.restore(); } }
   }
-  const tp = MK('pieces');
-  if (tq >= tp) for (let j = 0; j < 5; j++) { const t0 = tp + j * 0.08; if (tq >= t0) popAt(c, 560 + j * 34, GROUND - 6, popK(tq, t0, 0.2), () => CA.bit(c, 560 + j * 34, GROUND - 6, 0.9, 940 + j, v)); }
+  const tf = FT(D), tp = MF('small');
+  if (tf >= tp) for (let j = 0; j < 5; j++) { const t0 = tp + j * 0.08; if (tf >= t0) popAt(c, 450 + j * 30, GROUND - 6, popK(tf, t0, 0.2), () => CA.bit(c, 450 + j * 30, GROUND - 6, 0.9, 940 + j, v)); } // small treats
   const happy = tq >= POUCH + 0.15;
-  drawMiya(c, pose(happy ? 'wag' : 'stand', happy ? { tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 }, head: { pitch: 4, yaw: 30, roll: 0 } } : { head: { pitch: 4, yaw: 30, roll: 0 } }), { x: 250, y: GROUND, s: 1.3, view: 30, v, seed: 3800, accent: ACC });
+  drawMiya(c, pose(happy ? 'wag' : 'sit', happy ? { tail: { a0: 92 + (D.id % 2 ? 20 : -20), curl: -32 }, head: { pitch: 4, yaw: 30, roll: 0 } } : { head: { pitch: tf >= tp ? 14 : 2, yaw: 30 + (D.id % 4 < 2 ? 4 : 0), roll: 0 }, face: { eyes: 'open', mouth: 'closed', brow: 0.3 }, tail: { a0: 188 + (D.id % 2 ? 6 : -6), curl: 18 } }), { x: 250, y: GROUND, s: 1.3, view: 30, v, seed: 3800, accent: ACC });
   if (tq >= MK('nothing')) for (let i = 0; i < 3; i++) FX.drawTwinkle(c, [540, 900, 940][i], [760, 740, 920][i], 14 + 4 * Math.sin(tq * 4 + i), 930 + i + v, { fill: i === 1 ? PAL.orange : PAL.hi });
   c.restore();
-  sticker(c, '1 INGREDIENT', 560, 560, tq, MK('pieces') - 0.6, 48.0 - WH - 0.02, v, { size: 40, fill: RAB, color: PAL.navy, rot: -0.05, seed: 4801 });
+  const pre = MF('single') - 0.1; // the food stickers clear just before the pouch lands
+  sticker(c, 'FEWER CALORIES', 640, 480, tf, MF('fewer'), pre, v, { size: 40, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4802 });
+  sticker(c, 'KEEP TREATS SMALL', 640, 590, tf, MF('small'), pre, v, { size: 40, rot: 0.03, seed: 4803 });
+  sticker(c, 'NO NEW FOODS THIS WEEK', 620, 700, tf, MF('newfood'), pre, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4804 });
+  sticker(c, 'SINGLE INGREDIENT', 560, 560, tq, POUCH + 0.3, 48.0 - WH - 0.02, v, { size: 40, fill: RAB, color: PAL.navy, rot: -0.05, seed: 4801 });
 }
 // the question: Miya by the window (now shut), pawRaise
 function shotQuestion(c, t, f, D) {

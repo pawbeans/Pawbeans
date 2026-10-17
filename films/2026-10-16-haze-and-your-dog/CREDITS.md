@@ -19,8 +19,21 @@ cel style (no logo on it).
 | Sniffing games keep their brain busy | AKC, scent work / nose games as mental stimulation (https://www.akc.org/sports/akc-scent-work/). *Light claim; read at build.* |
 | Our single-ingredient treats break into tiny pieces. Nothing added, nothing hidden. | BEANS brand copy (beans.sg: single-ingredient freeze-dried treats; "Nothing added. Nothing hidden.") |
 
+## Script v2 lines (owner, 2026-10-17; checked by web search that day)
+
+| Line | Source |
+|---|---|
+| Flat-faced breeds feel it most, because their airways are already narrow | VetStrategy (shortened airways make breathing harder in smoke): https://www.vetstrategy.com/?p=27085 ; Ethos Veterinary Health (narrow nostrils, long soft palate, narrowed trachea): https://www.ethosvet.com/blog-post/poor-air-quality-and-pet-safety ; WPXI vets: https://www.wpxi.com/news/local/wildfire-smoke-lingers-region-veterinarians-warn-adverse-effects-pets/YJNW2CV7VVGAVAQ4XR5S6LBEHE/ |
+| So do older dogs, and dogs with heart or lung problems | AVMA (above); KDVR vets: https://kdvr.com/news/local/smoky-skies-impact-not-only-people-but-also-pets-experts-weigh-in/amp/ |
+| Running makes them breathe harder, and pull in more haze | Zuku Learning (active dogs breathe more deeply and inhale more smoke): https://www.zukulearning.com/smoke-inhalation-in-pets-during-wildfire-season-what-every-veterinarian-should-know/ ; AVMA (avoid intense exercise) |
+| Hide tiny treats, or try a few short training sessions | AKC, indoor games: https://www.akc.org/expert-advice/training/indoor-games-with-dog/ ; AKC, daily indoor training: https://www.akc.org/expert-advice/training/keep-up-with-your-dogs-training-through-the-winter-2/ |
+| With less exercise, they need fewer calories, so keep treats small | AKC, treats count in the daily calories: https://www.akc.org/expert-advice/health/how-many-treats-can-dog-have/ ; VCA, inactive adult dogs: https://vcacanada.com/know-your-pet/nutrition-for-inactive-adult-dogs |
+| It's not the week to try a new food. Stick with what suits them | Advice, not a health claim; AKC on switching foods slowly (sudden changes can upset the stomach). |
+| Single-ingredient treats keep it simple. Nothing added, nothing hidden. | BEANS brand copy (beans.sg) |
+| Next time: easy ways to tire your dog out at home | The next episode (IDEAS D36). |
+
 ## Sound
-- Voiceover: **Kokoro-82M (Apache-2.0), local**, because this session has no `ELEVENLABS_API_KEY`. Re-voice with
+- Voiceover v3: **ElevenLabs "Jessica"** (eleven_multilingual_v2, speed 0.9), owner's key for this session only (never committed). v1/v2 used Kokoro-82M (Apache-2.0), local, because that session had no `ELEVENLABS_API_KEY`. Re-voice with
   ElevenLabs "Jessica" (`ELEVENLABS_API_KEY=… python vo.py`) before the render if the key is available; captions and
   timing re-cut automatically. Word timing by faster-whisper (MIT) with Whisper small.en (OpenAI, MIT).
 - Music: an original instrumental made for this film in `audio.py` with mgaudio (mg-styles-15, MIT): nylon guitar and

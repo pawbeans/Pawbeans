@@ -3,96 +3,120 @@
   "id": "hook",
   "at": 0.05,
   "file": "out/vo/hook.wav",
-  "dur": 1.548
+  "dur": 1.192
  },
  {
   "id": "news",
   "at": 3.2,
   "file": "out/vo/news.wav",
-  "dur": 3.464
+  "dur": 5.216
  },
  {
   "id": "tiny",
-  "at": 7.964,
+  "at": 9.716,
   "file": "out/vo/tiny.wav",
-  "dur": 1.377
+  "dur": 1.155
  },
  {
   "id": "deep",
-  "at": 9.741,
+  "at": 11.271,
   "file": "out/vo/deep.wav",
-  "dur": 3.039
- },
- {
-  "id": "why",
-  "at": 13.18,
-  "file": "out/vo/why.wav",
-  "dur": 3.596
- },
- {
-  "id": "sign1",
-  "at": 18.076,
-  "file": "out/vo/sign1.wav",
-  "dur": 3.375
- },
- {
-  "id": "sign2",
-  "at": 21.851,
-  "file": "out/vo/sign2.wav",
-  "dur": 1.145
- },
- {
-  "id": "sign3",
-  "at": 23.395,
-  "file": "out/vo/sign3.wav",
-  "dur": 4.397
- },
- {
-  "id": "risk",
-  "at": 28.843,
-  "file": "out/vo/risk.wav",
-  "dur": 5.594
- },
- {
-  "id": "walks",
-  "at": 35.487,
-  "file": "out/vo/walks.wav",
-  "dur": 2.908
- },
- {
-  "id": "water",
-  "at": 38.795,
-  "file": "out/vo/water.wav",
-  "dur": 1.531
- },
- {
-  "id": "big",
-  "at": 41.376,
-  "file": "out/vo/big.wav",
   "dur": 5.452
  },
  {
+  "id": "why",
+  "at": 17.123,
+  "file": "out/vo/why.wav",
+  "dur": 2.772
+ },
+ {
+  "id": "sign1",
+  "at": 21.195,
+  "file": "out/vo/sign1.wav",
+  "dur": 2.988
+ },
+ {
+  "id": "sign2",
+  "at": 24.583,
+  "file": "out/vo/sign2.wav",
+  "dur": 2.132
+ },
+ {
+  "id": "sign3",
+  "at": 27.115,
+  "file": "out/vo/sign3.wav",
+  "dur": 2.185
+ },
+ {
+  "id": "risk1",
+  "at": 30.35,
+  "file": "out/vo/risk1.wav",
+  "dur": 3.942
+ },
+ {
+  "id": "risk2",
+  "at": 34.692,
+  "file": "out/vo/risk2.wav",
+  "dur": 3.249
+ },
+ {
+  "id": "walks",
+  "at": 38.991,
+  "file": "out/vo/walks.wav",
+  "dur": 2.625
+ },
+ {
+  "id": "run",
+  "at": 42.016,
+  "file": "out/vo/run.wav",
+  "dur": 2.833
+ },
+ {
+  "id": "big",
+  "at": 45.899,
+  "file": "out/vo/big.wav",
+  "dur": 5.983
+ },
+ {
   "id": "vet",
-  "at": 47.878,
+  "at": 52.932,
   "file": "out/vo/vet.wav",
-  "dur": 2.803
+  "dur": 3.104
  },
  {
   "id": "game",
-  "at": 51.731,
+  "at": 57.086,
   "file": "out/vo/game.wav",
-  "dur": 6.669
+  "dur": 2.597
+ },
+ {
+  "id": "game2",
+  "at": 60.083,
+  "file": "out/vo/game2.wav",
+  "dur": 3.952
+ },
+ {
+  "id": "food",
+  "at": 65.086,
+  "file": "out/vo/food.wav",
+  "dur": 3.925
+ },
+ {
+  "id": "food2",
+  "at": 69.411,
+  "file": "out/vo/food2.wav",
+  "dur": 3.838
  },
  {
   "id": "pouch",
-  "at": 59.449,
+  "at": 73.649,
   "file": "out/vo/pouch.wav",
-  "dur": 5.654
+  "dur": 4.353
  },
  {
   "id": "q",
-  "at": 66.154,
+  "at": 79.052,
   "file": "out/vo/q.wav",
-  "dur": 1.875
+  "dur": 6.342
  }
 ]
