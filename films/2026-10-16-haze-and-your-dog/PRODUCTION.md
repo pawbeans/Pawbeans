@@ -71,3 +71,9 @@ See `CREDITS.md` (NEA readings via news; US EPA PM basics; AVMA wildfire smoke a
 - 2026-10-16 ~23:05 SGT: built in the pitch session after the owner asked for a haze film live. Boards checked:
   fixes applied to the airway framing (nose was off-frame under the section pill), the lung highlight (was a muddy
   orange wash, now an orange ring), the slam starburst position (now where the pane lands) and Miya's crop in the hero.
+
+## Script v2 (draft, 2026-10-17, awaiting the owner)
+Owner note (2026-10-17): with eyes shut the v1 voice is points after points; make it one continuous story, explain how
+the haze affects the dog before listing signs, end on keeping a dog busy indoors (sniffing, short training), fewer
+calories, no new foods this week, and a subtle single-ingredient mention. Re-voice with ElevenLabs Jessica once approved.
+See the playbook §2.12. Text is in the owner message of that session; built into vo.py `SCRIPT` on approval.

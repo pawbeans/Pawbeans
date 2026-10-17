@@ -58,6 +58,20 @@ The algorithm rewards watch time and rewatches. Every film is built backwards fr
       or labels something, it is not finished.
     Depth beats brevity: lengths are guides, not rules (owner, 2026-10-16). Any film may run up to **90 s** when the
     extra time is real information, not padding.
+12. **It must work with your eyes shut: one continuous story, not points after points (owner, 2026-10-17, on the
+    haze film).** Listen to the voice alone, no picture, no captions: it should tell the whole story the way a friend
+    would. So:
+    - **Bridge every section.** Each one starts by saying why we're moving on ("So that's where it shows up…",
+      "Some dogs feel it more than others…", "So outside…", "And at home…"). Never jump straight into the next list.
+    - **Say what a list is before you list it.** "Here's how it affects your dog" comes before the signs; the signs
+      are never just read out.
+    - **Give the reason with the advice** ("Running makes them breathe harder, and pull in more haze."), in the same
+      breath, not on a label.
+    - **Stickers and labels repeat the voice; they never carry information the voice doesn't say.**
+    - **The product comes in as the natural answer to the last point** (less exercise → small treats → no new foods
+      this week → single-ingredient keeps it simple), never as a pitch. Inside Your Dog may name "single-ingredient
+      treats" and the brand line; it doesn't list our proteins or sell.
+    - Read the whole script aloud as one paragraph before building. If a line only makes sense with the picture, rewrite it.
 
 ## 3. Hook formulas (pick one per film, rotate them)
 
