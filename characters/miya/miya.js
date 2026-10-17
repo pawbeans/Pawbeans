@@ -148,6 +148,13 @@ POSES.lookBack = { // NEW (Dog Decoded, 2026-10-15): standing mid-walk, head tur
     HN: [[-44, 84], [-80, 40], [-80, 18]], HF: [[-50, 84], [-70, 40], [-60, 18]] },
   tail: { a0: 104, curl: -28 }, ears: { swing: -10 }, face: { eyes: 'open', mouth: 'smile', brow: 0.4 },
 };
+POSES.playBow = { // NEW (Dog Decoded, 2026-10-17): the play bow: chest and elbows down on the floor, front legs stretched
+  // forward, rear up on straight hind legs, tail high, head up and happy ("let's play"). Draw near side view (view ≈ 15).
+  ...POSES.stand, hip: [-70, 140], pitch: -28, neck: { a: 40, len: 46 }, head: { pitch: 14, yaw: 10, roll: 0 },
+  legs: { FN: [[40, 26], [84, 18], [104, 18]], FF: [[32, 28], [76, 19], [96, 18]],
+    HN: [[-50, 88], [-80, 42], [-74, 18]], HF: [[-60, 88], [-90, 42], [-86, 18]] },
+  tail: { a0: 70, curl: -30 }, ears: { swing: 10 }, face: { eyes: 'happy', mouth: 'tongue', brow: 0.5 }, wag: true,
+};
 
 // pose('sit', overrides) → a pose object (deep-merged for head / face / tail / legs / ears)
 export function pose(name, o = {}) {

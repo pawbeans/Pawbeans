@@ -193,7 +193,7 @@ length · for Inside Your Dog: product tie-in + accent.
 - Hook: "Your dog's sleeping position says a lot." Side sleeper (relaxed, secure) → donut curl (cosy, a little guarded) →
   superman flat (ready to spring into play) → belly up (total trust, and cooling off). Ending: "Which one is yours?"
 
-**D36 · Tire your dog out without leaving the flat** (owner's choice for 2026-10-17; teased at the end of the haze film) · 30–45 s
+**D36 · Tire your dog out without leaving the flat** (owner's choice for 2026-10-17; teased at the end of the haze film) · 30–45 s · **made 2026-10-17** (`films/2026-10-17-tire-your-dog-out`)
 - Hook: "Stuck inside? Here's how to tire your dog out." A dog needs a workout for the body and the brain, and on haze
   (or rain) days you can do both at home. Story, voice first (playbook §2.12): why a bored dog gets restless (sniffing
   and problem-solving are hard work for a dog's brain) → then the owner's list (2026-10-17), each one with what it is,

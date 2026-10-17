@@ -4,7 +4,7 @@ import { PAL, MIYA } from '../../../cel/palette.js';
 import { loadPaper, drawPaper, drawTooth } from '../../../cel/paper.js';
 import { drawMiya, pose } from '../miya.js';
 
-export const W = 2400, H = 2450;
+export const W = 2400, H = 2850;
 let ctx, DPR = 1;
 
 export async function init(canvas, dpr) {
@@ -35,6 +35,7 @@ const POSE_ROW = [
   { label: 'CARRY · NEW', name: 'carry', x: 850, y: 2300, view: 15, note: 'new 2026-10-15: prop at the mouth', isNew: true },
   { label: 'LOOK BACK · NEW', name: 'lookBack', x: 1330, y: 2300, view: 10, note: 'new 2026-10-15, awaiting approval', isNew: true },
   { label: 'BROW RAISE (FACE) · NEW', name: 'sit', x: 1850, y: 2300, view: 70, face: { eyes: 'open', mouth: 'closed', lift: 1 }, head: { pitch: 10, yaw: 0, roll: 0 }, note: 'new 2026-10-15: face.lift 0..1', isNew: true },
+  { label: 'PLAY BOW · NEW', name: 'playBow', x: 330, y: 2720, view: 15, note: 'new 2026-10-17: "let\'s play" (tug)', isNew: true },
 ];
 
 function pencilLine(c, x0, y0, x1, y1, seed, w = 2) {

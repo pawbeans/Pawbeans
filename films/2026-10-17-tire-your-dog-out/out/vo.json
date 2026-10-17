@@ -1,0 +1,158 @@
+[
+ {
+  "id": "hook",
+  "at": 0.05,
+  "file": "out/vo/hook.wav",
+  "dur": 3.219
+ },
+ {
+  "id": "set1",
+  "at": 4.625,
+  "file": "out/vo/set1.wav",
+  "dur": 2.279
+ },
+ {
+  "id": "set2",
+  "at": 7.304,
+  "file": "out/vo/set2.wav",
+  "dur": 4.426
+ },
+ {
+  "id": "set3",
+  "at": 12.131,
+  "file": "out/vo/set3.wav",
+  "dur": 2.476
+ },
+ {
+  "id": "five",
+  "at": 15.957,
+  "file": "out/vo/five.wav",
+  "dur": 2.043
+ },
+ {
+  "id": "five2",
+  "at": 18.399,
+  "file": "out/vo/five2.wav",
+  "dur": 3.501
+ },
+ {
+  "id": "five3",
+  "at": 22.3,
+  "file": "out/vo/five3.wav",
+  "dur": 1.323
+ },
+ {
+  "id": "four",
+  "at": 24.974,
+  "file": "out/vo/four.wav",
+  "dur": 1.96
+ },
+ {
+  "id": "four2",
+  "at": 27.334,
+  "file": "out/vo/four2.wav",
+  "dur": 2.652
+ },
+ {
+  "id": "four3",
+  "at": 30.386,
+  "file": "out/vo/four3.wav",
+  "dur": 1.53
+ },
+ {
+  "id": "three",
+  "at": 33.274,
+  "file": "out/vo/three.wav",
+  "dur": 2.296
+ },
+ {
+  "id": "three2",
+  "at": 35.97,
+  "file": "out/vo/three2.wav",
+  "dur": 2.376
+ },
+ {
+  "id": "three3",
+  "at": 38.746,
+  "file": "out/vo/three3.wav",
+  "dur": 2.32
+ },
+ {
+  "id": "two",
+  "at": 42.474,
+  "file": "out/vo/two.wav",
+  "dur": 1.763
+ },
+ {
+  "id": "two2",
+  "at": 44.637,
+  "file": "out/vo/two2.wav",
+  "dur": 4.126
+ },
+ {
+  "id": "two3",
+  "at": 49.163,
+  "file": "out/vo/two3.wav",
+  "dur": 2.607
+ },
+ {
+  "id": "safe",
+  "at": 53.12,
+  "file": "out/vo/safe.wav",
+  "dur": 5.49
+ },
+ {
+  "id": "safe2",
+  "at": 59.009,
+  "file": "out/vo/safe2.wav",
+  "dur": 2.346
+ },
+ {
+  "id": "tease",
+  "at": 62.72,
+  "file": "out/vo/tease.wav",
+  "dur": 2.082
+ },
+ {
+  "id": "one",
+  "at": 66.152,
+  "file": "out/vo/one.wav",
+  "dur": 1.586
+ },
+ {
+  "id": "one2",
+  "at": 68.138,
+  "file": "out/vo/one2.wav",
+  "dur": 2.328
+ },
+ {
+  "id": "one3",
+  "at": 70.866,
+  "file": "out/vo/one3.wav",
+  "dur": 1.356
+ },
+ {
+  "id": "one4",
+  "at": 72.622,
+  "file": "out/vo/one4.wav",
+  "dur": 3.886
+ },
+ {
+  "id": "bonus",
+  "at": 77.952,
+  "file": "out/vo/bonus.wav",
+  "dur": 4.423
+ },
+ {
+  "id": "payoff",
+  "at": 82.775,
+  "file": "out/vo/payoff.wav",
+  "dur": 2.148
+ },
+ {
+  "id": "q",
+  "at": 86.273,
+  "file": "out/vo/q.wav",
+  "dur": 3.369
+ }
+]
