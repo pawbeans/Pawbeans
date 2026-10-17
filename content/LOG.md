@@ -1,7 +1,7 @@
 # Film log
 
 Newest first. The pitch run reads the top row to decide the next series (the other one); the build run adds a row when
-it starts a film; the morning run fills in the result. Next up (2026-10-17 night): **Dog Decoded: D36 Tire your dog out without leaving the flat** (owner's choice, teased at the end of the haze film). The owner can add performance numbers after posting.
+it starts a film; the morning run fills in the result. Next up (2026-10-17 night): **Dog Decoded: D36 Tire your dog out without leaving the flat** (owner's choice, teased at the end of the haze film). Then (2026-10-18 night): **Dog Decoded: D37 Days left together** (owner's idea, pinned). The owner can add performance numbers after posting.
 
 | Date | Series | Idea | Film folder | Status | Hook formula | Length | Views | Avg watch % | Shares | Saves | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|

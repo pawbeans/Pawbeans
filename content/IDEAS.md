@@ -12,6 +12,7 @@ length · for Inside Your Dog: product tie-in + accent.
 | Date (2026–27) | Series | Idea | Why |
 |---|---|---|---|
 | **17 Oct** | Dog Decoded | **D36 Tire your dog out without leaving the flat** | **Owner's choice (2026-10-17): the haze film ends on "Stay tuned" for this episode. Build it tonight; pitch it as the pick, no list needed unless the owner asks.** |
+| **18 Oct** | Dog Decoded | **D37 Days left together** | **Owner's idea (2026-10-17), from a reel that travelled ("What if dogs knew how short their lives were", @whatif.sims: 93.5K likes, 20.7K shares, 8K saves). Pinned after D36; overrides the rotation for this date only.** |
 | 29 Oct | Dog Decoded | D7 Chocolate, grapes and the Halloween bowl | Halloween sweets in the house |
 | 5 Nov | Inside Your Dog | B9 Why fireworks feel like the end of the world (Calming) | Deepavali fireworks (8 Nov 2026, *verify*) |
 | 22 Dec | Dog Decoded | D8 The Christmas table: what's safe | Christmas leftovers |
@@ -194,14 +195,40 @@ length · for Inside Your Dog: product tie-in + accent.
 
 **D36 · Tire your dog out without leaving the flat** (owner's choice for 2026-10-17; teased at the end of the haze film) · 30–45 s
 - Hook: "Stuck inside? Here's how to tire your dog out." A dog needs a workout for the body and the brain, and on haze
-  (or rain) days you can do both at home. Story, voice first (playbook §2.12): why a bored dog gets restless → body:
-  stairs or hallway fetch, tug, a short game of chase → brain: find-it / sniffing games, a three-cup memory game,
-  a new trick in five-minute sessions → why brain work tires them out as much as a walk → the payoff: a happily
-  tired Miya asleep. Ending: "What's your dog's favourite indoor game?" then a loop back to the first frame.
+  (or rain) days you can do both at home. Story, voice first (playbook §2.12): why a bored dog gets restless (sniffing
+  and problem-solving are hard work for a dog's brain) → then the owner's list (2026-10-17), each one with what it is,
+  how to make it and why it works:
+  1. **Sniff mat**: scatter kibble or tiny treats in the fabric strips; nose work slows them down and calms them.
+  2. **Toilet-paper-roll puzzle**: treats inside an empty roll, ends folded in; they work it open.
+  3. **Towel roll ("burrito")**: treats laid on a towel, rolled up, they unroll it with nose and paws.
+  4. **Enrichment toys**: a stuffed (frozen) Kong-style toy or a lick mat; licking is soothing and takes time.
+  5. **Find it**: hide a treat while they wait, say "find it"; start easy, then hide it in the next room.
+  Plus a little body work (hallway fetch, tug) and short training sessions. Save the best for last (find it: the
+  game every dog can play, no kit needed). Payoff: a happily tired Miya asleep.
+- Safety lines (must be right): supervise cardboard and fabric games and take them away once they start shredding or
+  swallowing; size toys so they can't be swallowed; count the treats in the day's food. Ending: "What's your dog's favourite indoor game?" then a loop back to the first frame.
 - Dog Decoded rules: no BEANS, no product, no "single-ingredient" talk. Light sourcing for games; anything physical
   stays safe (no stairs for puppies or dogs with joint problems; keep it short in heat). Sources: *verify* AKC
   "Indoor games with your dog", AKC "Play the memory game", AKC trick training / short sessions.
 - Miya: sniff (lookDown), play bow ★ if missing, sit, sleep, curl.
+
+**D37 · Days left together** (owner's idea for 2026-10-18, after D36) · 25–35 s
+- Angle (from the owner's reference reel; our own words and pictures, never theirs): a counter on screen ticks down
+  "DAYS LEFT TOGETHER" while Miya's life plays out beside yours. Quiet, emotional, shareable; it makes people hug their
+  dog and send it to a friend. No preaching, no guilt, no product.
+- Beats (voice first, warm and quiet, short lines): the counter starts at about 4,000 days ("A dog's life is about
+  4,000 days. Yours is closer to 30,000.") → Miya waits at the door and her ears lift at the sound of your keys (she
+  knows your footsteps) → you have work, friends, plans, a whole world → "She has you." → the turn, so it ends warm,
+  not sad: what she'd want from her days (a walk somewhere new, five minutes on the floor with her, her name said
+  kindly) → the counter keeps ticking, then stops on today. Ending: "What will you do with today?" Loop: the counter
+  wraps back to the first frame.
+- Look: the counter in Oswald on a sticker strip at the top; one long tracking shot of Miya across "her years" (pup →
+  grey muzzle) on cream paper; a soft piano/harp score, no foley jokes. Miya: sit, lie, lookBack, wag, sleep; ★ an
+  older Miya (grey muzzle) would need owner sign-off on the model sheet.
+- Sources (*verify*): RVC VetCompass life expectancy (UK companion dogs 11.2 years, Teng et al. 2022, Scientific
+  Reports; breeds range to about 12.7) → 11 years ≈ 4,000 days; human life expectancy ≈ 80+ years ≈ 30,000 days
+  (Singapore DOS). "Knows your footsteps / car" is behaviour lore, framed as "can learn". No claim that dogs "wait a
+  quarter of their life".
 
 ## Inside Your Dog (BEANS: educational, subtle)
 
