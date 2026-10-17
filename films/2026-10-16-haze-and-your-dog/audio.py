@@ -63,8 +63,8 @@ SF(sfx.whoosh(1.4, 'air', peak=0.6), at=MK['tiny'] + 0.3, gain=-14)
 for w in ('nose', 'lungs', 'eyes', 'nose2', 'breathing'): SF(sfx.pop('soft', 1.0), at=MK[w] - 0.03, gain=-13)
 SF(HARP.play('D6', 1.2, 0.4, release=0.6).loud(-18), at=MK['lungs'], gain=-15 + SFX_LIFT)
 # signs, risk, tips: a pop on each sticker; a soft breath-puff on "sneezing"
-for w in ('watery', 'sneezing', 'runny', 'coughing', 'fast', 'tired', 'flat', 'narrow', 'older', 'heart', 'walks', 'toilet', 'harder', 'struggling',
-          'workout', 'hide', 'training', 'fewer', 'small', 'newfood', 'next', 'tuned'):
+for w in ('watery', 'sneezing', 'runny', 'coughing', 'fast', 'tired', 'flat', 'narrow', 'older', 'heart', 'walks', 'toilet', 'harder',
+          'workout', 'hide', 'training', 'fewer', 'small', 'newfood', 'next', 'tuned', 'puppies', 'wipe', 'belly', 'gums', 'emergency'):
     SF(sfx.pop('soft', 1.0), at=MK[w] - 0.03, gain=-13)
 SF(sfx.whoosh(0.25, 'air', peak=0.3), at=MK['sneezing'], gain=-15)
 SF(sfx.pop('soft', 0.85), at=MK['most'] - 0.03, gain=-10)
@@ -77,6 +77,8 @@ for j, x in enumerate(['G5', 'B5', 'D6', 'G6']): SF(HARP.play(x, 1.2, 0.4, relea
 SF(sfx.whoosh(2.2, 'air', peak=0.2), at=MK['aircon'] - 0.1, gain=-19)
 SF(sfx.pop('soft', 1.0), at=MK['aircon'] - 0.03, gain=-13)
 SF(sfx.pop('soft', 0.9), at=MK['callvet'] - 0.03, gain=-10)
+# back home: the damp cloth rubs (soft paper rustles in time with it)
+for k in range(5): SF(sfx.paper('rustle', 0.3, seed=20 + k), at=MK['wipe'] + 0.1 + k * 0.7, gain=-17)
 # stuck inside: paws on the floor as she sniffs from bit to bit
 for k in range(8): SF(sfx.click('soft'), at=MK['hide'] + 0.3 + k * 0.2, gain=-18 - (k % 2))
 # the pouch lands: a soft thud, then a twinkle on "Nothing"

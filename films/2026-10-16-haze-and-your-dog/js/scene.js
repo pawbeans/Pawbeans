@@ -229,29 +229,38 @@ function shotSigns(c, t, f, D) {
 function shotRisk(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(4);
   stage(c, v, tq, 22.0, end, { dz: 0.06 });
-  const look = ['flat', 'most', 'narrow', 'older', 'heart'].filter((m) => tq >= MK(m) - 0.05).length; // she turns to each card as it lands
-  const HP = [[-8, 30, -6], [-14, 50, 4], [-6, 65, 0], [-4, 60, -8], [-16, 45, 6], [-6, 70, 0]][look];
+  const look = ['flat', 'most', 'narrow', 'puppies', 'older', 'heart'].filter((m) => tq >= MK(m) - 0.05).length; // she turns to each card as it lands
+  const HP = [[-8, 30, -6], [-14, 50, 4], [-6, 65, 0], [-10, 40, 6], [-4, 60, -8], [-16, 45, 6], [-6, 70, 0]][look];
   drawMiya(c, pose('sit', { head: { pitch: HP[0], yaw: HP[1], roll: HP[2] }, face: { eyes: 'open', mouth: 'closed', brow: look >= 2 ? -0.4 : 0.2 }, ears: { swing: D.id % 2 ? 4 : -4 } }), { x: 260, y: GROUND, s: 1.35, view: 30, v, seed: 3300, accent: ACC });
   c.restore();
   sticker(c, 'FLAT-FACED BREEDS', 700, 480, tq, MK('flat'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4301 });
   sticker(c, 'FEEL IT MOST', 700, 590, tq, MK('most'), end, v, { size: 50, rot: -0.03, seed: 4304 });
   sticker(c, 'NARROW AIRWAYS', 720, 700, tq, MK('narrow'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4305 });
-  sticker(c, 'OLDER DOGS', 740, 810, tq, MK('older'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4302 });
-  sticker(c, 'HEART OR LUNG PROBLEMS', 650, 920, tq, MK('heart'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4303 });
+  sticker(c, 'PUPPIES', 760, 800, tq, MK('puppies'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4306 });
+  sticker(c, 'OLDER DOGS', 740, 900, tq, MK('older'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.04, seed: 4302 });
+  sticker(c, 'HEART OR LUNG PROBLEMS', 650, 1000, tq, MK('heart'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.03, seed: 4303 });
 }
 // what helps: short toilet walks (the lead), a full water bowl
 function shotTips(c, t, f, D) {
   const v = bv(D), tq = D.fq / FPS, end = endOf(5);
   stage(c, v, tq, 26.0, end, { dz: 0.06 });
-  const hard = tq >= MK('harder');
-  drawMiya(c, pose(hard ? 'stand' : 'sit', hard ? { head: { pitch: 4 + (D.id % 2 ? 3 : 0), yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.4 } } : { head: { pitch: -6, yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'smile', brow: 0.3 } }),
+  const wiping = tq >= MK('wipe') - 0.1, hard = tq >= MK('harder') && !wiping, tf = FT(D);
+  drawMiya(c, pose(hard ? 'stand' : wiping ? 'stand' : 'sit', hard ? { head: { pitch: 4 + (D.id % 2 ? 3 : 0), yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.4 } } : { head: { pitch: wiping ? 2 : -6, yaw: 30, roll: 0 }, face: { eyes: wiping ? 'happy' : 'open', mouth: 'smile', brow: 0.3 } }),
     { x: 260, y: GROUND, s: 1.35 * (hard ? 1 + 0.012 * (D.id % 2) : 1), view: 30, v, seed: 3400, accent: ACC });
   if (hard) for (let k = 0; k < 2; k++) { const u = ((tq - MK('harder')) * 3 + k * 0.5) % 1; c.save(); c.globalAlpha = 1 - u; inkStroke(c, [[470 + 40 * u, 900 + k * 26], [510 + 60 * u, 896 + k * 26]], { seed: 3480 + k + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.navyLight }); c.restore(); } // fast breaths
-  if (tq >= MK('morehaze') - 0.2) for (let k = 0; k < 3; k++) { const u = clamp((tq - MK('morehaze') + 0.2) * 0.6 - k * 0.15); if (u > 0) CA.wisp(c, lerp(760, 470, E.out2(u)), 860 + k * 40 - 30 * u, 34 - 12 * u, 3490 + k * 7, v, u > 0.85 ? 2 : 0); } // haze drawn in towards her nose
+  if (tq >= MK('morehaze') - 0.2 && !wiping) for (let k = 0; k < 3; k++) { const u = clamp((tq - MK('morehaze') + 0.2) * 0.6 - k * 0.15); if (u > 0) CA.wisp(c, lerp(760, 470, E.out2(u)), 860 + k * 40 - 30 * u, 34 - 12 * u, 3490 + k * 7, v, u > 0.85 ? 2 : 0); } // haze drawn in towards her nose
+  if (wiping) { // a damp cloth rubs back and forth over her coat, then her front paws; dust drops off (film time: it keeps moving)
+    const onPaw = tf >= MF('lick') - 0.3, cx = (onPaw ? 300 : 210) + 34 * Math.sin((tf - MF('wipe')) * 9), cy = onPaw ? GROUND - 50 : GROUND - 250; // along her back, then her front paws
+    const P = G.resample(CA.roundRect(cx - 70, cy - 40, 140, 80, 18), 5, true);
+    CA.celMass(c, P, PAL.hi, '#E6D8BE', 3495, v, { w: 4, sh: 6 });
+    for (let k = 0; k < 3; k++) inkStroke(c, [[cx - 50, cy - 22 + k * 22], [cx + 50, cy - 18 + k * 22]], { seed: 3497 + k + v, w: 2.4, t0: 2, t1: 2, min: 0.4, amp: 0.6, heavy: 0, color: CA.RABBIT.shade });
+    for (let k = 0; k < 4; k++) { const u = ((tf - MF('wipe')) * 1.4 + k / 4) % 1; CA.speck(c, cx - 40 + k * 26, cy + 50 + 120 * u, 6, 3499 + k, v); }
+  }
   c.restore();
   popAt(c, 740, 560, popK(tq, MK('walks')), () => CA.lead(c, 740, 560, 1.0, 3450, v));
   sticker(c, 'SHORT TOILET TRIPS', 740, 760, tq, MK('toilet'), end, v, { size: 34, rot: -0.04, seed: 4401 });
-  sticker(c, 'RUNNING PULLS IN MORE HAZE', 620, 1110, tq, MK('harder'), end, v, { size: 32, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4402 });
+  sticker(c, 'WIPE PAWS AND COAT', 690, 860, tq, MK('wipe'), end, v, { size: 36, rot: -0.04, seed: 4403 });
+  sticker(c, 'RUNNING PULLS IN MORE HAZE', 690, 860, tq, MK('harder'), MK('wipe') - 0.05, v, { size: 30, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4402 });
 }
 // the big one (hero): the window is open, haze drifts in; on "Shut" the pane slams (1-frame smear, impact frames), the
 // wisps inside break up, the aircon starts, Miya gets up and wags
@@ -295,8 +304,10 @@ function shotVet(c, t, f, D) {
   drawMiya(c, pose('lie', { head: { pitch: -10 + (D.id % 2 ? 3 : 0), yaw: 30, roll: 0 }, face: { eyes: 'open', mouth: 'tongue', brow: -0.6 } }), { x: 250, y: GROUND, s: 1.3 * (1 + 0.012 * (D.id % 2)), view: 30, v, seed: 3600, accent: ACC });
   for (let k = 0; k < 2; k++) { const u = ((tq - 37) * 3 + k * 0.5) % 1; c.save(); c.globalAlpha = 1 - u; inkStroke(c, [[440 + 40 * u, 1110 + k * 26], [480 + 60 * u, 1106 + k * 26]], { seed: 3610 + k + v, w: 5, t0: 3, t1: 3, min: 0.4, amp: 0.8, heavy: 0, color: PAL.navyLight }); c.restore(); } // fast breaths
   c.restore();
-  sticker(c, 'STRUGGLING TO BREATHE?', 620, 560, tq, MK('struggling'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4601 });
-  sticker(c, 'CALL YOUR VET', 640, 720, tq, MK('callvet'), end, v, { size: 56, rot: -0.03, seed: 4602 });
+  sticker(c, 'BELLY HEAVING', 640, 470, tq, MK('belly'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: -0.04, seed: 4601 });
+  sticker(c, 'PALE OR BLUE GUMS', 640, 570, tq, MK('gums'), end, v, { size: 36, fill: PAL.hi, color: PAL.navy, rot: 0.03, seed: 4603 });
+  sticker(c, 'EMERGENCY', 640, 680, tq, MK('emergency'), end, v, { size: 44, fill: PAL.navy, color: PAL.hi, rot: -0.02, seed: 4604 });
+  sticker(c, 'CALL YOUR VET', 640, 800, tq, MK('callvet'), end, v, { size: 56, rot: -0.03, seed: 4602 });
 }
 // stuck inside: tiny treat bits hidden round the flat, Miya sniffs from one to the next
 const BITS = [[560, GROUND - 6], [700, GROUND - 4], [860, GROUND - 6], [660, 740], [900, 690]];

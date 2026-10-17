@@ -29,7 +29,8 @@ KOKORO_MIX, KOKORO_SPEED = (('af_heart', 0.6), ('af_bella', 0.4)), 0.88
 
 # ------------------------------------------------------------------ the script (spoken = shown; ** = emphasised word)
 # id, section, text, picture moment to land on a word: (old time, keep-speed duration, word, offset from its onset)
-SCRIPT = [   # v2 (owner, 2026-10-17): one continuous story that works with your eyes shut (playbook §2.12)
+SCRIPT = [   # v2 (owner, 2026-10-17): one continuous story that works with your eyes shut (playbook §2.12); v4 adds puppies,
+             # the paw-and-coat wipe and the emergency signs (owner, after a vet clinic's haze post)
     ('hook', 0, "What the **haze** does to your dog.", None),
     ('news', 1, "The haze in Singapore just hit **very unhealthy** levels. And your dog breathes the same air you do.", None),
     ('tiny', 2, "The worst of it is tiny.", None),
@@ -39,11 +40,12 @@ SCRIPT = [   # v2 (owner, 2026-10-17): one continuous story that works with your
     ('sign2', 3, "Coughing, fast or noisy breathing.", None),
     ('sign3', 3, "Or a dog who's tired and off their food.", None),
     ('risk1', 4, "Flat-faced breeds feel it **most,** because their airways are already narrow.", None),
-    ('risk2', 4, "So do older dogs, and dogs with heart or lung problems.", None),
+    ('risk2', 4, "So do puppies, older dogs, and dogs with heart or lung problems.", None),
     ('walks', 5, "So outside, keep walks to a quick toilet trip.", None),
     ('run', 5, "Running makes them breathe harder, and pull in more haze.", None),
+    ('wipe', 5, "Back home, wipe their paws and coat with a damp cloth, so they don't lick the dust off.", None),
     ('big', 6, "And at home, the big one: keep the haze out. Shut the windows, and run the aircon or a purifier.", (33.2, 0.6, 'shut', -0.1)),
-    ('vet', 7, "If they're ever struggling to breathe, **call your vet** straight away.", None),
+    ('vet', 7, "But if their belly heaves with every breath, or their gums look pale or blue, that's an emergency. **Call your vet** straight away.", None),
     ('game', 8, "Stuck inside, their brain still needs a workout.", None),
     ('game2', 8, "Hide tiny treats around the flat, or try a few short training sessions.", None),
     ('food', 9, "With less exercise, they need fewer calories, so keep treats small.", None),
@@ -58,10 +60,11 @@ MARKS = {
     'watery': ('sign1', 'watery', 0), 'sneezing': ('sign1', 'sneezing', 0), 'runny': ('sign1', 'runny', 0),
     'coughing': ('sign2', 'coughing', 0), 'fast': ('sign2', 'fast', 0), 'tired': ('sign3', 'tired', 0),
     'flat': ('risk1', 'flatfaced', 0), 'most': ('risk1', 'most', 0), 'narrow': ('risk1', 'narrow', 0),
-    'older': ('risk2', 'older', 0), 'heart': ('risk2', 'heart', 0),
+    'puppies': ('risk2', 'puppies', 0), 'older': ('risk2', 'older', 0), 'heart': ('risk2', 'heart', 0),
     'walks': ('walks', 'walks', 0), 'toilet': ('walks', 'toilet', 0), 'harder': ('run', 'harder', 0), 'morehaze': ('run', 'haze', 0),
+    'wipe': ('wipe', 'wipe', 0), 'lick': ('wipe', 'lick', 0),
     'shut': ('big', 'shut', 0), 'aircon': ('big', 'aircon', 0), 'purifier': ('big', 'purifier', 0),
-    'struggling': ('vet', 'struggling', 0), 'callvet': ('vet', 'call', 0),
+    'belly': ('vet', 'belly', 0), 'gums': ('vet', 'gums', 0), 'emergency': ('vet', 'emergency', 0), 'callvet': ('vet', 'call', 0),
     'workout': ('game', 'workout', 0), 'hide': ('game2', 'hide', 0), 'training': ('game2', 'training', 0),
     'fewer': ('food', 'fewer', 0), 'small': ('food', 'small', 0), 'newfood': ('food2', 'new', 0), 'suits': ('food2', 'suits', 0),
     'single': ('pouch', 'singleingredient', 0), 'nothing': ('pouch', 'nothing', 0),

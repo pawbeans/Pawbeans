@@ -31,6 +31,9 @@ cel style (no logo on it).
 | It's not the week to try a new food. Stick with what suits them | Advice, not a health claim; AKC on switching foods slowly (sudden changes can upset the stomach). |
 | Single-ingredient treats keep it simple. Nothing added, nothing hidden. | BEANS brand copy (beans.sg) |
 | Next time: easy ways to tire your dog out at home | The next episode (IDEAS D36). |
+| (v4) So do puppies, older dogs… | KDVR vets (puppies, seniors, heart and lung conditions at higher risk): https://kdvr.com/news/local/smoky-skies-impact-not-only-people-but-also-pets-experts-weigh-in/amp/ ; Grace Veterinary Centre Penang haze post (senior and young pets), seen by the owner 2026-10-17 |
+| (v4) Back home, wipe their paws and coat with a damp cloth, so they don't lick the dust off | Agriculture Victoria, "Care of pets exposed to smoke and ash" (ash on the coat is swallowed through grooming; clean the feet): https://agriculture.vic.gov.au/livestock-and-animals/animal-welfare-victoria/pets-and-emergencies/care-of-pets-exposed-to-smoke-and-ash ; LA County Public Health wildfire pet sheet: https://admin.publichealth.lacounty.gov/vet/docs/WildfirePetSafetyFactSheet.pdf ; ABC7 emergency vet (wipe paws so they don't lick soot): https://abc7news.com/15793613/ |
+| (v4) If their belly heaves with every breath, or their gums look pale or blue, that's an emergency. Call your vet straight away. | Animal Trust (UK), breathing difficulties (obvious effort, pale, blue or grey gums: immediate veterinary attention): https://www.animaltrust.org.uk/pet-health-advice-hub/symptom-breathing-difficulties ; Lort Smith Animal Hospital: https://lortsmith.com/?p=3387 |
 
 ## Sound
 - Voiceover v3: **ElevenLabs "Jessica"** (eleven_multilingual_v2, speed 0.9), owner's key for this session only (never committed). v1/v2 used Kokoro-82M (Apache-2.0), local, because that session had no `ELEVENLABS_API_KEY`. Re-voice with

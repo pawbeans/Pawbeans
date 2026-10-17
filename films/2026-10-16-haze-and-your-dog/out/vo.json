@@ -57,65 +57,71 @@
   "id": "risk2",
   "at": 34.692,
   "file": "out/vo/risk2.wav",
-  "dur": 3.249
+  "dur": 4.028
  },
  {
   "id": "walks",
-  "at": 38.991,
+  "at": 39.769,
   "file": "out/vo/walks.wav",
   "dur": 2.625
  },
  {
   "id": "run",
-  "at": 42.016,
+  "at": 42.795,
   "file": "out/vo/run.wav",
   "dur": 2.833
  },
  {
+  "id": "wipe",
+  "at": 46.027,
+  "file": "out/vo/wipe.wav",
+  "dur": 4.357
+ },
+ {
   "id": "big",
-  "at": 45.899,
+  "at": 51.434,
   "file": "out/vo/big.wav",
   "dur": 5.983
  },
  {
   "id": "vet",
-  "at": 52.932,
+  "at": 58.467,
   "file": "out/vo/vet.wav",
-  "dur": 3.104
+  "dur": 7.643
  },
  {
   "id": "game",
-  "at": 57.086,
+  "at": 67.161,
   "file": "out/vo/game.wav",
   "dur": 2.597
  },
  {
   "id": "game2",
-  "at": 60.083,
+  "at": 70.158,
   "file": "out/vo/game2.wav",
   "dur": 3.952
  },
  {
   "id": "food",
-  "at": 65.086,
+  "at": 75.161,
   "file": "out/vo/food.wav",
   "dur": 3.925
  },
  {
   "id": "food2",
-  "at": 69.411,
+  "at": 79.486,
   "file": "out/vo/food2.wav",
   "dur": 3.838
  },
  {
   "id": "pouch",
-  "at": 73.649,
+  "at": 83.724,
   "file": "out/vo/pouch.wav",
   "dur": 4.353
  },
  {
   "id": "q",
-  "at": 79.052,
+  "at": 89.127,
   "file": "out/vo/q.wav",
   "dur": 6.342
  }
